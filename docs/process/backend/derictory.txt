@@ -1,0 +1,37 @@
+C:.
+│  README.md
+│  
+└─demo
+    │  .gitattributes
+    │  .gitignore
+    │  build.gradle
+    │  gradlew
+    │  gradlew.bat
+    │  HELP.md
+    │  settings.gradle
+    │  
+    ├─.vscode
+    │      NEWLY_CREATED_BY_SPRING_INITIALIZR
+    │      
+    ├─gradle
+    │  └─wrapper
+    │          gradle-wrapper.jar
+    │          gradle-wrapper.properties
+    │          
+    └─src
+        ├─main
+        │  ├─java
+        │  │  └─meetudy
+        │  │      └─demo
+        │  │              DemoApplication.java
+        │  │              
+        │  └─resources
+        │      │  application.properties
+        │      │  
+        │      ├─static
+        │      └─templates
+        └─test
+            └─java
+                └─meetudy
+                    └─demo
+                            DemoApplicationTests.java

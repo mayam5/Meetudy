@@ -111,7 +111,9 @@ src/main/java/meetudy/demo/
 │   └── ApiResponse.java          공통 응답 포맷
 ├── controller/
 │   ├── AuthController.java       인증 API
-│   └── UserController.java       유저 API
+│   ├── UserController.java       유저 API
+│   ├── CategoryController.java   카테고리 API        
+│   └── UserInterestController.java  관심사 API       
 ├── dto/
 │   ├── request/                  요청 DTO
 │   └── response/                 응답 DTO
@@ -125,7 +127,9 @@ src/main/java/meetudy/demo/
 │   ├── ErrorCode.java            에러 코드 정의
 │   └── GlobalExceptionHandler.java  전역 예외 처리
 ├── repository/
-│   └── UserRepository.java       DB 접근 인터페이스
+│   ├── UserRepository.java       DB 접근 인터페이스
+│   ├── CategoryRepository.java   카테고리 DB 접근    ← 추가
+│   └── UserInterestRepository.java  관심사 DB 접근  ← 추가
 ├── security/
 │   ├── JwtProvider.java          JWT 생성/검증
 │   ├── JwtFilter.java            요청마다 토큰 파싱
@@ -133,9 +137,11 @@ src/main/java/meetudy/demo/
 │   └── CustomUserDetailsService.java
 └── service/
     ├── AuthService.java          회원가입/로그인 로직
-    └── UserService.java          유저 프로필 로직
+    ├── UserService.java          유저 프로필 로직
+    ├── CategoryService.java      카테고리 로직        
+    └── UserInterestService.java  관심사 로직          
 ```
-
+      
 ---
 
 ## DB 스키마 (v1.1.2)
@@ -205,13 +211,27 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9...
 
 ---
 
+### 카테고리 (CAT)
+
+| 메서드 | URL | 설명 | 인증 필요 |
+|---|---|---|---|
+| GET | `/categories` | 전체 카테고리 조회 | X |
+
+### 관심사 (INT)
+
+| 메서드 | URL | 설명 | 인증 필요 |
+|---|---|---|---|
+| GET | `/users/me/interests` | 내 관심사 목록 조회 | O |
+| POST | `/users/me/interests` | 관심사 추가 | O |
+| DELETE | `/users/me/interests/{categoryId}` | 관심사 삭제 | O |
+
 ## 구현 예정 기능
 
 ```
 ✅ AUTH    회원가입, 로그인
 ✅ USER    프로필 조회/수정/탈퇴
-⬜ CAT     카테고리 목록
-⬜ INT     관심사 등록/삭제
+✅ CAT     카테고리 목록
+✅ INT     관심사 등록/삭제
 ⬜ POST    스터디 모집 게시글 CRUD
 ⬜ BM      북마크
 ⬜ APP     스터디 신청/수락/거절

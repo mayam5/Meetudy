@@ -5,7 +5,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "UserBlock",
+@Table(name = "UserBlocks",
        uniqueConstraints = @UniqueConstraint(columnNames = {"blocker_id", "blocked_id"}))
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

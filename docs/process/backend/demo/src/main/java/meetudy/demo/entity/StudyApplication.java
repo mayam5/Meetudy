@@ -5,7 +5,8 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Study_Applications")
+@Table(name = "Study_Applications",
+       uniqueConstraints = @UniqueConstraint(columnNames = {"post_id", "applicant_id"}))
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -25,9 +26,10 @@ public class StudyApplication {
     @JoinColumn(name = "applicant_id", nullable = false)
     private User applicant;
 
-    @Column(name = "application_status", nullable = false, length = 20)
+    // ★ 컬럼명 변경: application_status → status
+    @Column(name = "status", nullable = false, length = 20)
     @Builder.Default
-    private String applicationStatus = "PENDING";
+    private String status = "PENDING";
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -46,17 +48,7 @@ public class StudyApplication {
         this.updatedAt = LocalDateTime.now();
     }
 
-    // ── 도메인 메서드 ──────────────────────────────
-
-    public void accept() {
-        this.applicationStatus = "ACCEPTED";
-    }
-
-    public void reject() {
-        this.applicationStatus = "REJECTED";
-    }
-
-    public boolean isPending() {
-        return "PENDING".equals(this.applicationStatus);
-    }
+    public void accept()  { this.status = "ACCEPTED"; }
+    public void reject()  { this.status = "REJECTED"; }
+    public boolean isPending() { return "PENDING".equals(this.status); }
 }

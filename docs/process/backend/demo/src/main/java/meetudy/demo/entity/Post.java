@@ -21,18 +21,17 @@ public class Post {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id", nullable = false)
-    private Category category;
-
     @Column(name = "post_title", nullable = false, length = 200)
     private String postTitle;
 
     @Column(name = "post_content", nullable = false, columnDefinition = "TEXT")
     private String postContent;
 
-    @Column(name = "meeting_time")
+    @Column(name = "meeting_time", nullable = false)
     private LocalDateTime meetingTime;
+
+    @Column(name = "end_time", nullable = false)
+    private LocalDateTime endTime;
 
     @Column(name = "max_members", nullable = false)
     private Integer maxMembers;
@@ -44,9 +43,6 @@ public class Post {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "place_id")
     private Place place;
-
-    @Column(name = "place_price")
-    private Integer placePrice;
 
     @Column(name = "post_status", nullable = false, length = 20)
     @Builder.Default
@@ -69,30 +65,19 @@ public class Post {
         this.updatedAt = LocalDateTime.now();
     }
 
-    // ── 도메인 메서드 ──────────────────────────────
-
-    public void update(String postTitle, String postContent, LocalDateTime meetingTime,
-                       Integer maxMembers, Integer placePrice) {
+    public void update(String postTitle, String postContent,
+                       LocalDateTime meetingTime, LocalDateTime endTime,
+                       Integer maxMembers) {
         if (postTitle != null)   this.postTitle   = postTitle;
         if (postContent != null) this.postContent = postContent;
         if (meetingTime != null) this.meetingTime = meetingTime;
+        if (endTime != null)     this.endTime     = endTime;
         if (maxMembers != null)  this.maxMembers  = maxMembers;
-        if (placePrice != null)  this.placePrice  = placePrice;
     }
 
-    public void close() {
-        this.postStatus = "CLOSED";
-    }
-
-    public void increaseCurrentMembers() {
-        this.currentMembers++;
-    }
-
-    public boolean isOpen() {
-        return "OPEN".equals(this.postStatus);
-    }
-
-    public boolean isAuthor(Long userId) {
-        return this.user.getUserId().equals(userId);
-    }
+    public void close() { this.postStatus = "CLOSED"; }
+    public void done()  { this.postStatus = "DONE"; }
+    public void increaseCurrentMembers() { this.currentMembers++; }
+    public boolean isOpen()              { return "OPEN".equals(this.postStatus); }
+    public boolean isAuthor(Long userId) { return this.user.getUserId().equals(userId); }
 }

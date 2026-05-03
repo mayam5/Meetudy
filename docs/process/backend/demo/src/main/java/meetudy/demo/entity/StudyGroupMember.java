@@ -13,10 +13,11 @@ import java.time.LocalDateTime;
 @Builder
 public class StudyGroupMember {
 
+    // ★ PK 컬럼명 변경: study_group_member_id → membership_id
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "study_group_member_id")
-    private Long studyGroupMemberId;
+    @Column(name = "membership_id")
+    private Long membershipId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "study_group_id", nullable = false)
@@ -43,8 +44,6 @@ public class StudyGroupMember {
     protected void onCreate() {
         this.joinedAt = LocalDateTime.now();
     }
-
-    // ── 도메인 메서드 ──────────────────────────────
 
     public void leave() {
         this.leftAt = LocalDateTime.now();

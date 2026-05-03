@@ -5,7 +5,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "PostBookmark",
+@Table(name = "PostBookmarks",
        uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "post_id"}))
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

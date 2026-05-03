@@ -2,6 +2,7 @@ package meetudy.demo.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Study_Groups")
@@ -22,4 +23,13 @@ public class StudyGroup {
 
     @Column(name = "group_name", nullable = false, length = 200)
     private String groupName;
+
+    // ★ 추가: 그룹 생성 시각
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
 }

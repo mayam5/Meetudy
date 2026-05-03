@@ -1,4 +1,6 @@
 C:.
+│  .gitignore
+│  
 ├─.vscode
 │      settings.json
 │      
@@ -15,6 +17,7 @@ C:.
         │      │  gradlew
         │      │  gradlew.bat
         │      │  HELP.md
+        │      │  meetudy_workbench.sql
         │      │  settings.gradle
         │      │  
         │      ├─.gradle
@@ -141,18 +144,39 @@ C:.
         │          │  │          │      
         │          │  │          ├─controller
         │          │  │          │      AuthController.java
+        │          │  │          │      UserController.java
         │          │  │          │      
         │          │  │          ├─dto
         │          │  │          │  ├─request
         │          │  │          │  │      LoginRequest.java
         │          │  │          │  │      RegisterRequest.java
+        │          │  │          │  │      UpdateProfileRequest.java
         │          │  │          │  │      
         │          │  │          │  └─response
         │          │  │          │          LoginResponse.java
+        │          │  │          │          UserProfileResponse.java
         │          │  │          │          
         │          │  │          ├─entity
+        │          │  │          │      Category.java
+        │          │  │          │      ChatRoom.java
+        │          │  │          │      ChatRoomMember.java
+        │          │  │          │      ChatRoomMessage.java
+        │          │  │          │      Hashtag.java
+        │          │  │          │      Place.java
+        │          │  │          │      Post.java
+        │          │  │          │      PostBookmark.java
+        │          │  │          │      PostHashtag.java
         │          │  │          │      Region.java
+        │          │  │          │      Reservation.java
+        │          │  │          │      StudyApplication.java
+        │          │  │          │      StudyGroup.java
+        │          │  │          │      StudyGroupMember.java
+        │          │  │          │      StudyLog.java
+        │          │  │          │      TimeSlot.java
         │          │  │          │      User.java
+        │          │  │          │      UserBlock.java
+        │          │  │          │      UserInterest.java
+        │          │  │          │      UserSchedule.java
         │          │  │          │      
         │          │  │          ├─exception
         │          │  │          │      CustomException.java
@@ -170,6 +194,7 @@ C:.
         │          │  │          │      
         │          │  │          └─service
         │          │  │                  AuthService.java
+        │          │  │                  UserService.java
         │          │  │                  
         │          │  └─resources
         │          │      │  application.properties

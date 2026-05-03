@@ -1,37 +1,214 @@
 C:.
-│  README.md
+│  .gitignore
 │  
-└─demo
-    │  .gitattributes
-    │  .gitignore
-    │  build.gradle
-    │  gradlew
-    │  gradlew.bat
-    │  HELP.md
-    │  settings.gradle
-    │  
-    ├─.vscode
-    │      NEWLY_CREATED_BY_SPRING_INITIALIZR
-    │      
-    ├─gradle
-    │  └─wrapper
-    │          gradle-wrapper.jar
-    │          gradle-wrapper.properties
-    │          
-    └─src
-        ├─main
-        │  ├─java
-        │  │  └─meetudy
-        │  │      └─demo
-        │  │              DemoApplication.java
-        │  │              
-        │  └─resources
-        │      │  application.properties
+├─.vscode
+│      settings.json
+│      
+└─docs
+    └─process
+        ├─backend
+        │  │  derictory.txt
+        │  │  README.md
+        │  │  
+        │  └─demo
+        │      │  .gitattributes
+        │      │  .gitignore
+        │      │  build.gradle
+        │      │  gradlew
+        │      │  gradlew.bat
+        │      │  HELP.md
+        │      │  meetudy_workbench.sql
+        │      │  settings.gradle
         │      │  
-        │      ├─static
-        │      └─templates
-        └─test
-            └─java
-                └─meetudy
-                    └─demo
-                            DemoApplicationTests.java
+        │      ├─.gradle
+        │      │  │  file-system.probe
+        │      │  │  
+        │      │  ├─8.14.4
+        │      │  │  │  gc.properties
+        │      │  │  │  
+        │      │  │  ├─checksums
+        │      │  │  │      checksums.lock
+        │      │  │  │      md5-checksums.bin
+        │      │  │  │      sha1-checksums.bin
+        │      │  │  │      
+        │      │  │  ├─executionHistory
+        │      │  │  │      executionHistory.bin
+        │      │  │  │      executionHistory.lock
+        │      │  │  │      
+        │      │  │  ├─expanded
+        │      │  │  ├─fileChanges
+        │      │  │  │      last-build.bin
+        │      │  │  │      
+        │      │  │  ├─fileHashes
+        │      │  │  │      fileHashes.bin
+        │      │  │  │      fileHashes.lock
+        │      │  │  │      resourceHashesCache.bin
+        │      │  │  │      
+        │      │  │  └─vcsMetadata
+        │      │  ├─buildOutputCleanup
+        │      │  │      buildOutputCleanup.lock
+        │      │  │      cache.properties
+        │      │  │      outputFiles.bin
+        │      │  │      
+        │      │  └─vcs-1
+        │      │          gc.properties
+        │      │          
+        │      ├─.vscode
+        │      │      NEWLY_CREATED_BY_SPRING_INITIALIZR
+        │      │      
+        │      ├─build
+        │      │  │  resolvedMainClassName
+        │      │  │  
+        │      │  ├─classes
+        │      │  │  └─java
+        │      │  │      ├─main
+        │      │  │      │  └─meetudy
+        │      │  │      │      └─demo
+        │      │  │      │          │  DemoApplication.class
+        │      │  │      │          │  
+        │      │  │      │          ├─common
+        │      │  │      │          │      ApiResponse.class
+        │      │  │      │          │      
+        │      │  │      │          ├─controller
+        │      │  │      │          │      AuthController.class
+        │      │  │      │          │      
+        │      │  │      │          ├─dto
+        │      │  │      │          │  ├─request
+        │      │  │      │          │  │      LoginRequest.class
+        │      │  │      │          │  │      RegisterRequest.class
+        │      │  │      │          │  │      
+        │      │  │      │          │  └─response
+        │      │  │      │          │          LoginResponse.class
+        │      │  │      │          │          
+        │      │  │      │          ├─entity
+        │      │  │      │          │      Region$RegionBuilder.class
+        │      │  │      │          │      Region.class
+        │      │  │      │          │      User$UserBuilder.class
+        │      │  │      │          │      User.class
+        │      │  │      │          │      
+        │      │  │      │          ├─exception
+        │      │  │      │          │      CustomException.class
+        │      │  │      │          │      ErrorCode.class
+        │      │  │      │          │      GlobalExceptionHandler.class
+        │      │  │      │          │      
+        │      │  │      │          ├─repository
+        │      │  │      │          │      UserRepository.class
+        │      │  │      │          │      
+        │      │  │      │          ├─security
+        │      │  │      │          │      CustomUserDetailsService.class
+        │      │  │      │          │      JwtFilter.class
+        │      │  │      │          │      JwtProvider.class
+        │      │  │      │          │      SecurityConfig.class
+        │      │  │      │          │      
+        │      │  │      │          └─service
+        │      │  │      │                  AuthService.class
+        │      │  │      │                  
+        │      │  │      └─test
+        │      │  ├─generated
+        │      │  │  └─sources
+        │      │  │      ├─annotationProcessor
+        │      │  │      │  └─java
+        │      │  │      │      └─main
+        │      │  │      └─headers
+        │      │  │          └─java
+        │      │  │              └─main
+        │      │  ├─reports
+        │      │  │  └─problems
+        │      │  │          problems-report.html
+        │      │  │          
+        │      │  ├─resources
+        │      │  │  ├─main
+        │      │  │  │  │  application.properties
+        │      │  │  │  │  
+        │      │  │  │  ├─static
+        │      │  │  │  └─templates
+        │      │  │  └─test
+        │      │  └─tmp
+        │      │      └─compileJava
+        │      │              previous-compilation-data.bin
+        │      │              
+        │      ├─gradle
+        │      │  └─wrapper
+        │      │          gradle-wrapper.jar
+        │      │          gradle-wrapper.properties
+        │      │          
+        │      └─src
+        │          ├─main
+        │          │  ├─java
+        │          │  │  └─meetudy
+        │          │  │      └─demo
+        │          │  │          │  DemoApplication.java
+        │          │  │          │  
+        │          │  │          ├─common
+        │          │  │          │      ApiResponse.java
+        │          │  │          │      
+        │          │  │          ├─controller
+        │          │  │          │      AuthController.java
+        │          │  │          │      UserController.java
+        │          │  │          │      
+        │          │  │          ├─dto
+        │          │  │          │  ├─request
+        │          │  │          │  │      LoginRequest.java
+        │          │  │          │  │      RegisterRequest.java
+        │          │  │          │  │      UpdateProfileRequest.java
+        │          │  │          │  │      
+        │          │  │          │  └─response
+        │          │  │          │          LoginResponse.java
+        │          │  │          │          UserProfileResponse.java
+        │          │  │          │          
+        │          │  │          ├─entity
+        │          │  │          │      Category.java
+        │          │  │          │      ChatRoom.java
+        │          │  │          │      ChatRoomMember.java
+        │          │  │          │      ChatRoomMessage.java
+        │          │  │          │      Hashtag.java
+        │          │  │          │      Place.java
+        │          │  │          │      Post.java
+        │          │  │          │      PostBookmark.java
+        │          │  │          │      PostHashtag.java
+        │          │  │          │      Region.java
+        │          │  │          │      Reservation.java
+        │          │  │          │      StudyApplication.java
+        │          │  │          │      StudyGroup.java
+        │          │  │          │      StudyGroupMember.java
+        │          │  │          │      StudyLog.java
+        │          │  │          │      TimeSlot.java
+        │          │  │          │      User.java
+        │          │  │          │      UserBlock.java
+        │          │  │          │      UserInterest.java
+        │          │  │          │      UserSchedule.java
+        │          │  │          │      
+        │          │  │          ├─exception
+        │          │  │          │      CustomException.java
+        │          │  │          │      ErrorCode.java
+        │          │  │          │      GlobalExceptionHandler.java
+        │          │  │          │      
+        │          │  │          ├─repository
+        │          │  │          │      UserRepository.java
+        │          │  │          │      
+        │          │  │          ├─security
+        │          │  │          │      CustomUserDetailsService.java
+        │          │  │          │      JwtFilter.java
+        │          │  │          │      JwtProvider.java
+        │          │  │          │      SecurityConfig.java
+        │          │  │          │      
+        │          │  │          └─service
+        │          │  │                  AuthService.java
+        │          │  │                  UserService.java
+        │          │  │                  
+        │          │  └─resources
+        │          │      │  application.properties
+        │          │      │  
+        │          │      ├─static
+        │          │      └─templates
+        │          └─test
+        │              └─java
+        │                  └─meetudy
+        │                      └─demo
+        │                              DemoApplicationTests.java
+        │                              
+        ├─database
+        │      README.md
+        │      
+        └─frontend
+                README.md

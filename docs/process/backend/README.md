@@ -337,4 +337,4 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9...
 
 ## 팀 정보
 
-가천대학교 데이터베이스 수업 팀 프로젝트
+가천대학교 고급 웹 프로그래밍(Advanced Web Programing) 수업 팀 프로젝트

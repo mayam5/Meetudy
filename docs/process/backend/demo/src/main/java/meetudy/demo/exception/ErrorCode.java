@@ -25,6 +25,8 @@ public enum ErrorCode {
     // 신청
     ALREADY_APPLIED(HttpStatus.CONFLICT,            "이미 신청한 게시글입니다."),
     APPLICATION_NOT_FOUND(HttpStatus.NOT_FOUND,     "존재하지 않는 신청입니다."),
+    SELF_APPLICATION_NOT_ALLOWED(HttpStatus.BAD_REQUEST, "본인 게시글에는 신청할 수 없습니다."),
+    APPLICATION_CANCEL_NOT_ALLOWED(HttpStatus.BAD_REQUEST, "대기 중인 신청만 취소할 수 있습니다."),
 
     // 카테고리
     CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND,        "존재하지 않는 카테고리입니다."),

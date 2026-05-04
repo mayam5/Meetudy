@@ -103,47 +103,50 @@ INSERT INTO Users (email, nickname, ...) VALUES (?, ?, ...);
 
 ---
 
-## 폴더 구조
+## 프로젝트 구조
 
 ```
 src/main/java/meetudy/demo/
 ├── common/
-│   └── ApiResponse.java               공통 응답 포맷
+│   └── ApiResponse.java              # 공통 응답 포맷
 ├── controller/
-│   ├── AuthController.java            인증 API
-│   ├── UserController.java            유저 API
-│   ├── CategoryController.java        카테고리 API
-│   ├── UserInterestController.java    관심사 API
-│   └── PostController.java            게시글 API
-├── dto/
-│   ├── request/                       요청 DTO
-│   └── response/                      응답 DTO
-├── entity/                            DB 테이블 매핑 클래스 (20개)
-│   ├── User.java
-│   ├── Post.java
-│   ├── StudyGroup.java
-│   └── ...
-├── exception/
-│   ├── CustomException.java           커스텀 예외
-│   ├── ErrorCode.java                 에러 코드 정의
-│   └── GlobalExceptionHandler.java    전역 예외 처리
+│   ├── AuthController.java
+│   ├── UserController.java
+│   ├── CategoryController.java
+│   ├── UserInterestController.java
+│   ├── PostController.java
+│   └── ApplicationController.java
+├── service/
+│   ├── AuthService.java
+│   ├── UserService.java
+│   ├── CategoryService.java
+│   ├── UserInterestService.java
+│   ├── PostService.java
+│   └── ApplicationService.java
 ├── repository/
 │   ├── UserRepository.java
 │   ├── CategoryRepository.java
 │   ├── UserInterestRepository.java
 │   ├── PostRepository.java
-│   └── PlaceRepository.java
+│   ├── PlaceRepository.java
+│   ├── StudyApplicationRepository.java
+│   ├── StudyGroupRepository.java
+│   ├── StudyGroupMemberRepository.java
+│   ├── ChatRoomRepository.java
+│   └── ChatRoomMemberRepository.java
+├── entity/                           # JPA 엔티티 19개
+├── dto/
+│   ├── request/
+│   └── response/
 ├── security/
-│   ├── JwtProvider.java               JWT 생성/검증
-│   ├── JwtFilter.java                 요청마다 토큰 파싱
-│   ├── SecurityConfig.java            Security 설정
+│   ├── JwtProvider.java
+│   ├── JwtFilter.java
+│   ├── SecurityConfig.java
 │   └── CustomUserDetailsService.java
-└── service/
-    ├── AuthService.java
-    ├── UserService.java
-    ├── CategoryService.java
-    ├── UserInterestService.java
-    └── PostService.java
+└── exception/
+    ├── ErrorCode.java
+    ├── CustomException.java
+    └── GlobalExceptionHandler.java
 ```
 
 ---
@@ -210,6 +213,72 @@ src/main/java/meetudy/demo/
 | PATCH | `/posts/{postId}/close` | 모집 마감 | O |
 | DELETE | `/posts/{postId}` | 게시글 삭제 | O |
 
+
+**게시글 작성 시 자동 생성 (트랜잭션 내)**
+```
+POST /posts
+  ├─ Posts 저장
+  ├─ Study_Groups 생성 (groupName = postTitle)
+  ├─ Study_Group_Members 추가 (작성자, role = HOST)
+  ├─ Chat_Rooms 생성
+  └─ Chat_Room_Members 추가 (작성자)
+```
+---
+
+### 📝 STUDY APPLICATION
+
+| 메서드 | 엔드포인트 | 설명 | 인증 |
+|---|---|---|---|
+| POST | `/applications` | 스터디 신청 | O |
+| DELETE | `/applications/{applicationId}` | 신청 취소 (PENDING만) | O |
+| GET | `/applications/me` | 내 신청 목록 | O |
+| GET | `/posts/{postId}/applications` | 게시글 신청 목록 (작성자만) | O |
+| PATCH | `/applications/{applicationId}/accept` | 신청 수락 | O |
+| PATCH | `/applications/{applicationId}/reject` | 신청 거절 | O |
+
+**신청 수락 시 자동 처리 (트랜잭션 내)**
+```
+PATCH /applications/{id}/accept
+  ├─ StudyApplication.status → ACCEPTED
+  ├─ Post.currentMembers++
+  ├─ currentMembers >= maxMembers → Post.status → CLOSED
+  ├─ Study_Group_Members 추가 (신청자, role = MEMBER)
+  └─ Chat_Room_Members 추가 (신청자)
+```
+
+**비즈니스 규칙**
+
+| 상황 | 결과 |
+|---|---|
+| 본인 게시글 신청 | 400 — 본인 게시글에는 신청할 수 없습니다 |
+| CLOSED 게시글 신청 | 400 — 이미 마감된 게시글입니다 |
+| 중복 신청 | 409 — 이미 신청한 게시글입니다 |
+| PENDING 아닌 신청 취소 | 400 — 대기 중인 신청만 취소할 수 있습니다 |
+| 작성자 외 신청목록 조회 | 403 — 접근 권한이 없습니다 |
+
+---
+
+## 에러 코드
+
+| 코드 | HTTP | 메시지 |
+|---|---|---|
+| EMAIL_ALREADY_EXISTS | 409 | 이미 사용 중인 이메일입니다 |
+| NICKNAME_ALREADY_EXISTS | 409 | 이미 사용 중인 닉네임입니다 |
+| INVALID_CREDENTIALS | 401 | 이메일 또는 비밀번호가 올바르지 않습니다 |
+| USER_NOT_FOUND | 404 | 존재하지 않는 사용자입니다 |
+| POST_NOT_FOUND | 404 | 존재하지 않는 게시글입니다 |
+| POST_NOT_AUTHOR | 403 | 게시글 작성자만 수행할 수 있습니다 |
+| POST_ALREADY_CLOSED | 400 | 이미 마감된 게시글입니다 |
+| ALREADY_APPLIED | 409 | 이미 신청한 게시글입니다 |
+| APPLICATION_NOT_FOUND | 404 | 존재하지 않는 신청입니다 |
+| SELF_APPLICATION_NOT_ALLOWED | 400 | 본인 게시글에는 신청할 수 없습니다 |
+| APPLICATION_CANCEL_NOT_ALLOWED | 400 | 대기 중인 신청만 취소할 수 있습니다 |
+| CATEGORY_NOT_FOUND | 404 | 존재하지 않는 카테고리입니다 |
+| INTEREST_ALREADY_EXISTS | 409 | 이미 추가된 관심사입니다 |
+| INTEREST_NOT_FOUND | 404 | 존재하지 않는 관심사입니다 |
+| PLACE_NOT_FOUND | 404 | 존재하지 않는 장소입니다 |
+| FORBIDDEN | 403 | 접근 권한이 없습니다 |
+
 ---
 
 ### 인증 방식
@@ -255,8 +324,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9...
 ✅ INT     관심사 등록/삭제
 ✅ POST    스터디 모집 게시글 CRUD (작성/조회/수정/마감/삭제)
 ⬜ BM      북마크
-⬜ APP     스터디 신청/수락/거절
-⬜ GRP     스터디 그룹 생성/관리
+✅ APP     스터디 신청/수락/거절
+✅ GRP     스터디 그룹 생성/관리
 ⬜ CHAT    채팅 (WebSocket/STOMP)
 ⬜ BLK     차단
 ⬜ SCH     스케줄 관리

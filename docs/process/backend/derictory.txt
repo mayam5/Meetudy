@@ -71,20 +71,67 @@ C:.
         │      │  │      │          │      
         │      │  │      │          ├─controller
         │      │  │      │          │      AuthController.class
+        │      │  │      │          │      CategoryController.class
+        │      │  │      │          │      PostController.class
+        │      │  │      │          │      UserController.class
+        │      │  │      │          │      UserInterestController.class
         │      │  │      │          │      
         │      │  │      │          ├─dto
         │      │  │      │          │  ├─request
+        │      │  │      │          │  │      CreatePostRequest.class
         │      │  │      │          │  │      LoginRequest.class
         │      │  │      │          │  │      RegisterRequest.class
+        │      │  │      │          │  │      UpdatePostRequest.class
+        │      │  │      │          │  │      UpdateProfileRequest.class
         │      │  │      │          │  │      
         │      │  │      │          │  └─response
+        │      │  │      │          │          CategoryResponse.class
         │      │  │      │          │          LoginResponse.class
+        │      │  │      │          │          PostResponse.class
+        │      │  │      │          │          UserProfileResponse$UserProfileResponseBuilder.class
+        │      │  │      │          │          UserProfileResponse.class
         │      │  │      │          │          
         │      │  │      │          ├─entity
+        │      │  │      │          │      Category$CategoryBuilder.class
+        │      │  │      │          │      Category.class
+        │      │  │      │          │      ChatRoom$ChatRoomBuilder.class
+        │      │  │      │          │      ChatRoom.class
+        │      │  │      │          │      ChatRoomMember$ChatRoomMemberBuilder.class
+        │      │  │      │          │      ChatRoomMember.class
+        │      │  │      │          │      ChatRoomMessage$ChatRoomMessageBuilder.class
+        │      │  │      │          │      ChatRoomMessage.class
+        │      │  │      │          │      Hashtag$HashtagBuilder.class
+        │      │  │      │          │      Hashtag.class
+        │      │  │      │          │      Place$PlaceBuilder.class
+        │      │  │      │          │      Place.class
+        │      │  │      │          │      Post$PostBuilder.class
+        │      │  │      │          │      Post.class
+        │      │  │      │          │      PostBookmark$PostBookmarkBuilder.class
+        │      │  │      │          │      PostBookmark.class
+        │      │  │      │          │      PostHashtag$PostHashtagBuilder.class
+        │      │  │      │          │      PostHashtag.class
         │      │  │      │          │      Region$RegionBuilder.class
         │      │  │      │          │      Region.class
+        │      │  │      │          │      Reservation$ReservationBuilder.class
+        │      │  │      │          │      Reservation.class
+        │      │  │      │          │      StudyApplication$StudyApplicationBuilder.class
+        │      │  │      │          │      StudyApplication.class
+        │      │  │      │          │      StudyGroup$StudyGroupBuilder.class
+        │      │  │      │          │      StudyGroup.class
+        │      │  │      │          │      StudyGroupMember$StudyGroupMemberBuilder.class
+        │      │  │      │          │      StudyGroupMember.class
+        │      │  │      │          │      StudyLog$StudyLogBuilder.class
+        │      │  │      │          │      StudyLog.class
+        │      │  │      │          │      TimeSlot$TimeSlotBuilder.class
+        │      │  │      │          │      TimeSlot.class
         │      │  │      │          │      User$UserBuilder.class
         │      │  │      │          │      User.class
+        │      │  │      │          │      UserBlock$UserBlockBuilder.class
+        │      │  │      │          │      UserBlock.class
+        │      │  │      │          │      UserInterest$UserInterestBuilder.class
+        │      │  │      │          │      UserInterest.class
+        │      │  │      │          │      UserSchedule$UserScheduleBuilder.class
+        │      │  │      │          │      UserSchedule.class
         │      │  │      │          │      
         │      │  │      │          ├─exception
         │      │  │      │          │      CustomException.class
@@ -92,6 +139,10 @@ C:.
         │      │  │      │          │      GlobalExceptionHandler.class
         │      │  │      │          │      
         │      │  │      │          ├─repository
+        │      │  │      │          │      CategoryRepository.class
+        │      │  │      │          │      PlaceRepository.class
+        │      │  │      │          │      PostRepository.class
+        │      │  │      │          │      UserInterestRepository.class
         │      │  │      │          │      UserRepository.class
         │      │  │      │          │      
         │      │  │      │          ├─security
@@ -102,6 +153,10 @@ C:.
         │      │  │      │          │      
         │      │  │      │          └─service
         │      │  │      │                  AuthService.class
+        │      │  │      │                  CategoryService.class
+        │      │  │      │                  PostService.class
+        │      │  │      │                  UserInterestService.class
+        │      │  │      │                  UserService.class
         │      │  │      │                  
         │      │  │      └─test
         │      │  ├─generated
@@ -125,8 +180,58 @@ C:.
         │      │  │  └─test
         │      │  └─tmp
         │      │      └─compileJava
-        │      │              previous-compilation-data.bin
-        │      │              
+        │      │          │  previous-compilation-data.bin
+        │      │          │  
+        │      │          └─compileTransaction
+        │      │              ├─backup-dir
+        │      │              └─stash-dir
+        │      │                      AuthController.class.uniqueId43
+        │      │                      AuthService.class.uniqueId40
+        │      │                      ChatRoom$ChatRoomBuilder.class.uniqueId20
+        │      │                      ChatRoom.class.uniqueId38
+        │      │                      ChatRoomMember$ChatRoomMemberBuilder.class.uniqueId9
+        │      │                      ChatRoomMember.class.uniqueId4
+        │      │                      ChatRoomMessage$ChatRoomMessageBuilder.class.uniqueId41
+        │      │                      ChatRoomMessage.class.uniqueId19
+        │      │                      CustomUserDetailsService.class.uniqueId39
+        │      │                      Post$PostBuilder.class.uniqueId25
+        │      │                      Post.class.uniqueId22
+        │      │                      PostBookmark$PostBookmarkBuilder.class.uniqueId21
+        │      │                      PostBookmark.class.uniqueId28
+        │      │                      PostController.class.uniqueId14
+        │      │                      PostHashtag$PostHashtagBuilder.class.uniqueId29
+        │      │                      PostHashtag.class.uniqueId42
+        │      │                      PostRepository.class.uniqueId27
+        │      │                      PostResponse.class.uniqueId15
+        │      │                      PostService.class.uniqueId23
+        │      │                      Reservation$ReservationBuilder.class.uniqueId45
+        │      │                      Reservation.class.uniqueId36
+        │      │                      StudyApplication$StudyApplicationBuilder.class.uniqueId6
+        │      │                      StudyApplication.class.uniqueId13
+        │      │                      StudyGroup$StudyGroupBuilder.class.uniqueId10
+        │      │                      StudyGroup.class.uniqueId37
+        │      │                      StudyGroupMember$StudyGroupMemberBuilder.class.uniqueId24
+        │      │                      StudyGroupMember.class.uniqueId5
+        │      │                      StudyLog$StudyLogBuilder.class.uniqueId30
+        │      │                      StudyLog.class.uniqueId34
+        │      │                      UpdateProfileRequest.class.uniqueId1
+        │      │                      User$UserBuilder.class.uniqueId31
+        │      │                      User.class.uniqueId3
+        │      │                      UserBlock$UserBlockBuilder.class.uniqueId0
+        │      │                      UserBlock.class.uniqueId33
+        │      │                      UserController.class.uniqueId35
+        │      │                      UserInterest$UserInterestBuilder.class.uniqueId12
+        │      │                      UserInterest.class.uniqueId32
+        │      │                      UserInterestController.class.uniqueId26
+        │      │                      UserInterestRepository.class.uniqueId17
+        │      │                      UserInterestService.class.uniqueId18
+        │      │                      UserProfileResponse$UserProfileResponseBuilder.class.uniqueId2
+        │      │                      UserProfileResponse.class.uniqueId8
+        │      │                      UserRepository.class.uniqueId7
+        │      │                      UserSchedule$UserScheduleBuilder.class.uniqueId16
+        │      │                      UserSchedule.class.uniqueId44
+        │      │                      UserService.class.uniqueId11
+        │      │                      
         │      ├─gradle
         │      │  └─wrapper
         │      │          gradle-wrapper.jar
@@ -142,18 +247,28 @@ C:.
         │          │  │          ├─common
         │          │  │          │      ApiResponse.java
         │          │  │          │      
+        │          │  │          ├─config
+        │          │  │          │      SecurityConfig.java
+        │          │  │          │      
         │          │  │          ├─controller
         │          │  │          │      AuthController.java
+        │          │  │          │      CategoryController.java
+        │          │  │          │      PostController.java
         │          │  │          │      UserController.java
+        │          │  │          │      UserInterestController.java
         │          │  │          │      
         │          │  │          ├─dto
         │          │  │          │  ├─request
+        │          │  │          │  │      CreatePostRequest.java
         │          │  │          │  │      LoginRequest.java
         │          │  │          │  │      RegisterRequest.java
+        │          │  │          │  │      UpdatePostRequest.java
         │          │  │          │  │      UpdateProfileRequest.java
         │          │  │          │  │      
         │          │  │          │  └─response
+        │          │  │          │          CategoryResponse.java
         │          │  │          │          LoginResponse.java
+        │          │  │          │          PostResponse.java
         │          │  │          │          UserProfileResponse.java
         │          │  │          │          
         │          │  │          ├─entity
@@ -184,16 +299,22 @@ C:.
         │          │  │          │      GlobalExceptionHandler.java
         │          │  │          │      
         │          │  │          ├─repository
+        │          │  │          │      CategoryRepository.java
+        │          │  │          │      PlaceRepository.java
+        │          │  │          │      PostRepository.java
+        │          │  │          │      UserInterestRepository.java
         │          │  │          │      UserRepository.java
         │          │  │          │      
         │          │  │          ├─security
         │          │  │          │      CustomUserDetailsService.java
         │          │  │          │      JwtFilter.java
         │          │  │          │      JwtProvider.java
-        │          │  │          │      SecurityConfig.java
         │          │  │          │      
         │          │  │          └─service
         │          │  │                  AuthService.java
+        │          │  │                  CategoryService.java
+        │          │  │                  PostService.java
+        │          │  │                  UserInterestService.java
         │          │  │                  UserService.java
         │          │  │                  
         │          │  └─resources

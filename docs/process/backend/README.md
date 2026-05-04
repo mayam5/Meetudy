@@ -108,45 +108,49 @@ INSERT INTO Users (email, nickname, ...) VALUES (?, ?, ...);
 ```
 src/main/java/meetudy/demo/
 ├── common/
-│   └── ApiResponse.java          공통 응답 포맷
+│   └── ApiResponse.java               공통 응답 포맷
 ├── controller/
-│   ├── AuthController.java       인증 API
-│   ├── UserController.java       유저 API
-│   ├── CategoryController.java   카테고리 API        
-│   └── UserInterestController.java  관심사 API       
+│   ├── AuthController.java            인증 API
+│   ├── UserController.java            유저 API
+│   ├── CategoryController.java        카테고리 API
+│   ├── UserInterestController.java    관심사 API
+│   └── PostController.java            게시글 API
 ├── dto/
-│   ├── request/                  요청 DTO
-│   └── response/                 응답 DTO
-├── entity/                       DB 테이블 매핑 클래스 (20개)
+│   ├── request/                       요청 DTO
+│   └── response/                      응답 DTO
+├── entity/                            DB 테이블 매핑 클래스 (20개)
 │   ├── User.java
 │   ├── Post.java
 │   ├── StudyGroup.java
 │   └── ...
 ├── exception/
-│   ├── CustomException.java      커스텀 예외
-│   ├── ErrorCode.java            에러 코드 정의
-│   └── GlobalExceptionHandler.java  전역 예외 처리
+│   ├── CustomException.java           커스텀 예외
+│   ├── ErrorCode.java                 에러 코드 정의
+│   └── GlobalExceptionHandler.java    전역 예외 처리
 ├── repository/
-│   ├── UserRepository.java       DB 접근 인터페이스
-│   ├── CategoryRepository.java   카테고리 DB 접근    ← 추가
-│   └── UserInterestRepository.java  관심사 DB 접근  ← 추가
+│   ├── UserRepository.java
+│   ├── CategoryRepository.java
+│   ├── UserInterestRepository.java
+│   ├── PostRepository.java
+│   └── PlaceRepository.java
 ├── security/
-│   ├── JwtProvider.java          JWT 생성/검증
-│   ├── JwtFilter.java            요청마다 토큰 파싱
-│   ├── SecurityConfig.java       Security 설정
+│   ├── JwtProvider.java               JWT 생성/검증
+│   ├── JwtFilter.java                 요청마다 토큰 파싱
+│   ├── SecurityConfig.java            Security 설정
 │   └── CustomUserDetailsService.java
 └── service/
-    ├── AuthService.java          회원가입/로그인 로직
-    ├── UserService.java          유저 프로필 로직
-    ├── CategoryService.java      카테고리 로직        
-    └── UserInterestService.java  관심사 로직          
+    ├── AuthService.java
+    ├── UserService.java
+    ├── CategoryService.java
+    ├── UserInterestService.java
+    └── PostService.java
 ```
-      
+
 ---
 
-## DB 스키마 (v1.1.2)
+## DB 스키마 (v1.2.0)
 
-총 19개 테이블로 구성됩니다.
+총 20개 테이블로 구성됩니다.
 
 | 도메인 | 테이블 |
 |---|---|
@@ -156,6 +160,7 @@ src/main/java/meetudy/demo/
 | 스터디 운영 | Study_Groups, Study_Group_Members |
 | 채팅 | Chat_Rooms, Chat_Room_Members, Chat_Room_Messages |
 | 장소 | Places |
+| 인증 | User_Refresh_Tokens |  # 아직 추가 안됨. 추가할 예정
 
 ---
 
@@ -173,9 +178,39 @@ src/main/java/meetudy/demo/
 | 메서드 | URL | 설명 | 인증 필요 |
 |---|---|---|---|
 | GET | `/users/me` | 내 프로필 조회 | O |
-| PATCH | `/users/me` | 프로필 수정 | O |
+| PATCH | `/users/me` | 프로필 수정 (비밀번호 변경 포함) | O |
 | PATCH | `/users/me/image` | 프로필 이미지 수정 | O |
 | DELETE | `/users/me` | 회원 탈퇴 | O |
+
+### 카테고리 (CAT)
+
+| 메서드 | URL | 설명 | 인증 필요 |
+|---|---|---|---|
+| GET | `/categories` | 전체 카테고리 조회 | X |
+
+### 관심사 (INT)
+
+| 메서드 | URL | 설명 | 인증 필요 |
+|---|---|---|---|
+| GET | `/users/me/interests` | 내 관심사 목록 조회 | O |
+| POST | `/users/me/interests` | 관심사 추가 | O |
+| DELETE | `/users/me/interests/{categoryId}` | 관심사 삭제 | O |
+
+### 게시글 (POST)
+
+| 메서드 | URL | 설명 | 인증 필요 |
+|---|---|---|---|
+| GET | `/posts` | OPEN 게시글 목록 조회 | X |
+| GET | `/posts?keyword={keyword}` | 키워드 검색 | X |
+| GET | `/posts?categoryId={id}` | 카테고리별 조회 | X |
+| GET | `/posts/{postId}` | 게시글 단건 조회 | X |
+| GET | `/posts/me` | 내 게시글 목록 | O |
+| POST | `/posts` | 게시글 작성 | O |
+| PATCH | `/posts/{postId}` | 게시글 수정 | O |
+| PATCH | `/posts/{postId}/close` | 모집 마감 | O |
+| DELETE | `/posts/{postId}` | 게시글 삭제 | O |
+
+---
 
 ### 인증 방식
 
@@ -211,28 +246,14 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9...
 
 ---
 
-### 카테고리 (CAT)
-
-| 메서드 | URL | 설명 | 인증 필요 |
-|---|---|---|---|
-| GET | `/categories` | 전체 카테고리 조회 | X |
-
-### 관심사 (INT)
-
-| 메서드 | URL | 설명 | 인증 필요 |
-|---|---|---|---|
-| GET | `/users/me/interests` | 내 관심사 목록 조회 | O |
-| POST | `/users/me/interests` | 관심사 추가 | O |
-| DELETE | `/users/me/interests/{categoryId}` | 관심사 삭제 | O |
-
-## 구현 예정 기능
+## 구현 현황
 
 ```
 ✅ AUTH    회원가입, 로그인
-✅ USER    프로필 조회/수정/탈퇴
+✅ USER    프로필 조회/수정/비밀번호 변경/탈퇴
 ✅ CAT     카테고리 목록
 ✅ INT     관심사 등록/삭제
-⬜ POST    스터디 모집 게시글 CRUD
+✅ POST    스터디 모집 게시글 CRUD (작성/조회/수정/마감/삭제)
 ⬜ BM      북마크
 ⬜ APP     스터디 신청/수락/거절
 ⬜ GRP     스터디 그룹 생성/관리

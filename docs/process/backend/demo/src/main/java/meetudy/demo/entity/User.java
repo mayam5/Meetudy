@@ -77,6 +77,10 @@ public class User {
         if (isAgePublic != null) this.isAgePublic = isAgePublic;
     }
 
+    public void updatePassword(String encodedPassword) {
+        this.password = encodedPassword;
+    }
+
     public void updateProfileImage(String imageUrl) {
         this.profileImage = imageUrl;
     }

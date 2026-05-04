@@ -7,6 +7,7 @@ import meetudy.demo.entity.User;
 import meetudy.demo.exception.CustomException;
 import meetudy.demo.exception.ErrorCode;
 import meetudy.demo.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     /** USER-03: 내 프로필 조회 */
     @Transactional(readOnly = true)
@@ -23,16 +25,24 @@ public class UserService {
         return UserProfileResponse.from(user);
     }
 
-    /** USER-04: 프로필 수정 */
+    /** USER-04: 프로필 수정 (비밀번호 변경 포함) */
     @Transactional
     public UserProfileResponse updateProfile(Long userId, UpdateProfileRequest request) {
         User user = findActiveUser(userId);
 
-        // 닉네임 변경 시 중복 체크
+        // 닉네임 중복 체크
         if (request.getNickname() != null
                 && !request.getNickname().equals(user.getNickname())
                 && userRepository.existsByNickname(request.getNickname())) {
             throw new CustomException(ErrorCode.NICKNAME_ALREADY_EXISTS);
+        }
+
+        // 비밀번호 변경 (currentPassword + newPassword 둘 다 있을 때만)
+        if (request.getCurrentPassword() != null && request.getNewPassword() != null) {
+            if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
+                throw new CustomException(ErrorCode.INVALID_CREDENTIALS);
+            }
+            user.updatePassword(passwordEncoder.encode(request.getNewPassword()));
         }
 
         user.updateProfile(

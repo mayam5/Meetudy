@@ -44,6 +44,10 @@ public class Post {
     @JoinColumn(name = "place_id")
     private Place place;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
+
     @Column(name = "post_status", nullable = false, length = 20)
     @Builder.Default
     private String postStatus = "OPEN";
@@ -67,12 +71,13 @@ public class Post {
 
     public void update(String postTitle, String postContent,
                        LocalDateTime meetingTime, LocalDateTime endTime,
-                       Integer maxMembers) {
+                       Integer maxMembers, Category category) {
         if (postTitle != null)   this.postTitle   = postTitle;
         if (postContent != null) this.postContent = postContent;
         if (meetingTime != null) this.meetingTime = meetingTime;
         if (endTime != null)     this.endTime     = endTime;
         if (maxMembers != null)  this.maxMembers  = maxMembers;
+        if (category != null)    this.category    = category;
     }
 
     public void close() { this.postStatus = "CLOSED"; }

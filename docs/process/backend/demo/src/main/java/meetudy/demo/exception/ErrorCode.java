@@ -27,11 +27,14 @@ public enum ErrorCode {
     APPLICATION_NOT_FOUND(HttpStatus.NOT_FOUND,     "존재하지 않는 신청입니다."),
 
     // 카테고리
-    CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND,            "존재하지 않는 카테고리입니다."),
+    CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND,        "존재하지 않는 카테고리입니다."),
 
     // 관심사
-    INTEREST_ALREADY_EXISTS(HttpStatus.CONFLICT,        "이미 추가된 관심사입니다."),
-    INTEREST_NOT_FOUND(HttpStatus.NOT_FOUND,            "존재하지 않는 관심사입니다."),
+    INTEREST_ALREADY_EXISTS(HttpStatus.CONFLICT,    "이미 추가된 관심사입니다."),
+    INTEREST_NOT_FOUND(HttpStatus.NOT_FOUND,        "존재하지 않는 관심사입니다."),
+
+    // 장소
+    PLACE_NOT_FOUND(HttpStatus.NOT_FOUND,           "존재하지 않는 장소입니다."),
 
     // 공통
     FORBIDDEN(HttpStatus.FORBIDDEN,                 "접근 권한이 없습니다."),

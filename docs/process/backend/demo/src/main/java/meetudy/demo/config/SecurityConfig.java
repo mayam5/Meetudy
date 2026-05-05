@@ -28,22 +28,24 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())
-            .sessionManagement(session ->
-                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(auth -> auth
-                // 인증 없이 접근 허용
-                .requestMatchers("/auth/**").permitAll()
-                .requestMatchers("/categories").permitAll()
-                .requestMatchers("/posts").permitAll()
-                .requestMatchers("/posts/{postId}").permitAll()
-                // 나머지는 인증 필요
-                .anyRequest().authenticated()
-            )
-            .addFilterBefore(
-                new JwtFilter(jwtProvider, userDetailsService),
-                UsernamePasswordAuthenticationFilter.class
-            );
+                .csrf(csrf -> csrf.disable())
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                        // 인증 없이 접근 허용
+                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/categories").permitAll()
+                        .requestMatchers("/posts").permitAll()
+                        .requestMatchers("/posts/{postId}").permitAll()
+                        .requestMatchers("/ws/**").permitAll()
+
+                        // 나머지는 인증 필요
+                        .anyRequest().authenticated()
+                )
+                .addFilterBefore(
+                        new JwtFilter(jwtProvider, userDetailsService),
+                        UsernamePasswordAuthenticationFilter.class
+                );
 
         return http.build();
     }

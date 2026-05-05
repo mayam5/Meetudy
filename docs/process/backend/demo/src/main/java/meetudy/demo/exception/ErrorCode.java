@@ -38,6 +38,9 @@ public enum ErrorCode {
     // 장소
     PLACE_NOT_FOUND(HttpStatus.NOT_FOUND,           "존재하지 않는 장소입니다."),
 
+    // 채팅
+    CHAT_ROOM_NOT_FOUND(HttpStatus.NOT_FOUND,           "존재하지 않는 채팅방입니다."),
+
     // 공통
     FORBIDDEN(HttpStatus.FORBIDDEN,                 "접근 권한이 없습니다."),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류가 발생했습니다.");

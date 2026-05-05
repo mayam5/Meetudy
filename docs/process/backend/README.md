@@ -29,6 +29,7 @@ Meetudy는 스터디 모집, 멤버 매칭, 오프라인 스터디 공간 예약
 | API 문서 | Thunder Client (VS Code) |
 | 지도 | KakaoMap API |
 | 프론트엔드 | React |
+| 실시간 채팅 | WebSocket / STOMP |
 
 ---
 
@@ -108,21 +109,28 @@ INSERT INTO Users (email, nickname, ...) VALUES (?, ?, ...);
 ```
 src/main/java/meetudy/demo/
 ├── common/
-│   └── ApiResponse.java              # 공통 응답 포맷
+│   └── ApiResponse.java                  # 공통 응답 포맷
+├── config/
+│   ├── SecurityConfig.java               # Spring Security 설정
+│   └── WebSocketConfig.java              # STOMP WebSocket 설정
 ├── controller/
 │   ├── AuthController.java
 │   ├── UserController.java
 │   ├── CategoryController.java
 │   ├── UserInterestController.java
 │   ├── PostController.java
-│   └── ApplicationController.java
+│   ├── ApplicationController.java
+│   ├── ChatController.java
+│   └── BlockController.java
 ├── service/
 │   ├── AuthService.java
 │   ├── UserService.java
 │   ├── CategoryService.java
 │   ├── UserInterestService.java
 │   ├── PostService.java
-│   └── ApplicationService.java
+│   ├── ApplicationService.java
+│   ├── ChatService.java
+│   └── BlockService.java
 ├── repository/
 │   ├── UserRepository.java
 │   ├── CategoryRepository.java
@@ -133,16 +141,19 @@ src/main/java/meetudy/demo/
 │   ├── StudyGroupRepository.java
 │   ├── StudyGroupMemberRepository.java
 │   ├── ChatRoomRepository.java
-│   └── ChatRoomMemberRepository.java
-├── entity/                           # JPA 엔티티 19개
+│   ├── ChatRoomMemberRepository.java
+│   ├── ChatRoomMessageRepository.java
+│   └── UserBlockRepository.java
+├── entity/                               # JPA 엔티티 19개
 ├── dto/
 │   ├── request/
 │   └── response/
 ├── security/
 │   ├── JwtProvider.java
 │   ├── JwtFilter.java
-│   ├── SecurityConfig.java
 │   └── CustomUserDetailsService.java
+├── websocket/
+│   └── ChatMessageHandler.java           # 실시간 메시지 송수신 (STOMP)
 └── exception/
     ├── ErrorCode.java
     ├── CustomException.java
@@ -163,7 +174,7 @@ src/main/java/meetudy/demo/
 | 스터디 운영 | Study_Groups, Study_Group_Members |
 | 채팅 | Chat_Rooms, Chat_Room_Members, Chat_Room_Messages |
 | 장소 | Places |
-| 인증 | User_Refresh_Tokens |  # 아직 추가 안됨. 추가할 예정
+| 인증 | User_Refresh_Tokens (추가 예정) |
 
 ---
 
@@ -213,7 +224,6 @@ src/main/java/meetudy/demo/
 | PATCH | `/posts/{postId}/close` | 모집 마감 | O |
 | DELETE | `/posts/{postId}` | 게시글 삭제 | O |
 
-
 **게시글 작성 시 자동 생성 (트랜잭션 내)**
 ```
 POST /posts
@@ -223,11 +233,10 @@ POST /posts
   ├─ Chat_Rooms 생성
   └─ Chat_Room_Members 추가 (작성자)
 ```
----
 
-### 📝 STUDY APPLICATION
+### 스터디 신청 (APP)
 
-| 메서드 | 엔드포인트 | 설명 | 인증 |
+| 메서드 | URL | 설명 | 인증 필요 |
 |---|---|---|---|
 | POST | `/applications` | 스터디 신청 | O |
 | DELETE | `/applications/{applicationId}` | 신청 취소 (PENDING만) | O |
@@ -246,15 +255,29 @@ PATCH /applications/{id}/accept
   └─ Chat_Room_Members 추가 (신청자)
 ```
 
-**비즈니스 규칙**
+### 채팅 (CHAT)
 
-| 상황 | 결과 |
-|---|---|
-| 본인 게시글 신청 | 400 — 본인 게시글에는 신청할 수 없습니다 |
-| CLOSED 게시글 신청 | 400 — 이미 마감된 게시글입니다 |
-| 중복 신청 | 409 — 이미 신청한 게시글입니다 |
-| PENDING 아닌 신청 취소 | 400 — 대기 중인 신청만 취소할 수 있습니다 |
-| 작성자 외 신청목록 조회 | 403 — 접근 권한이 없습니다 |
+| 메서드 | URL | 설명 | 인증 필요 |
+|---|---|---|---|
+| GET | `/chats/{roomId}` | 채팅방 정보 조회 | O |
+| GET | `/chats/{roomId}/messages` | 메시지 목록 조회 (페이징) | O |
+| PATCH | `/chats/{roomId}/read` | 읽음 처리 | O |
+
+**WebSocket 실시간 채팅**
+```
+연결:   ws://localhost:8080/ws
+구독:   /topic/chat.{roomId}
+전송:   /app/chat.send
+헤더:   Authorization: Bearer {token}
+```
+
+### 차단 (BLK)
+
+| 메서드 | URL | 설명 | 인증 필요 |
+|---|---|---|---|
+| POST | `/users/block/{targetId}` | 유저 차단 | O |
+| DELETE | `/users/block/{targetId}` | 차단 해제 | O |
+| GET | `/users/block` | 차단 목록 조회 | O |
 
 ---
 
@@ -276,6 +299,10 @@ PATCH /applications/{id}/accept
 | CATEGORY_NOT_FOUND | 404 | 존재하지 않는 카테고리입니다 |
 | INTEREST_ALREADY_EXISTS | 409 | 이미 추가된 관심사입니다 |
 | INTEREST_NOT_FOUND | 404 | 존재하지 않는 관심사입니다 |
+| CHAT_ROOM_NOT_FOUND | 404 | 존재하지 않는 채팅방입니다 |
+| SELF_BLOCK_NOT_ALLOWED | 400 | 자기 자신을 차단할 수 없습니다 |
+| ALREADY_BLOCKED | 409 | 이미 차단한 유저입니다 |
+| BLOCK_NOT_FOUND | 404 | 차단 내역이 존재하지 않습니다 |
 | PLACE_NOT_FOUND | 404 | 존재하지 않는 장소입니다 |
 | FORBIDDEN | 403 | 접근 권한이 없습니다 |
 
@@ -326,8 +353,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9...
 ⬜ BM      북마크
 ✅ APP     스터디 신청/수락/거절
 ✅ GRP     스터디 그룹 생성/관리
-⬜ CHAT    채팅 (WebSocket/STOMP)
-⬜ BLK     차단
+✅ CHAT    채팅 (WebSocket/STOMP)
+✅ BLK     차단
 ⬜ SCH     스케줄 관리
 ⬜ LOG     학습 로그
 ⬜ PLC     장소 등록/검색 (KakaoMap)

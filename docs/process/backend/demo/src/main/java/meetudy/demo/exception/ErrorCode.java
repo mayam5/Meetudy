@@ -38,6 +38,11 @@ public enum ErrorCode {
     // 장소
     PLACE_NOT_FOUND(HttpStatus.NOT_FOUND,           "존재하지 않는 장소입니다."),
 
+    // 차단
+    SELF_BLOCK_NOT_ALLOWED(HttpStatus.BAD_REQUEST,       "자기 자신을 차단할 수 없습니다."),
+    ALREADY_BLOCKED(HttpStatus.CONFLICT,                "이미 차단한 유저입니다."),
+    BLOCK_NOT_FOUND(HttpStatus.NOT_FOUND,               "차단 내역이 존재하지 않습니다."),
+
     // 채팅
     CHAT_ROOM_NOT_FOUND(HttpStatus.NOT_FOUND,           "존재하지 않는 채팅방입니다."),
 

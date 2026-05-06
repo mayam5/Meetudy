@@ -1,7 +1,7 @@
 package meetudy.demo.config;
 
 import lombok.RequiredArgsConstructor;
-import meetudy.demo.security.CustomUserDetailsService;
+import meetudy.demo.service.CustomUserDetailsService;
 import meetudy.demo.security.JwtFilter;
 import meetudy.demo.security.JwtProvider;
 

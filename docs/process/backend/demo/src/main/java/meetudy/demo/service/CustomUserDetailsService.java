@@ -1,4 +1,4 @@
-package meetudy.demo.security;
+package meetudy.demo.service;
 
 import lombok.RequiredArgsConstructor;
 import meetudy.demo.entity.User;

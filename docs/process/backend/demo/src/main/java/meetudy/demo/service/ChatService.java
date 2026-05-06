@@ -4,10 +4,16 @@ import lombok.RequiredArgsConstructor;
 import meetudy.demo.dto.request.ChatMessageRequest;
 import meetudy.demo.dto.response.ChatMessageResponse;
 import meetudy.demo.dto.response.ChatRoomResponse;
-import meetudy.demo.entity.*;
+import meetudy.demo.entity.ChatRoom;
+import meetudy.demo.entity.ChatRoomMember;
+import meetudy.demo.entity.ChatRoomMessage;
+import meetudy.demo.entity.User;
 import meetudy.demo.exception.CustomException;
 import meetudy.demo.exception.ErrorCode;
-import meetudy.demo.repository.*;
+import meetudy.demo.repository.ChatRoomMemberRepository;
+import meetudy.demo.repository.ChatRoomMessageRepository;
+import meetudy.demo.repository.ChatRoomRepository;
+import meetudy.demo.repository.UserRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -22,14 +28,15 @@ public class ChatService {
     private final ChatRoomMessageRepository chatRoomMessageRepository;
     private final UserRepository userRepository;
 
-    /** CHAT-07: 채팅방 생성 (ApplicationService.accept() → PostService.createPost()에서 호출) */
-    @Transactional
-    public ChatRoom createRoom(StudyGroup studyGroup) {
-        return chatRoomRepository.save(ChatRoom.builder()
-                .studyGroup(studyGroup)
-                .roomStatus("ACTIVE")
-                .build());
-    }
+ //
+//    /** CHAT-07: 채팅방 생성 (ApplicationService.accept() → PostService.createPost()에서 호출) */
+//    @Transactional
+//    public ChatRoom createRoom(StudyGroup studyGroup) {
+//        return chatRoomRepository.save(ChatRoom.builder()
+//                .studyGroup(studyGroup)
+//                .roomStatus("ACTIVE")
+//                .build());
+//    }
 
     /** CHAT-08: 채팅방 정보 조회 */
     @Transactional(readOnly = true)

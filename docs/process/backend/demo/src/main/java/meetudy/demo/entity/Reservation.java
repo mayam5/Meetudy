@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
-
+/**      사용 안하는 엔티티입니다~
 @Entity
 @Table(name = "Reservations")
 @Getter
@@ -38,3 +38,4 @@ public class Reservation {
     @Column(name = "total_price")
     private Integer totalPrice;
 }
+ */

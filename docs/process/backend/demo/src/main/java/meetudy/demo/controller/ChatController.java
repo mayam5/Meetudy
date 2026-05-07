@@ -5,6 +5,9 @@ import meetudy.demo.common.ApiResponse;
 import meetudy.demo.dto.response.ChatMessageResponse;
 import meetudy.demo.dto.response.ChatRoomResponse;
 import meetudy.demo.service.ChatService;
+
+import java.util.List;
+
 import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -47,4 +50,18 @@ public class ChatController {
         chatService.markAsRead(userId, roomId);
         return ResponseEntity.ok(ApiResponse.ok("읽음 처리 완료", null));
     }
+
+
+
+
+
+        /** CHAT 추가: 내 채팅방 목록 조회 */
+    @GetMapping("/me")
+    public ResponseEntity<ApiResponse<List<ChatRoomResponse>>> getMyChatRooms(
+            @AuthenticationPrincipal UserDetails userDetails) {
+        Long userId = Long.parseLong(userDetails.getUsername());
+        return ResponseEntity.ok(ApiResponse.ok(chatService.getMyChatRooms(userId)));
+    }
+
+    
 }

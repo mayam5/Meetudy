@@ -14,6 +14,10 @@ import meetudy.demo.repository.ChatRoomMemberRepository;
 import meetudy.demo.repository.ChatRoomMessageRepository;
 import meetudy.demo.repository.ChatRoomRepository;
 import meetudy.demo.repository.UserRepository;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -37,6 +41,8 @@ public class ChatService {
 //                .roomStatus("ACTIVE")
 //                .build());
 //    }
+
+
 
     /** CHAT-08: 채팅방 정보 조회 */
     @Transactional(readOnly = true)
@@ -105,4 +111,23 @@ public class ChatService {
         chatRoomMemberRepository.findByChatRoom_ChatRoomIdAndUser_UserId(chatRoomId, userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.FORBIDDEN));
     }
+
+
+
+
+        /** CHAT 추가: 내 채팅방 목록 조회 */
+    @Transactional(readOnly = true)
+    public List<ChatRoomResponse> getMyChatRooms(Long userId) {
+        return chatRoomMemberRepository.findAllByUser_UserIdAndLeftAtIsNull(userId)
+                .stream()
+                .map(member -> ChatRoomResponse.from(member.getChatRoom()))
+                .collect(Collectors.toList());
+    }
+
+
+
+
+
+
 }
+

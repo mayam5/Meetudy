@@ -3,7 +3,7 @@ package meetudy.demo.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
-import java.util.Locale.Category;
+import meetudy.demo.entity.Category;
 
 @Entity
 @Table(name = "Posts")

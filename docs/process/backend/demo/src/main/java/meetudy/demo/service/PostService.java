@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import meetudy.demo.dto.request.CreatePostRequest;
 import meetudy.demo.dto.request.UpdatePostRequest;
 import meetudy.demo.dto.response.PostResponse;
+import meetudy.demo.entity.Category;
 import meetudy.demo.entity.*;
 import meetudy.demo.exception.CustomException;
 import meetudy.demo.exception.ErrorCode;

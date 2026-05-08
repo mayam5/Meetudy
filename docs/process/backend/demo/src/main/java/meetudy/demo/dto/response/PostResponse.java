@@ -1,4 +1,5 @@
 package meetudy.demo.dto.response;
+import meetudy.demo.entity.Category;
 
 import lombok.Getter;
 import meetudy.demo.entity.Post;

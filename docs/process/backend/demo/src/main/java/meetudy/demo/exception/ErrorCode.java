@@ -46,6 +46,11 @@ public enum ErrorCode {
     // 채팅
     CHAT_ROOM_NOT_FOUND(HttpStatus.NOT_FOUND,           "존재하지 않는 채팅방입니다."),
 
+    // 스케줄
+    SCHEDULE_ALREADY_EXISTS(HttpStatus.CONFLICT,    "이미 등록된 스케줄입니다."),
+    SCHEDULE_NOT_FOUND(HttpStatus.NOT_FOUND,        "존재하지 않는 스케줄입니다."),
+    TIMESLOT_NOT_FOUND(HttpStatus.NOT_FOUND,        "존재하지 않는 타임슬롯입니다."),
+
     // 공통
     FORBIDDEN(HttpStatus.FORBIDDEN,                 "접근 권한이 없습니다."),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류가 발생했습니다.");

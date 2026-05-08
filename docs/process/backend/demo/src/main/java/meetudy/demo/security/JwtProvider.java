@@ -7,37 +7,49 @@ import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.UUID;
 
 @Component
 public class JwtProvider {
 
     private final Key key;
-    private final long expirationMs;
+    private final long accessExpirationMs;
+    private final long refreshExpirationMs;
 
     public JwtProvider(
             @Value("${jwt.secret}") String secret,
-            @Value("${jwt.expiration-ms}") long expirationMs) {
+            @Value("${jwt.expiration-ms}") long accessExpirationMs,
+            @Value("${jwt.refresh-expiration-ms}") long refreshExpirationMs) {
         this.key = Keys.hmacShaKeyFor(secret.getBytes());
-        this.expirationMs = expirationMs;
+        this.accessExpirationMs  = accessExpirationMs;
+        this.refreshExpirationMs = refreshExpirationMs;
     }
 
-    /** 토큰 생성 */
+    /** Access Token (짧은 유효기간, userId/email 포함) */
     public String generateToken(Long userId, String email) {
         return Jwts.builder()
                 .setSubject(String.valueOf(userId))
                 .claim("email", email)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + expirationMs))
+                .setExpiration(new Date(System.currentTimeMillis() + accessExpirationMs))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    /** 토큰에서 userId 추출 */
+    /** Refresh Token (UUID subject, 실제 검증은 DB에서 수행) */
+    public String generateRefreshToken() {
+        return Jwts.builder()
+                .setSubject(UUID.randomUUID().toString())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + refreshExpirationMs))
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+    }
+
     public Long getUserId(String token) {
         return Long.parseLong(parseClaims(token).getSubject());
     }
 
-    /** 토큰 유효성 검증 */
     public boolean validateToken(String token) {
         try {
             parseClaims(token);

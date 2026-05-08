@@ -185,7 +185,24 @@ src/main/java/meetudy/demo/
 | 메서드 | URL | 설명 | 인증 필요 |
 |---|---|---|---|
 | POST | `/auth/register` | 회원가입 | X |
-| POST | `/auth/login` | 로그인 (JWT 발급) | X |
+| POST | `/auth/login` | 로그인 (Access + Refresh Token 발급) | X |
+| POST | `/auth/refresh` | Access Token 재발급 (Refresh Token Rotation) | X |
+| POST | `/auth/logout` | 로그아웃 (Refresh Token 전체 폐기) | O |
+
+**토큰 발급 흐름**
+```
+POST /auth/login
+  └─ 응답: accessToken (유효기간 1시간) + refreshToken (유효기간 14일)
+         refreshToken은 SHA-256 해시 후 Refresh_Tokens 테이블에 저장
+
+accessToken 만료 시
+  └─ POST /auth/refresh { "refreshToken": "..." }
+       └─ 기존 refreshToken 즉시 폐기 (Rotation)
+       └─ 새 accessToken + 새 refreshToken 발급
+
+refreshToken도 만료 시
+  └─ 401 응답 → 클라이언트에서 로그인 페이지로 이동
+```
 
 ### 유저 (USER)
 
@@ -320,6 +337,7 @@ PUT /schedules
 | EMAIL_ALREADY_EXISTS | 409 | 이미 사용 중인 이메일입니다 |
 | NICKNAME_ALREADY_EXISTS | 409 | 이미 사용 중인 닉네임입니다 |
 | INVALID_CREDENTIALS | 401 | 이메일 또는 비밀번호가 올바르지 않습니다 |
+| INVALID_REFRESH_TOKEN | 401 | 유효하지 않은 Refresh Token입니다 |
 | USER_NOT_FOUND | 404 | 존재하지 않는 사용자입니다 |
 | POST_NOT_FOUND | 404 | 존재하지 않는 게시글입니다 |
 | POST_NOT_AUTHOR | 403 | 게시글 작성자만 수행할 수 있습니다 |
@@ -390,7 +408,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9...
 ✅ GRP     스터디 그룹 생성/관리
 ✅ CHAT    채팅 (WebSocket/STOMP)
 ✅ BLK     차단
-⬜ SCH     스케줄 관리
+✅ SCH     스케줄 관리
 ⬜ LOG     학습 로그
 ⬜ PLC     장소 등록/검색 (KakaoMap)
 ```

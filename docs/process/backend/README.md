@@ -281,6 +281,46 @@ PATCH /applications/{id}/accept
 
 ---
 
+### 스케줄 (SCH)
+
+| 메서드 | URL | 설명 | 인증 필요 |
+|---|---|---|---|
+| GET | `/schedules/me` | 내 스케줄 목록 조회 | O |
+| POST | `/schedules` | 스케줄 단건 추가 | O |
+| PUT | `/schedules` | 스케줄 전체 교체 (Bulk Replace) | O |
+| PATCH | `/schedules/{scheduleId}` | 스케줄 단건 수정 | O |
+| DELETE | `/schedules/{scheduleId}` | 스케줄 단건 삭제 | O |
+
+**스케줄 전체 교체 요청 형식**
+```
+PUT /schedules
+  → 현재 체크된 전체 셀 목록을 한 번에 전송
+  → 기존 스케줄 전부 삭제 후 새로 저장 (트랜잭션 내 flush 처리)
+```
+
+```json
+{
+  "schedules": [
+    { "dayOfWeek": "MON", "timeSlotId": 1 },
+    { "dayOfWeek": "MON", "timeSlotId": 2 },
+    { "dayOfWeek": "WED", "timeSlotId": 3 }
+  ]
+}
+```
+
+**dayOfWeek 허용값:** `MON` `TUE` `WED` `THU` `FRI` `SAT` `SUN`
+
+**Time_Slots 기본 데이터 (DB에 사전 INSERT 필요)**
+
+| timeSlotId | slotName | startTime | endTime |
+|---|---|---|---|
+| 1 | 새벽 | 05:00 | 09:00 |
+| 2 | 오전 | 09:00 | 12:00 |
+| 3 | 오후 | 13:00 | 17:00 |
+| 4 | 저녁 | 18:00 | 21:00 |
+
+---
+
 ## 에러 코드
 
 | 코드 | HTTP | 메시지 |
@@ -304,6 +344,9 @@ PATCH /applications/{id}/accept
 | ALREADY_BLOCKED | 409 | 이미 차단한 유저입니다 |
 | BLOCK_NOT_FOUND | 404 | 차단 내역이 존재하지 않습니다 |
 | PLACE_NOT_FOUND | 404 | 존재하지 않는 장소입니다 |
+| SCHEDULE_NOT_FOUND | 404 | 존재하지 않는 스케줄입니다 |
+| SCHEDULE_ALREADY_EXISTS | 409 | 이미 등록된 스케줄입니다 |
+| TIMESLOT_NOT_FOUND | 404 | 존재하지 않는 타임슬롯입니다 |
 | FORBIDDEN | 403 | 접근 권한이 없습니다 |
 
 ---

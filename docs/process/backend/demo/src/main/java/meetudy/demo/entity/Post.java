@@ -3,6 +3,7 @@ package meetudy.demo.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
+import java.util.Locale.Category;
 
 @Entity
 @Table(name = "Posts")
@@ -45,7 +46,7 @@ public class Post {
     private Place place;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
     @Column(name = "post_status", nullable = false, length = 20)

@@ -310,14 +310,6 @@ PUT /schedules
 
 **dayOfWeek 허용값:** `MON` `TUE` `WED` `THU` `FRI` `SAT` `SUN`
 
-**Time_Slots 기본 데이터 (DB에 사전 INSERT 필요)**
-
-| timeSlotId | slotName | startTime | endTime |
-|---|---|---|---|
-| 1 | 새벽 | 05:00 | 09:00 |
-| 2 | 오전 | 09:00 | 12:00 |
-| 3 | 오후 | 13:00 | 17:00 |
-| 4 | 저녁 | 18:00 | 21:00 |
 
 ---
 

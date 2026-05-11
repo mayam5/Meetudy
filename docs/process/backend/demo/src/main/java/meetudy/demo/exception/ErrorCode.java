@@ -27,7 +27,8 @@ public enum ErrorCode {
     BOOKMARK_ALREADY_EXISTS(HttpStatus.CONFLICT,    "이미 북마크한 게시글입니다."),
     BOOKMARK_NOT_FOUND(HttpStatus.NOT_FOUND,        "북마크 내역이 존재하지 않습니다."),
 
-
+    // 학습 로그
+    STUDY_LOG_NOT_FOUND(HttpStatus.NOT_FOUND,       "존재하지 않는 학습 로그입니다."),
 
     // 신청
     ALREADY_APPLIED(HttpStatus.CONFLICT,            "이미 신청한 게시글입니다."),

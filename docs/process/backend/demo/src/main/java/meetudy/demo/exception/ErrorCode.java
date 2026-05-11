@@ -23,6 +23,12 @@ public enum ErrorCode {
     POST_NOT_AUTHOR(HttpStatus.FORBIDDEN,           "게시글 작성자만 수행할 수 있습니다."),
     POST_ALREADY_CLOSED(HttpStatus.BAD_REQUEST,     "이미 마감된 게시글입니다."),
 
+    // 북마크
+    BOOKMARK_ALREADY_EXISTS(HttpStatus.CONFLICT,    "이미 북마크한 게시글입니다."),
+    BOOKMARK_NOT_FOUND(HttpStatus.NOT_FOUND,        "북마크 내역이 존재하지 않습니다."),
+
+
+
     // 신청
     ALREADY_APPLIED(HttpStatus.CONFLICT,            "이미 신청한 게시글입니다."),
     APPLICATION_NOT_FOUND(HttpStatus.NOT_FOUND,     "존재하지 않는 신청입니다."),

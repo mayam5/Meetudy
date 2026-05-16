@@ -330,6 +330,26 @@ PUT /schedules
 
 ---
 
+### 북마크 (BM)
+
+| 메서드 | URL | 설명 | 인증 필요 |
+|---|---|---|---|
+| POST | `/posts/{postId}/bookmark` | 북마크 추가 | O |
+| DELETE | `/posts/{postId}/bookmark` | 북마크 취소 | O |
+| GET | `/posts/bookmarks` | 내 북마크 목록 (최신순) | O |
+
+---
+
+### 학습 로그 (LOG)
+
+| 메서드 | URL | 설명 | 인증 필요 |
+|---|---|---|---|
+| POST | `/study-logs` | 학습 로그 기록 | O |
+| GET | `/study-logs/me` | 내 학습 로그 목록 (날짜 최신순) | O |
+| DELETE | `/study-logs/{studyLogId}` | 학습 로그 삭제 (본인만) | O |
+
+---
+
 ## 에러 코드
 
 | 코드 | HTTP | 메시지 |
@@ -353,6 +373,9 @@ PUT /schedules
 | SELF_BLOCK_NOT_ALLOWED | 400 | 자기 자신을 차단할 수 없습니다 |
 | ALREADY_BLOCKED | 409 | 이미 차단한 유저입니다 |
 | BLOCK_NOT_FOUND | 404 | 차단 내역이 존재하지 않습니다 |
+| BOOKMARK_ALREADY_EXISTS | 409 | 이미 북마크한 게시글입니다 |
+| BOOKMARK_NOT_FOUND | 404 | 북마크 내역이 존재하지 않습니다 |
+| STUDY_LOG_NOT_FOUND | 404 | 존재하지 않는 학습 로그입니다 |
 | PLACE_NOT_FOUND | 404 | 존재하지 않는 장소입니다 |
 | SCHEDULE_NOT_FOUND | 404 | 존재하지 않는 스케줄입니다 |
 | SCHEDULE_ALREADY_EXISTS | 409 | 이미 등록된 스케줄입니다 |
@@ -403,13 +426,13 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9...
 ✅ CAT     카테고리 목록
 ✅ INT     관심사 등록/삭제
 ✅ POST    스터디 모집 게시글 CRUD (작성/조회/수정/마감/삭제)
-⬜ BM      북마크
+✅ BM      북마크
 ✅ APP     스터디 신청/수락/거절
 ✅ GRP     스터디 그룹 생성/관리
 ✅ CHAT    채팅 (WebSocket/STOMP)
 ✅ BLK     차단
 ✅ SCH     스케줄 관리
-⬜ LOG     학습 로그
+✅ LOG     학습 로그
 ⬜ PLC     장소 등록/검색 (KakaoMap)
 ```
 

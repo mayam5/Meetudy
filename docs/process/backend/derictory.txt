@@ -46,94 +46,141 @@ C:.
     │          gc.properties
     │          
     │          
-    └─src
-        ├─main
-        │  ├─java
-        │  │  └─meetudy
-        │  │      └─demo
-        │  │          │  DemoApplication.java
-        │  │          │  post-crud-test.http
-        │  │          │  
-        │  │          ├─common
-        │  │          │      ApiResponse.java
-        │  │          │      
-        │  │          ├─config
-        │  │          │      SecurityConfig.java
-        │  │          │      
-        │  │          ├─controller
-        │  │          │      AuthController.java
-        │  │          │      CategoryController.java
-        │  │          │      PostController.java
-        │  │          │      UserController.java
-        │  │          │      UserInterestController.java
-        │  │          │      
-        │  │          ├─dto
-        │  │          │  ├─request
-        │  │          │  │      CreatePostRequest.java
-        │  │          │  │      LoginRequest.java
-        │  │          │  │      RegisterRequest.java
-        │  │          │  │      UpdatePostRequest.java
-        │  │          │  │      UpdateProfileRequest.java
-        │  │          │  │      
-        │  │          │  └─response
-        │  │          │          CategoryResponse.java
-        │  │          │          LoginResponse.java
-        │  │          │          PostResponse.java
-        │  │          │          UserProfileResponse.java
-        │  │          │          
-        │  │          ├─entity
-        │  │          │      Category.java
-        │  │          │      ChatRoom.java
-        │  │          │      ChatRoomMember.java
-        │  │          │      ChatRoomMessage.java
-        │  │          │      Hashtag.java
-        │  │          │      Place.java
-        │  │          │      Post.java
-        │  │          │      PostBookmark.java
-        │  │          │      PostHashtag.java
-        │  │          │      Region.java
-        │  │          │      Reservation.java
-        │  │          │      StudyApplication.java
-        │  │          │      StudyGroup.java
-        │  │          │      StudyGroupMember.java
-        │  │          │      StudyLog.java
-        │  │          │      TimeSlot.java
-        │  │          │      User.java
-        │  │          │      UserBlock.java
-        │  │          │      UserInterest.java
-        │  │          │      UserSchedule.java
-        │  │          │      
-        │  │          ├─exception
-        │  │          │      CustomException.java
-        │  │          │      ErrorCode.java
-        │  │          │      GlobalExceptionHandler.java
-        │  │          │      
-        │  │          ├─repository
-        │  │          │      CategoryRepository.java
-        │  │          │      PlaceRepository.java
-        │  │          │      PostRepository.java
-        │  │          │      UserInterestRepository.java
-        │  │          │      UserRepository.java
-        │  │          │      
-        │  │          ├─security
-        │  │          │      CustomUserDetailsService.java
-        │  │          │      JwtFilter.java
-        │  │          │      JwtProvider.java
-        │  │          │      
-        │  │          └─service
-        │  │                  AuthService.java
-        │  │                  CategoryService.java
-        │  │                  PostService.java
-        │  │                  UserInterestService.java
-        │  │                  UserService.java
-        │  │                  
-        │  └─resources
-        │      │  application.properties
-        │      │  
-        │      ├─static
-        │      └─templates
-        └─test
-            └─java
-                └─meetudy
-                    └─demo
-                            DemoApplicationTests.java
+─src
+    ├─main
+    │  ├─java
+    │  │  └─meetudy
+    │  │      └─demo
+    │  │          │  DemoApplication.java
+    │  │          │  
+    │  │          ├─common
+    │  │          │      ApiResponse.java
+    │  │          │      
+    │  │          ├─config
+    │  │          │      SecurityConfig.java
+    │  │          │      WebSocketConfig.java
+    │  │          │      
+    │  │          ├─controller
+    │  │          │      ApplicationController.java
+    │  │          │      AuthController.java
+    │  │          │      BlockController.java
+    │  │          │      BookmarkController.java
+    │  │          │      CategoryController.java
+    │  │          │      ChatController.java
+    │  │          │      PostController.java
+    │  │          │      ScheduleController.java
+    │  │          │      StudyLogController.java
+    │  │          │      UserController.java
+    │  │          │      UserInterestController.java
+    │  │          │      
+    │  │          ├─dto
+    │  │          │  ├─request
+    │  │          │  │      ApplicationRequest.java
+    │  │          │  │      BulkScheduleRequest.java
+    │  │          │  │      ChatMessageRequest.java
+    │  │          │  │      CreatePostRequest.java
+    │  │          │  │      LoginRequest.java
+    │  │          │  │      RefreshRequest.java
+    │  │          │  │      RegisterRequest.java
+    │  │          │  │      ScheduleRequest.java
+    │  │          │  │      StudyLogRequest.java
+    │  │          │  │      UpdatePostRequest.java
+    │  │          │  │      UpdateProfileRequest.java
+    │  │          │  │      
+    │  │          │  └─response
+    │  │          │          ApplicationResponse.java
+    │  │          │          BlockedUserResponse.java
+    │  │          │          CategoryResponse.java
+    │  │          │          ChatMessageResponse.java
+    │  │          │          ChatRoomResponse.java
+    │  │          │          LoginResponse.java
+    │  │          │          PostResponse.java
+    │  │          │          ScheduleResponse.java
+    │  │          │          StudyLogResponse.java
+    │  │          │          UserProfileResponse.java
+    │  │          │          
+    │  │          ├─entity
+    │  │          │      Category.java
+    │  │          │      ChatRoom.java
+    │  │          │      ChatRoomMember.java
+    │  │          │      ChatRoomMessage.java
+    │  │          │      Hashtag.java
+    │  │          │      Place.java
+    │  │          │      Post.java
+    │  │          │      PostBookmark.java
+    │  │          │      PostHashtag.java
+    │  │          │      RefreshToken.java
+    │  │          │      Region.java
+    │  │          │      Reservation.java
+    │  │          │      StudyApplication.java
+    │  │          │      StudyGroup.java
+    │  │          │      StudyGroupMember.java
+    │  │          │      StudyLog.java
+    │  │          │      TimeSlot.java
+    │  │          │      User.java
+    │  │          │      UserBlock.java
+    │  │          │      UserInterest.java
+    │  │          │      UserSchedule.java
+    │  │          │      
+    │  │          ├─exception
+    │  │          │      CustomException.java
+    │  │          │      ErrorCode.java
+    │  │          │      GlobalExceptionHandler.java
+    │  │          │      
+    │  │          ├─repository
+    │  │          │      CategoryRepository.java
+    │  │          │      ChatRoomMemberRepository.java
+    │  │          │      ChatRoomMessageRepository.java
+    │  │          │      ChatRoomRepository.java
+    │  │          │      PlaceRepository.java
+    │  │          │      PostBookmarkRepository.java
+    │  │          │      PostRepository.java
+    │  │          │      RefreshTokenRepository.java
+    │  │          │      StudyApplicationRepository.java
+    │  │          │      StudyGroupMemberRepository.java
+    │  │          │      StudyGroupRepository.java
+    │  │          │      StudyLogRepository.java
+    │  │          │      TimeSlotRepository.java
+    │  │          │      UserBlockRepository.java
+    │  │          │      UserInterestRepository.java
+    │  │          │      UserRepository.java
+    │  │          │      UserScheduleRepository.java
+    │  │          │      
+    │  │          ├─security
+    │  │          │      JwtFilter.java
+    │  │          │      JwtProvider.java
+    │  │          │      
+    │  │          ├─service
+    │  │          │      ApplicationService.java
+    │  │          │      AuthService.java
+    │  │          │      BlockService.java
+    │  │          │      BookmarkService.java
+    │  │          │      CategoryService.java
+    │  │          │      ChatService.java
+    │  │          │      CustomUserDetailsService.java
+    │  │          │      PostService.java
+    │  │          │      RefreshTokenService.java
+    │  │          │      ScheduleService.java
+    │  │          │      StudyLogService.java
+    │  │          │      UserInterestService.java
+    │  │          │      UserService.java
+    │  │          │      
+    │  │          └─websocket
+    │  │                  ChatMessageHandler.java
+    │  │                  
+    │  └─resources
+    │      │  application.properties
+    │      │  
+    │      ├─db
+    │      │  └─migration
+    │      │          V1.1.2__schema.sql
+    │      │          V1.2__schema.sql
+    │      │          
+    │      ├─static
+    │      └─templates
+    └─test
+        └─java
+            └─meetudy
+                └─demo
+                        DemoApplicationTests.java
+                        

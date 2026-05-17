@@ -7,7 +7,6 @@ import meetudy.demo.dto.response.ChatMessageResponse;
 import meetudy.demo.dto.response.WsErrorResponse;
 import meetudy.demo.exception.CustomException;
 import meetudy.demo.exception.ErrorCode;
-import meetudy.demo.security.JwtProvider;
 import meetudy.demo.service.ChatService;
 import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -25,7 +24,6 @@ public class ChatMessageHandler {
 
     private final ChatService chatService;
     private final SimpMessagingTemplate messagingTemplate;
-    private final JwtProvider jwtProvider;
 
     /**
      * 클라이언트가 /app/chat.send 로 메시지 전송

@@ -30,6 +30,9 @@ public enum ErrorCode {
     // 학습 로그
     STUDY_LOG_NOT_FOUND(HttpStatus.NOT_FOUND,       "존재하지 않는 학습 로그입니다."),
 
+    // 스터디 그룹
+    STUDY_GROUP_NOT_FOUND(HttpStatus.NOT_FOUND,  "존재하지 않는 스터디 그룹입니다."),
+
     // 신청
     ALREADY_APPLIED(HttpStatus.CONFLICT,            "이미 신청한 게시글입니다."),
     APPLICATION_NOT_FOUND(HttpStatus.NOT_FOUND,     "존재하지 않는 신청입니다."),

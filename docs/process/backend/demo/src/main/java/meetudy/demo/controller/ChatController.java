@@ -55,7 +55,7 @@ public class ChatController {
 
 
 
-        /** CHAT 추가: 내 채팅방 목록 조회 */
+    /** CHAT 추가: 내 채팅방 목록 조회 */
     @GetMapping("/me")
     public ResponseEntity<ApiResponse<List<ChatRoomResponse>>> getMyChatRooms(
             @AuthenticationPrincipal UserDetails userDetails) {
@@ -63,5 +63,13 @@ public class ChatController {
         return ResponseEntity.ok(ApiResponse.ok(chatService.getMyChatRooms(userId)));
     }
 
-    
+    /** CHAT-16: 채팅방 나가기 */
+    @PatchMapping("/{roomId}/leave")
+    public ResponseEntity<ApiResponse<Void>> leaveRoom(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable Long roomId) {
+        Long userId = Long.parseLong(userDetails.getUsername());
+        chatService.leaveRoom(userId, roomId);
+        return ResponseEntity.ok(ApiResponse.ok("채팅방에서 나갔습니다.", null));
+    }
 }

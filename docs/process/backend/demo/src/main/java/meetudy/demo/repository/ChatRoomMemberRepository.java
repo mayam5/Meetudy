@@ -13,5 +13,6 @@ public interface ChatRoomMemberRepository extends JpaRepository<ChatRoomMember, 
     /** CHAT 추가: 내가 소속된 채팅방 목록 (탈퇴한 방 제외) */
     List<ChatRoomMember> findAllByUser_UserIdAndLeftAtIsNull(Long userId);
 
-
+    /** 특정 채팅방의 활성 멤버 목록 (차단 필터링용) */
+    List<ChatRoomMember> findAllByChatRoom_ChatRoomIdAndLeftAtIsNull(Long chatRoomId);
 }

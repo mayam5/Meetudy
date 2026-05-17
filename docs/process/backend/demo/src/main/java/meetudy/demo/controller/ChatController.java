@@ -63,13 +63,4 @@ public class ChatController {
         return ResponseEntity.ok(ApiResponse.ok(chatService.getMyChatRooms(userId)));
     }
 
-    /** CHAT-16: 채팅방 나가기 */
-    @PatchMapping("/{roomId}/leave")
-    public ResponseEntity<ApiResponse<Void>> leaveRoom(
-            @AuthenticationPrincipal UserDetails userDetails,
-            @PathVariable Long roomId) {
-        Long userId = Long.parseLong(userDetails.getUsername());
-        chatService.leaveRoom(userId, roomId);
-        return ResponseEntity.ok(ApiResponse.ok("채팅방에서 나갔습니다.", null));
-    }
 }

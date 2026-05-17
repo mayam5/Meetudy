@@ -3,9 +3,14 @@ package meetudy.demo.service;
 import lombok.RequiredArgsConstructor;
 import meetudy.demo.dto.response.StudyGroupMemberResponse;
 import meetudy.demo.dto.response.StudyGroupResponse;
+import meetudy.demo.entity.ChatRoom;
+import meetudy.demo.entity.ChatRoomMember;
 import meetudy.demo.entity.StudyGroup;
+import meetudy.demo.entity.StudyGroupMember;
 import meetudy.demo.exception.CustomException;
 import meetudy.demo.exception.ErrorCode;
+import meetudy.demo.repository.ChatRoomMemberRepository;
+import meetudy.demo.repository.ChatRoomRepository;
 import meetudy.demo.repository.StudyGroupMemberRepository;
 import meetudy.demo.repository.StudyGroupRepository;
 import org.springframework.stereotype.Service;
@@ -20,6 +25,8 @@ public class StudyGroupService {
 
     private final StudyGroupRepository studyGroupRepository;
     private final StudyGroupMemberRepository studyGroupMemberRepository;
+    private final ChatRoomRepository chatRoomRepository;
+    private final ChatRoomMemberRepository chatRoomMemberRepository;
 
     /** 내가 속한 스터디 그룹 목록 */
     @Transactional(readOnly = true)
@@ -48,6 +55,27 @@ public class StudyGroupService {
                 .filter(m -> m.getLeftAt() == null)
                 .map(StudyGroupMemberResponse::from)
                 .collect(Collectors.toList());
+    }
+
+    /** 스터디 그룹 나가기 (StudyGroupMember + ChatRoomMember 동시 처리) */
+    @Transactional
+    public void leaveGroup(Long userId, Long studyGroupId) {
+        StudyGroupMember groupMember = studyGroupMemberRepository
+                .findByStudyGroup_StudyGroupIdAndUser_UserId(studyGroupId, userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.FORBIDDEN));
+
+        if (groupMember.getLeftAt() != null) {
+            throw new CustomException(ErrorCode.FORBIDDEN);
+        }
+
+        groupMember.leave();
+
+        ChatRoom chatRoom = chatRoomRepository.findByStudyGroup_StudyGroupId(studyGroupId)
+                .orElseThrow(() -> new CustomException(ErrorCode.CHAT_ROOM_NOT_FOUND));
+
+        chatRoomMemberRepository
+                .findByChatRoom_ChatRoomIdAndUser_UserId(chatRoom.getChatRoomId(), userId)
+                .ifPresent(ChatRoomMember::leave);
     }
 
     private StudyGroup findGroupOrThrow(Long studyGroupId) {

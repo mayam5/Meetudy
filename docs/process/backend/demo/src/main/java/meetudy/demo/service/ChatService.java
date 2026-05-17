@@ -126,20 +126,6 @@ public class ChatService {
                 .collect(Collectors.toList());
     }
 
-    /** CHAT-16: 채팅방 나가기 */
-    @Transactional
-    public void leaveRoom(Long userId, Long chatRoomId) {
-        ChatRoomMember member = chatRoomMemberRepository
-                .findByChatRoom_ChatRoomIdAndUser_UserId(chatRoomId, userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.FORBIDDEN));
-
-        if (member.getLeftAt() != null) {
-            throw new CustomException(ErrorCode.FORBIDDEN);
-        }
-
-        member.leave();
-    }
-
     /** 차단하지 않은 활성 멤버 ID 목록 반환 (WebSocket 브로드캐스트 필터링용) */
     @Transactional(readOnly = true)
     public List<Long> getRecipientsForMessage(Long chatRoomId, Long senderId) {

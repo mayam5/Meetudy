@@ -44,4 +44,14 @@ public class StudyGroupController {
         Long userId = Long.parseLong(userDetails.getUsername());
         return ResponseEntity.ok(ApiResponse.ok(studyGroupService.getGroupMembers(userId, groupId)));
     }
+
+    /** 스터디 그룹 나가기 (채팅방도 동시 처리) */
+    @PatchMapping("/{groupId}/leave")
+    public ResponseEntity<ApiResponse<Void>> leaveGroup(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable Long groupId) {
+        Long userId = Long.parseLong(userDetails.getUsername());
+        studyGroupService.leaveGroup(userId, groupId);
+        return ResponseEntity.ok(ApiResponse.ok("스터디 그룹에서 나갔습니다.", null));
+    }
 }

@@ -1,39 +1,87 @@
+/* 전체 헤더 */
 .header {
-  position: fixed;
-  top: 0;
-  left: 0;
-
-  width: 100%;
-  box-sizing: border-box;
-
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  padding: 20px 40px;
-
-  background-color: #111827;
-  color: white;
-
-  z-index: 1000;
+    padding: 8px 0;
 }
 
-.logo {
-  font-size: 28px;
-  font-weight: bold;
+/* 로고 */
+.header-logo {
+    width: 120px;
 }
 
-.menu {
-  display: flex;
-  gap: 20px;
+/* 검색창 영역 */
+.search-wrap {
+    width: 100%;
+    max-width: 600px;
+    min-width: 300px;
 
-  list-style: none;
+    position: relative;
+
+    margin: 0 auto;
 }
 
-.menu li {
-  cursor: pointer;
+/* 검색 입력 */
+.search-input {
+    border-radius: 999px !important;
+    padding-right: 260px !important;
+    height: 50px;
 }
 
-.menu li:hover {
-  color: #60a5fa;
+/* 검색창 내부 요소 */
+.search-inner {
+    position: absolute;
+
+    top: 50%;
+    right: 0;
+
+    transform: translateY(-50%);
+
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    padding-right: 12px;
+}
+
+/* 검색 버튼 */
+.icon-button {
+    border: none !important;
+    background: transparent !important;
+}
+
+/* 드롭다운 버튼 */
+.dropdown-button {
+    border: none !important;
+}
+
+/* 우측 메뉴 */
+.header-menu {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    flex-wrap: wrap;
+    justify-content: flex-end;
+
+    padding-top: 8px;
+}
+
+/* 아이콘 */
+.header-icon {
+    cursor: pointer;
+}
+
+/* 반응형 */
+@media (max-width: 991px) {
+
+    .search-wrap {
+        margin-top: 15px;
+        min-width: 100%;
+    }
+
+    .header-menu {
+        margin-top: 15px;
+        justify-content: center;
+        padding-top: 0;
+    }
+
 }

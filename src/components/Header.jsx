@@ -7,6 +7,8 @@ import {
     Button
 } from "react-bootstrap";
 
+import "./Header.css";
+
 import logo from "../assets/logo.png";
 
 import {
@@ -21,7 +23,7 @@ function Header() {
             bg="white"
             expand="lg"
             fixed="top"
-            className="shadow-sm py-2"
+            className="header shadow-sm"
         >
             <Container fluid>
 
@@ -30,9 +32,7 @@ function Header() {
                     <img
                         src={logo}
                         alt="logo"
-                        style={{
-                            width: "120px"
-                        }}
+                        className="header-logo"
                     />
                 </Navbar.Brand>
 
@@ -46,51 +46,22 @@ function Header() {
                 >
 
                     {/* 검색창 */}
-                    <div
-                        className="
-                            mx-auto
-                            position-relative
-                        "
-                        style={{
-                            width: "100%",
-                            maxWidth: "600px",
-                            minWidth: "300px"
-                        }}
-                    >
+                    <div className="search-wrap">
 
-                        {/* 입력창 */}
                         <FormControl
                             placeholder="스터디를 검색해보세요"
                             size="lg"
-                            style={{
-                                borderRadius: "999px",
-                                paddingRight: "260px",
-                                height: "50px"
-                            }}
+                            className="search-input"
                         />
 
-                        {/* 검색창 내부 요소 */}
-                        <div
-                            className="
-                                position-absolute
-                                top-50
-                                end-0
-                                translate-middle-y
-                                d-flex
-                                align-items-center
-                                gap-2
-                                pe-3
-                            "
-                        >
+                        {/* 검색창 내부 */}
+                        <div className="search-inner">
 
                             {/* 검색 아이콘 */}
                             <Button
                                 variant="light"
                                 size="sm"
-                                style={{
-                                    border: "none",
-                                    background: "transparent"
-                                }}
+                                className="icon-button"
                             >
                                 <FiSearch />
                             </Button>
@@ -101,15 +72,12 @@ function Header() {
                                 <Dropdown.Toggle
                                     variant="light"
                                     size="sm"
-                                    style={{
-                                        border: "none"
-                                    }}
+                                    className="dropdown-button"
                                 >
                                     지역
                                 </Dropdown.Toggle>
 
                                 <Dropdown.Menu>
-
                                     <Dropdown.Item>
                                         서울
                                     </Dropdown.Item>
@@ -121,7 +89,6 @@ function Header() {
                                     <Dropdown.Item>
                                         부산
                                     </Dropdown.Item>
-
                                 </Dropdown.Menu>
 
                             </Dropdown>
@@ -132,15 +99,12 @@ function Header() {
                                 <Dropdown.Toggle
                                     variant="light"
                                     size="sm"
-                                    style={{
-                                        border: "none"
-                                    }}
+                                    className="dropdown-button"
                                 >
                                     분야
                                 </Dropdown.Toggle>
 
                                 <Dropdown.Menu>
-
                                     <Dropdown.Item>
                                         개발
                                     </Dropdown.Item>
@@ -152,7 +116,6 @@ function Header() {
                                     <Dropdown.Item>
                                         외국어
                                     </Dropdown.Item>
-
                                 </Dropdown.Menu>
 
                             </Dropdown>
@@ -162,17 +125,7 @@ function Header() {
                     </div>
 
                     {/* 메뉴 */}
-                    <Nav
-                        className="
-                            ms-auto
-                            align-items-center
-                            gap-3
-                            flex-row
-                            flex-wrap
-                            justify-content-end
-                            pt-2
-                        "
-                    >
+                    <Nav className="header-menu">
 
                         <Button
                             variant="light"
@@ -188,20 +141,14 @@ function Header() {
                             글 작성하기
                         </Button>
 
-                        {/* 알림 */}
                         <FiBell
                             size={20}
-                            style={{
-                                cursor: "pointer"
-                            }}
+                            className="header-icon"
                         />
 
-                        {/* 프로필 */}
                         <FiUser
                             size={20}
-                            style={{
-                                cursor: "pointer"
-                            }}
+                            className="header-icon"
                         />
 
                     </Nav>

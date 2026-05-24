@@ -1,4 +1,3 @@
-
 /* backdrop */
 .modal-overlay {
     position: fixed;
@@ -27,11 +26,37 @@
     box-shadow: 0 25px 60px rgba(0,0,0,0.25);
 
     animation: pop 0.25s ease;
+
+    display: flex;
+    flex-direction: column;
 }
 
 /* header */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.close-x {
+    background: none;
+    border: none;
+
+    font-size: 20px;
+    cursor: pointer;
+
+    color: #888;
+
+    padding: 4px;
+}
+
+.close-x:hover {
+    color: #111;
+}
+
 .modal-header h2 {
-    margin: 0 0 20px;
+    margin: 0;
     font-size: 22px;
     font-weight: 700;
 }
@@ -41,8 +66,13 @@
     display: flex;
     flex-direction: column;
     gap: 0;
+
+    border: 1px solid #eee;
+    border-radius: 12px;
+    overflow: hidden;
 }
-/* INPUT 핵심 수정 */
+
+/* INPUT */
 .input-group input {
     width: 100%;
     padding: 12px;
@@ -51,37 +81,17 @@
     border-bottom: 1px solid #eee;
 
     background: transparent;
-
     box-sizing: border-box;
+
+    outline: none;
 }
 
 .input-group input:focus {
-    background: white;
-    outline: none;
+    background: #fafafa;
 }
+
 .input-group input:last-child {
     border-bottom: none;
-}
-
-/* button */
-.primary-btn {
-    width: 100%;
-    margin-top: 14px;
-    padding: 12px;
-
-    background: #111;
-    color: white;
-
-    border: none;
-    border-radius: 10px;
-
-    cursor: pointer;
-
-    transition: 0.2s;
-}
-
-.primary-btn:disabled {
-    opacity: 0.6;
 }
 
 /* switch */
@@ -97,16 +107,63 @@
     margin-left: 5px;
 }
 
-/* close */
-.close-btn {
-    width: 100%;
-    margin-top: 10px;
+.switch span:hover {
+    text-decoration: underline;
+}
 
-    background: transparent;
-    border: none;
+/* footer */
+.footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
 
+    margin-top: 16px;
+
+    min-height: 60px; 
+}
+
+/* forgot */
+.forgot {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    font-size: 12px;
     color: #888;
+
     cursor: pointer;
+    text-align: left;
+}
+
+.forgot span:hover {
+    color: #007bff;
+    text-decoration: underline;
+}
+
+/* button */
+.primary-btn {
+    width: 120px;
+    padding: 12px;
+
+    background: #111;
+    color: white;
+
+    border: none;
+    border-radius: 10px;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+
+    align-self: flex-end;
+}
+
+.primary-btn:hover {
+    opacity: 0.9;
+}
+
+.primary-btn:disabled {
+    opacity: 0.6;
 }
 
 /* shake */

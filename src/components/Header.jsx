@@ -8,7 +8,6 @@ import {
 } from "react-bootstrap";
 
 import "./Header.css";
-
 import logo from "../assets/logo.png";
 
 import {
@@ -34,53 +33,30 @@ function Header() {
             >
                 <Container fluid>
 
-                    {/* 로고 */}
                     <Navbar.Brand href="#">
-                        <img
-                            src={logo}
-                            alt="logo"
-                            className="header-logo"
-                        />
+                        <img src={logo} alt="logo" className="header-logo" />
                     </Navbar.Brand>
 
-                    {/* 햄버거 버튼 */}
                     <Navbar.Toggle aria-controls="navbar" />
 
-                    {/* 네브 영역 */}
-                    <Navbar.Collapse
-                        id="navbar"
-                        className="align-items-center"
-                    >
+                    <Navbar.Collapse id="navbar" className="align-items-center">
 
-                        {/* 검색창 */}
                         <div className="search-wrap">
-
                             <FormControl
                                 placeholder="스터디를 검색해보세요"
                                 className="search-input"
                             />
 
-                            {/* 검색창 내부 */}
                             <div className="search-inner">
 
-                                <Button
-                                    variant="light"
-                                    size="sm"
-                                    className="icon-button"
-                                >
+                                <Button variant="light" size="sm">
                                     <FiSearch />
                                 </Button>
 
-                                {/* 지역 */}
                                 <Dropdown>
-                                    <Dropdown.Toggle
-                                        variant="light"
-                                        size="sm"
-                                        className="dropdown-button"
-                                    >
+                                    <Dropdown.Toggle variant="light" size="sm">
                                         지역
                                     </Dropdown.Toggle>
-
                                     <Dropdown.Menu>
                                         <Dropdown.Item>서울</Dropdown.Item>
                                         <Dropdown.Item>경기</Dropdown.Item>
@@ -88,16 +64,10 @@ function Header() {
                                     </Dropdown.Menu>
                                 </Dropdown>
 
-                                {/* 분야 */}
                                 <Dropdown>
-                                    <Dropdown.Toggle
-                                        variant="light"
-                                        size="sm"
-                                        className="dropdown-button"
-                                    >
+                                    <Dropdown.Toggle variant="light" size="sm">
                                         분야
                                     </Dropdown.Toggle>
-
                                     <Dropdown.Menu>
                                         <Dropdown.Item>개발</Dropdown.Item>
                                         <Dropdown.Item>자격증</Dropdown.Item>
@@ -108,7 +78,6 @@ function Header() {
                             </div>
                         </div>
 
-                        {/* 메뉴 */}
                         <Nav className="header-menu">
 
                             <Button variant="light" size="sm">
@@ -119,18 +88,14 @@ function Header() {
                                 글 작성하기
                             </Button>
 
-                            <FiBell
-                                size={20}
-                                className="header-icon"
-                            />
+                            <FiBell size={20} className="header-icon" />
 
-                            {/* 🔥 로그인 버튼 */}
+                            {/* 로그인 아이콘 */}
                             <FiUser
                                 size={20}
                                 className="header-icon"
                                 style={{ cursor: "pointer" }}
-                                onClick={() =>{console.log("clicked");
-                                     setIsLoginOpen(true);}}
+                                onClick={() => setIsLoginOpen(true)}
                             />
 
                         </Nav>
@@ -139,11 +104,10 @@ function Header() {
 
                 </Container>
             </Navbar>
-
-            {/* 🔥 로그인 모달 */}
+            
             {isLoginOpen && (
-    <Login />
-)}
+                <Login onClose={() => setIsLoginOpen(false)} />
+            )}
         </>
     );
 }

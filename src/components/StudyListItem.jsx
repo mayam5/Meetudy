@@ -1,55 +1,20 @@
 import "../pages/Home.css";
+import "./StudyListItem.css";
+import AvatarGroup from "./AvatarGroup";
+import HostInfo from "./HostInfo";
 
 function StudyListItem({ title, host, field, users }) {
 
     return (
         <div className="study-item">
 
-            {/* 왼쪽 영역 */}
-            <div className="study-left">
+            <strong className="list-study-title">
+                {title}
+            </strong>
 
-                {/* 제목 */}
-                <strong className="list-study-title">
-                    {title}
-                </strong>
+            <HostInfo host={host} field={field} />
 
-                {/* 호스트 정보 */}
-                <div className="host-box">
-
-                    <div className="avatar host">
-                        {host[0]}
-                    </div>
-
-                    <div className="host-info">
-
-                        <span className="host-name">
-                            {host}
-                        </span>
-
-                        <span className="tag">
-                            #{field}
-                        </span>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            {/* 오른쪽 참여자 */}
-            <div className="avatar-group">
-
-                {users.map((u, i) => (
-                    <div key={i} className="avatar">
-                        {u}
-                    </div>
-                ))}
-
-                <div className="more">
-                    +{users.length}
-                </div>
-
-            </div>
+            <AvatarGroup users={users} />
 
         </div>
     );

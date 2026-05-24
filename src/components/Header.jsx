@@ -50,7 +50,6 @@ function Header() {
 
                         <FormControl
                             placeholder="스터디를 검색해보세요"
-                            size="lg"
                             className="search-input"
                         />
 

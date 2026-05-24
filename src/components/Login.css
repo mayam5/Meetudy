@@ -1,0 +1,140 @@
+
+/* backdrop */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+
+    background: rgba(0,0,0,0.45);
+    backdrop-filter: blur(10px);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    z-index: 999999;
+
+    animation: fadeIn 0.2s ease;
+}
+
+/* modal box */
+.modal-box {
+    width: 380px;
+    padding: 28px;
+
+    background: white;
+    border-radius: 18px;
+
+    box-shadow: 0 25px 60px rgba(0,0,0,0.25);
+
+    animation: pop 0.25s ease;
+}
+
+/* header */
+.modal-header h2 {
+    margin: 0 0 20px;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+/* input group */
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+/* INPUT 핵심 수정 */
+.input-group input {
+    width: 100%;
+    padding: 12px;
+
+    border: none;
+    border-bottom: 1px solid #eee;
+
+    background: transparent;
+
+    box-sizing: border-box;
+}
+
+.input-group input:focus {
+    background: white;
+    outline: none;
+}
+.input-group input:last-child {
+    border-bottom: none;
+}
+
+/* button */
+.primary-btn {
+    width: 100%;
+    margin-top: 14px;
+    padding: 12px;
+
+    background: #111;
+    color: white;
+
+    border: none;
+    border-radius: 10px;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.primary-btn:disabled {
+    opacity: 0.6;
+}
+
+/* switch */
+.switch {
+    margin-top: 14px;
+    font-size: 13px;
+    text-align: center;
+}
+
+.switch span {
+    color: #007bff;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+/* close */
+.close-btn {
+    width: 100%;
+    margin-top: 10px;
+
+    background: transparent;
+    border: none;
+
+    color: #888;
+    cursor: pointer;
+}
+
+/* shake */
+.shake {
+    animation: shake 0.4s;
+}
+
+/* animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes pop {
+    from {
+        transform: scale(0.92);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-5px); }
+    100% { transform: translateX(0); }
+}

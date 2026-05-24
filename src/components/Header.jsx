@@ -17,145 +17,134 @@ import {
     FiUser
 } from "react-icons/fi";
 
+import { useState } from "react";
+import Login from "../components/Login";
+
 function Header() {
+
+    const [isLoginOpen, setIsLoginOpen] = useState(false);
+
     return (
-        <Navbar
-            bg="white"
-            expand="lg"
-            fixed="top"
-            className="header shadow-sm"
-        >
-            <Container fluid>
+        <>
+            <Navbar
+                bg="white"
+                expand="lg"
+                fixed="top"
+                className="header shadow-sm"
+            >
+                <Container fluid>
 
-                {/* 로고 */}
-                <Navbar.Brand href="#">
-                    <img
-                        src={logo}
-                        alt="logo"
-                        className="header-logo"
-                    />
-                </Navbar.Brand>
-
-                {/* 햄버거 버튼 */}
-                <Navbar.Toggle aria-controls="navbar" />
-
-                {/* 네브 영역 */}
-                <Navbar.Collapse
-                    id="navbar"
-                    className="align-items-center"
-                >
-
-                    {/* 검색창 */}
-                    <div className="search-wrap">
-
-                        <FormControl
-                            placeholder="스터디를 검색해보세요"
-                            className="search-input"
+                    {/* 로고 */}
+                    <Navbar.Brand href="#">
+                        <img
+                            src={logo}
+                            alt="logo"
+                            className="header-logo"
                         />
+                    </Navbar.Brand>
 
-                        {/* 검색창 내부 */}
-                        <div className="search-inner">
+                    {/* 햄버거 버튼 */}
+                    <Navbar.Toggle aria-controls="navbar" />
 
-                            {/* 검색 아이콘 */}
-                            <Button
-                                variant="light"
-                                size="sm"
-                                className="icon-button"
-                            >
-                                <FiSearch />
-                            </Button>
+                    {/* 네브 영역 */}
+                    <Navbar.Collapse
+                        id="navbar"
+                        className="align-items-center"
+                    >
 
-                            {/* 지역 */}
-                            <Dropdown>
+                        {/* 검색창 */}
+                        <div className="search-wrap">
 
-                                <Dropdown.Toggle
+                            <FormControl
+                                placeholder="스터디를 검색해보세요"
+                                className="search-input"
+                            />
+
+                            {/* 검색창 내부 */}
+                            <div className="search-inner">
+
+                                <Button
                                     variant="light"
                                     size="sm"
-                                    className="dropdown-button"
+                                    className="icon-button"
                                 >
-                                    지역
-                                </Dropdown.Toggle>
+                                    <FiSearch />
+                                </Button>
 
-                                <Dropdown.Menu>
-                                    <Dropdown.Item>
-                                        서울
-                                    </Dropdown.Item>
+                                {/* 지역 */}
+                                <Dropdown>
+                                    <Dropdown.Toggle
+                                        variant="light"
+                                        size="sm"
+                                        className="dropdown-button"
+                                    >
+                                        지역
+                                    </Dropdown.Toggle>
 
-                                    <Dropdown.Item>
-                                        경기
-                                    </Dropdown.Item>
+                                    <Dropdown.Menu>
+                                        <Dropdown.Item>서울</Dropdown.Item>
+                                        <Dropdown.Item>경기</Dropdown.Item>
+                                        <Dropdown.Item>부산</Dropdown.Item>
+                                    </Dropdown.Menu>
+                                </Dropdown>
 
-                                    <Dropdown.Item>
-                                        부산
-                                    </Dropdown.Item>
-                                </Dropdown.Menu>
+                                {/* 분야 */}
+                                <Dropdown>
+                                    <Dropdown.Toggle
+                                        variant="light"
+                                        size="sm"
+                                        className="dropdown-button"
+                                    >
+                                        분야
+                                    </Dropdown.Toggle>
 
-                            </Dropdown>
+                                    <Dropdown.Menu>
+                                        <Dropdown.Item>개발</Dropdown.Item>
+                                        <Dropdown.Item>자격증</Dropdown.Item>
+                                        <Dropdown.Item>외국어</Dropdown.Item>
+                                    </Dropdown.Menu>
+                                </Dropdown>
 
-                            {/* 분야 */}
-                            <Dropdown>
-
-                                <Dropdown.Toggle
-                                    variant="light"
-                                    size="sm"
-                                    className="dropdown-button"
-                                >
-                                    분야
-                                </Dropdown.Toggle>
-
-                                <Dropdown.Menu>
-                                    <Dropdown.Item>
-                                        개발
-                                    </Dropdown.Item>
-
-                                    <Dropdown.Item>
-                                        자격증
-                                    </Dropdown.Item>
-
-                                    <Dropdown.Item>
-                                        외국어
-                                    </Dropdown.Item>
-                                </Dropdown.Menu>
-
-                            </Dropdown>
-
+                            </div>
                         </div>
 
-                    </div>
+                        {/* 메뉴 */}
+                        <Nav className="header-menu">
 
-                    {/* 메뉴 */}
-                    <Nav className="header-menu">
+                            <Button variant="light" size="sm">
+                                내 모임
+                            </Button>
 
-                        <Button
-                            variant="light"
-                            size="sm"
-                        >
-                            내 모임
-                        </Button>
+                            <Button variant="light" size="sm">
+                                글 작성하기
+                            </Button>
 
-                        <Button
-                            variant="light"
-                            size="sm"
-                        >
-                            글 작성하기
-                        </Button>
+                            <FiBell
+                                size={20}
+                                className="header-icon"
+                            />
 
-                        <FiBell
-                            size={20}
-                            className="header-icon"
-                        />
+                            {/* 🔥 로그인 버튼 */}
+                            <FiUser
+                                size={20}
+                                className="header-icon"
+                                style={{ cursor: "pointer" }}
+                                onClick={() =>{console.log("clicked");
+                                     setIsLoginOpen(true);}}
+                            />
 
-                        <FiUser
-                            size={20}
-                            className="header-icon"
-                        />
+                        </Nav>
 
-                    </Nav>
+                    </Navbar.Collapse>
 
-                </Navbar.Collapse>
+                </Container>
+            </Navbar>
 
-            </Container>
-        </Navbar>
+            {/* 🔥 로그인 모달 */}
+            {isLoginOpen && (
+    <Login />
+)}
+        </>
     );
 }
 

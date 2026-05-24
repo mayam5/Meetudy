@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import { Modal, Form, Button, Spinner, Dropdown, DropdownButton } from "react-bootstrap";
+import { Formik } from "formik";
+import * as yup from "yup";
 import "./Login.css";
 
 function Login({ onClose }) {
-
     const [mode, setMode] = useState("login");
     const [subMode, setSubMode] = useState(null);
 
@@ -22,7 +24,7 @@ function Login({ onClose }) {
         return () => window.removeEventListener("keydown", handleEsc);
     }, []);
 
-    const handleSubmit = () => {
+    const handleSubmitEffect = () => {
         setLoading(true);
 
         setTimeout(() => {
@@ -32,131 +34,298 @@ function Login({ onClose }) {
         }, 1000);
     };
 
+    // ======================
+    // VALIDATION
+    // ======================
+    const loginSchema = yup.object().shape({
+        email: yup.string().email("이메일 형식이 아닙니다").required("필수 입력"),
+        password: yup.string().required("필수 입력"),
+    });
+
+    const signupSchema = yup.object().shape({
+        username: yup.string().required("닉네임은 필수입니다"),
+
+        email: yup
+            .string()
+            .email("이메일 형식이 아닙니다")
+            .required("필수 입력")
+            .test(
+                "email-not-username",
+                "이메일과 닉네임은 같을 수 없습니다",
+                function (value) {
+                    const { username } = this.parent;
+                    const emailId = value?.split("@")[0];
+                    return emailId !== username;
+                }
+            ),
+
+        password: yup.string().min(6, "최소 6자").required("필수 입력"),
+
+        confirmPassword: yup
+            .string()
+            .oneOf([yup.ref("password")], "비밀번호가 일치하지 않습니다")
+            .required("필수 입력"),
+
+        category: yup.array().min(1, "카테고리를 하나 이상 선택해주세요"),
+
+        region: yup.string().required("지역을 입력해주세요"),
+    });
+
+    const renderTitle = () => {
+        if (subMode === "findEmail") return "이메일 찾기";
+        if (subMode === "resetPassword") return "비밀번호 재설정";
+        return mode === "login" ? "로그인" : "회원가입";
+    };
+
     return (
-        <div className="modal-overlay" onClick={handleClose}>
-            <div
-                className={`modal-box ${shake ? "shake" : ""}`}
-                onClick={(e) => e.stopPropagation()}
-            >
+        <Modal show onHide={handleClose} centered>
+            <div className={shake ? "shake" : ""}>
 
-                {/* HEADER */}
-                <div className="modal-header">
-                    <h2>
-                        {subMode === "findEmail" && "이메일 찾기"}
-                        {subMode === "resetPassword" && "비밀번호 재설정"}
-                        {!subMode && (mode === "login" ? "로그인" : "회원가입")}
-                    </h2>
+                <Modal.Header closeButton>
+                    <Modal.Title>{renderTitle()}</Modal.Title>
+                </Modal.Header>
 
-                    <button className="close-x" onClick={handleClose}>
-                        ✕
-                    </button>
-                </div>
+                <Modal.Body>
 
-                {/* INPUT */}
-                <div className="input-group">
+                    {/* ================= LOGIN ================= */}
+                    {!subMode && mode === "login" && (
+                        <Formik
+                            initialValues={{ email: "", password: "" }}
+                            validationSchema={loginSchema}
+                            onSubmit={handleSubmitEffect}
+                        >
+                            {({ handleSubmit, handleChange, values, touched, errors }) => (
+                                <Form noValidate onSubmit={handleSubmit}>
 
-                    {subMode === "findEmail" ? (
-                        <>
-                            <input placeholder="가입 시 이름" />
-                            <input placeholder="전화번호" />
-                        </>
-                    ) : subMode === "resetPassword" ? (
-                        <>
-                            <input placeholder="Email" />
-                            <input type="password" placeholder="새 비밀번호" />
-                        </>
-                    ) : (
-                        <>
-                            <input placeholder="Email" />
-                            <input type="password" placeholder="Password" />
+                                    <Form.Group className="mb-3">
+                                        <Form.Control
+                                            name="email"
+                                            type="email"
+                                            placeholder="Email"
+                                            value={values.email}
+                                            onChange={handleChange}
+                                            isInvalid={touched.email && !!errors.email}
+                                        />
+                                        <Form.Control.Feedback type="invalid">
+                                            {errors.email}
+                                        </Form.Control.Feedback>
+                                    </Form.Group>
 
-                            {mode === "signup" && (
-                                <input placeholder="Username" />
+                                    <Form.Group className="mb-3">
+                                        <Form.Control
+                                            name="password"
+                                            type="password"
+                                            placeholder="Password"
+                                            value={values.password}
+                                            onChange={handleChange}
+                                            isInvalid={touched.password && !!errors.password}
+                                        />
+                                        <Form.Control.Feedback type="invalid">
+                                            {errors.password}
+                                        </Form.Control.Feedback>
+                                    </Form.Group>
+
+                                    <button type="submit" hidden />
+                                </Form>
                             )}
-                        </>
+                        </Formik>
                     )}
 
-                </div>
+                    {/* ================= SIGNUP ================= */}
+                    {!subMode && mode === "signup" && (
+                        <Formik
+                            initialValues={{
+                                username: "",
+                                email: "",
+                                password: "",
+                                confirmPassword: "",
+                                category: [],
+                                region: "",
+                            }}
+                            validationSchema={signupSchema}
+                            onSubmit={handleSubmitEffect}
+                        >
+                            {({ handleSubmit, handleChange, values, touched, errors, setFieldValue }) => (
+                                <Form noValidate onSubmit={handleSubmit}>
+    <div className="signup-flex">
 
-                {/* SWITCH */}
-                {!subMode && (
-                    <div className="switch">
-                        {mode === "login" ? (
-                            <>
-                                계정이 없나요?
-                                <span onClick={() => setMode("signup")}>
-                                    회원가입
-                                </span>
-                            </>
-                        ) : (
-                            <>
-                                이미 계정이 있나요?
-                                <span onClick={() => setMode("login")}>
-                                    로그인
-                                </span>
-                            </>
-                        )}
-                    </div>
-                )}
+        {/* ================= LEFT ================= */}
+        <div className="signup-left">
+
+            <Form.Group className="mb-3">
+                <div className="category-title">Nickname</div>
+                <Form.Control
+                    name="username"
+                    placeholder="닉네임"
+                    value={values.username}
+                    onChange={handleChange}
+                    isInvalid={touched.username && !!errors.username}
+                />
+                <Form.Control.Feedback type="invalid">
+                    {errors.username}
+                </Form.Control.Feedback>
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+                <div className="category-title">Email</div>
+                <Form.Control
+                    name="email"
+                    type="email"
+                    placeholder="Email"
+                    value={values.email}
+                    onChange={handleChange}
+                    isInvalid={touched.email && !!errors.email}
+                />
+                <Form.Control.Feedback type="invalid">
+                    {errors.email}
+                </Form.Control.Feedback>
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+                <div className="category-title">Password</div>
+                <Form.Control
+                    name="password"
+                    type="password"
+                    placeholder="비밀번호"
+                    value={values.password}
+                    onChange={handleChange}
+                    isInvalid={touched.password && !!errors.password}
+                />
+                <Form.Control.Feedback type="invalid">
+                    {errors.password}
+                </Form.Control.Feedback>
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+                <div className="category-title">Confirm Password</div>
+                <Form.Control
+                    name="confirmPassword"
+                    type="password"
+                    placeholder="비밀번호 확인"
+                    value={values.confirmPassword}
+                    onChange={handleChange}
+                    isInvalid={touched.confirmPassword && !!errors.confirmPassword}
+                />
+                <Form.Control.Feedback type="invalid">
+                    {errors.confirmPassword}
+                </Form.Control.Feedback>
+            </Form.Group>
+
+        </div>
+
+        {/* ================= RIGHT ================= */}
+        <div className="signup-right">
+
+            <Form.Group className="mb-3">
+                <div className="category-title">카테고리</div>
+
+                <div className="category-wrap">
+                    {[
+                        { key: "dev", label: "개발" },
+                        { key: "design", label: "디자인" },
+                        { key: "plan", label: "기획" },
+                        { key: "language", label: "언어" },
+                    ].map((item) => (
+                        <Form.Check
+                            key={item.key}
+                            type="checkbox"
+                            id={`cat-${item.key}`}
+                            className="category-check"
+                            label={item.label}
+                            checked={values.category.includes(item.key)}
+                            onChange={() => {
+                                const exists = values.category.includes(item.key);
+
+                                const newValue = exists
+                                    ? values.category.filter((v) => v !== item.key)
+                                    : [...values.category, item.key];
+
+                                setFieldValue("category", newValue);
+                            }}
+                        />
+                    ))}
+                </div>
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+                <div className="category-title">선호 지역
+                    <DropdownButton
+                    id="region-dropdown"
+                    title={values.region || "지역 선택"}
+                    drop="down"
+                    flip={false}
+                    onSelect={(value) => setFieldValue("region", value)}
+                >
+                    <Dropdown.Item eventKey="서울">서울</Dropdown.Item>
+                    <Dropdown.Item eventKey="경기">경기</Dropdown.Item>
+                    <Dropdown.Item eventKey="인천">인천</Dropdown.Item>
+                    <Dropdown.Item eventKey="부산">부산</Dropdown.Item>
+                    <Dropdown.Item eventKey="대구">대구</Dropdown.Item>
+                </DropdownButton>
+                </div>
+            </Form.Group>
+
+        </div>
+
+    </div>
+
+    <button type="submit" hidden />
+</Form>
+                            )}
+                        </Formik>
+                    )}
+
+                    {/* SWITCH */}
+                    {!subMode && (
+                        <div className="text-center mt-3">
+                            {mode === "login" ? (
+                                <>
+                                    계정이 없나요?{" "}
+                                    <span onClick={() => setMode("signup")}>
+                                        회원가입
+                                    </span>
+                                </>
+                            ) : (
+                                <>
+                                    이미 계정이 있나요?{" "}
+                                    <span onClick={() => setMode("login")}>
+                                        로그인
+                                    </span>
+                                </>
+                            )}
+                        </div>
+                    )}
+
+                </Modal.Body>
 
                 {/* FOOTER */}
-                <div className="footer">
-
-                    <div className="footer-left">
-                        {!subMode && (
-                            <div className="forgot">
-                                <span onClick={() => setSubMode("findEmail")}>
-                                    Forgot Email?
-                                </span>
-                                <span onClick={() => setSubMode("resetPassword")}>
-                                    Forgot Password?
-                                </span>
-                            </div>
-                        )}
+                <Modal.Footer className="d-flex justify-content-between">
+                    <div className="small text-muted">
+                        <div onClick={() => setSubMode("findEmail")}>Forgot Email?</div>
+                        <div onClick={() => setSubMode("resetPassword")}>Forgot Password?</div>
                     </div>
 
-                    <div className="footer-right">
-
-                        {!subMode && (
-                            <button
-                                className="primary-btn"
-                                onClick={handleSubmit}
-                                disabled={loading}
-                            >
-                                {loading
-                                    ? "처리중..."
-                                    : mode === "login"
-                                        ? "로그인"
-                                        : "회원가입"}
-                            </button>
+                    <Button
+                        variant="primary"
+                        disabled={loading}
+                        onClick={() => {
+                            document.querySelector(".modal.show form")?.requestSubmit();
+                        }}
+                    >
+                        {loading ? (
+                            <>
+                                <Spinner size="sm" animation="border" /> 처리중...
+                            </>
+                        ) : mode === "login" ? (
+                            "로그인"
+                        ) : (
+                            "회원가입"
                         )}
-
-                        {subMode === "findEmail" && (
-                            <button className="primary-btn" onClick={handleSubmit}>
-                                이메일 찾기
-                            </button>
-                        )}
-
-                        {subMode === "resetPassword" && (
-                            <button className="primary-btn" onClick={handleSubmit}>
-                                비밀번호 변경
-                            </button>
-                        )}
-                    </div>
-
-                </div>
-
-                {/* BACK */}
-                {subMode && (
-                    <div className="back-area">
-                        <span onClick={() => setSubMode(null)}>
-                            ← Back
-                        </span>
-                    </div>
-                )}
+                    </Button>
+                </Modal.Footer>
 
             </div>
-        </div>
+        </Modal>
     );
 }
 

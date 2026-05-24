@@ -1,191 +1,121 @@
-/* backdrop */
-.modal-overlay {
-    position: fixed;
-    inset: 0;
-
-    background: rgba(0,0,0,0.45);
-    backdrop-filter: blur(10px);
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    z-index: 999999;
-
-    animation: fadeIn 0.2s ease;
+/* ========================= */
+/* modal 전체 컨테이너 */
+/* ========================= */
+.modal-content {
+    border-radius: 18px !important;
+    padding: 10px;
+    border: none !important;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
 }
 
-/* modal box */
-.modal-box {
-    width: 380px;
-    padding: 28px;
-
-    background: white;
-    border-radius: 18px;
-
-    box-shadow: 0 25px 60px rgba(0,0,0,0.25);
-
-    animation: pop 0.25s ease;
-
-    display: flex;
-    flex-direction: column;
-}
-
+/* ========================= */
 /* header */
+/* ========================= */
 .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
+    border-bottom: none !important;
+    padding-bottom: 10px;
 }
 
-.close-x {
-    background: none;
-    border: none;
-
-    font-size: 20px;
-    cursor: pointer;
-
-    color: #888;
-
-    padding: 4px;
+.modal-header .modal-title {
+    font-size: 24px !important;
+    font-weight: 900 !important;
+    color: #111 !important;
+    letter-spacing: -0.5px;
 }
 
-.close-x:hover {
-    color: #111;
+/* ========================= */
+/* body */
+/* ========================= */
+.modal-body {
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
-.modal-header h2 {
-    margin: 0;
-    font-size: 22px;
-    font-weight: 700;
-}
-
-/* input group */
-.input-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-
-    border: 1px solid #eee;
-    border-radius: 12px;
-    overflow: hidden;
-}
-
-/* INPUT */
-.input-group input {
-    width: 100%;
+/* ========================= */
+/* input */
+/* ========================= */
+.form-control {
+    border-radius: 10px !important;
     padding: 12px;
-
-    border: none;
-    border-bottom: 1px solid #eee;
-
-    background: transparent;
-    box-sizing: border-box;
-
-    outline: none;
+    border: 1px solid #eee !important;
+    box-shadow: none !important;
 }
 
-.input-group input:focus {
+.form-control:focus {
+    border-color: #111 !important;
+    box-shadow: none !important;
     background: #fafafa;
 }
 
-.input-group input:last-child {
-    border-bottom: none;
+/* ========================= */
+/* footer */
+/* ========================= */
+.modal-footer {
+    border-top: none !important;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-top: 10px;
 }
 
-/* switch */
-.switch {
-    margin-top: 14px;
+/* ========================= */
+/* forgot 영역 */
+/* ========================= */
+.small div {
+    font-size: 12px;
+    color: #888;
+    cursor: pointer;
+}
+
+.small div:hover {
+    color: #007bff;
+    text-decoration: underline;
+}
+
+/* ========================= */
+/* switch 영역 */
+/* ========================= */
+.text-center {
     font-size: 13px;
-    text-align: center;
 }
 
-.switch span {
+.text-center span {
     color: #007bff;
     cursor: pointer;
     margin-left: 5px;
 }
 
-.switch span:hover {
+.text-center span:hover {
     text-decoration: underline;
 }
 
-/* footer */
-.footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-
-    margin-top: 16px;
-
-    min-height: 60px; 
-}
-
-/* forgot */
-.forgot {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-
-    font-size: 12px;
-    color: #888;
-
-    cursor: pointer;
-    text-align: left;
-}
-
-.forgot span:hover {
-    color: #007bff;
-    text-decoration: underline;
-}
-
-/* button */
-.primary-btn {
+/* ========================= */
+/* 버튼 */
+/* ========================= */
+.btn-primary {
     width: 120px;
-    padding: 12px;
-
-    background: #111;
-    color: white;
-
-    border: none;
-    border-radius: 10px;
-
-    cursor: pointer;
-
-    transition: 0.2s;
-
-    align-self: flex-end;
+    padding: 10px 12px;
+    border-radius: 10px !important;
+    background: #111 !important;
+    border: none !important;
 }
 
-.primary-btn:hover {
+.btn-primary:hover {
     opacity: 0.9;
 }
 
-.primary-btn:disabled {
-    opacity: 0.6;
+/* ========================= */
+/* spinner */
+/* ========================= */
+.spinner-border {
+    margin-right: 6px;
 }
 
-/* shake */
+/* ========================= */
+/* shake animation */
+/* ========================= */
 .shake {
     animation: shake 0.4s;
-}
-
-/* animations */
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-@keyframes pop {
-    from {
-        transform: scale(0.92);
-        opacity: 0;
-    }
-    to {
-        transform: scale(1);
-        opacity: 1;
-    }
 }
 
 @keyframes shake {
@@ -194,4 +124,83 @@
     50% { transform: translateX(5px); }
     75% { transform: translateX(-5px); }
     100% { transform: translateX(0); }
+}
+
+/* ===================================================== */
+/* ================= CATEGORY UI ======================= */
+/* ===================================================== */
+
+/* 카테고리 타이틀 */
+.category-title {
+    font-size: 13px;
+    margin-bottom: 8px;
+    color: #333;
+    font-weight: 500;
+    display: flex;
+    justify-content: space-between;
+}
+
+/* 카테고리 영역 */
+.category-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* checkbox 기본 숨기기 */
+.category-check input {
+    display: none;
+}
+
+/* pill 버튼 기본 */
+.category-check label {
+    display: inline-block;
+    padding: 6px 14px;
+    font-size: 13px;
+
+    border: 1px solid #ddd;
+    border-radius: 999px;
+
+    cursor: pointer;
+    user-select: none;
+
+    transition: all 0.2s ease;
+    background-color: #fff;
+    color: #333;
+}
+
+/* hover */
+.category-check label:hover {
+    border-color: #999;
+    transform: translateY(-1px);
+}
+
+/* 선택 상태 */
+.category-check input:checked + label {
+    background-color: #111;
+    color: #fff;
+    border-color: #111;
+}
+
+/* 클릭 느낌 */
+.category-check label:active {
+    transform: scale(0.96);
+}
+
+.signup-flex {
+    display: flex;
+    gap: 20px;
+}
+
+.signup-left,
+.signup-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+@media (max-width: 768px) {
+    .signup-flex {
+        flex-direction: column;
+    }
 }

@@ -1,13 +1,4 @@
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  background: #f5f6fa;
-  font-family: sans-serif;
-}
-
+/* 마이페이지 전체 컨테이너에만 적용되도록 모든 규칙 앞에 .mypage 추가 */
 .mypage {
   display: flex;
   gap: 20px;
@@ -18,8 +9,7 @@ body {
 }
 
 /* 왼쪽 */
-
-.left-section {
+.mypage .left-section {
   width: 30%;
   display: flex;
   flex-direction: column;
@@ -27,286 +17,69 @@ body {
 }
 
 /* 오른쪽 */
-
-.right-section {
+.mypage .right-section {
   width: 70%;
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-.top-row,
-.bottom-row {
+.mypage .top-row,
+.mypage .bottom-row {
   display: flex;
   gap: 16px;
 }
 
 /* 공통 카드 */
-
-.card {
+.mypage .card {
   background: white;
   border-radius: 20px;
   padding: 20px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
-/* 프로필 */
+/* 프로필, bio, category 등 나머지 모든 클래스에도 .mypage를 앞에 붙입니다 */
+.mypage .profile-card { display: flex; flex-direction: column; align-items: center; }
+.mypage .nickname { margin-bottom: 20px; color: #24324a; }
+.mypage .profile-image { width: 180px; height: 180px; border-radius: 50%; background: linear-gradient(135deg, #4b4b4b, #787878); margin-bottom: 30px; }
+.mypage .info-box { width: 100%; }
+.mypage .info-row { display: flex; justify-content: space-between; margin-bottom: 14px; }
+.mypage .label { font-weight: 700; color: #24324a; }
+.mypage .value { color: #555; }
+.mypage .bio-card { position: relative; min-height: 100px; display: flex; align-items: center; justify-content: center; color: #444; font-size: 18px; }
+.mypage .quote { position: absolute; font-size: 40px; color: #5d7df5; left: 20px; top: 10px; }
+.mypage .quote.right { right: 20px; left: auto; bottom: 10px; top: auto; }
+.mypage .tag-wrapper { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; }
+.mypage .tag { background: #eef2ff; color: #4d67d6; padding: 8px 14px; border-radius: 30px; font-size: 14px; }
+.mypage .edit-btn { height: 45px; border: none; border-radius: 10px; background: #222; color: white; font-weight: bold; cursor: pointer; transition: 0.2s; }
+.mypage .small-btn { border: none; background: #222; color: white; padding: 7px 14px; border-radius: 8px; cursor: pointer; }
+.mypage .schedule-card { flex: 3; }
+.mypage .bookmark-card { flex: 1; }
+.mypage .meeting-card { min-height: 180px; }
+.mypage .meeting-tabs { display: flex; gap: 10px; font-size: 13px; }
+.mypage .meeting-tabs span { padding: 6px 10px; border-radius: 20px; background: #f1f1f1; }
+.mypage .active-tab { background: #dbe5ff !important; color: #4d67d6; font-weight: bold; }
+.mypage .study-card { flex: 2; }
+.mypage .user-card { flex: 1; }
+.mypage .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.mypage .schedule-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; text-align: center; font-size: 13px; }
+.mypage .active { background: #dbe5ff; border-radius: 10px; padding: 4px; color: #4d67d6; font-weight: bold; }
+.mypage .sub-text { font-size: 12px; color: #999; margin-top: 5px; }
+.mypage .time-text { font-size: 64px; font-weight: bold; color: #24324a; line-height: 1; margin-top: 20px; }
+.mypage .user-item { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; }
+.mypage .user-profile { display: flex; align-items: center; gap: 10px; }
+.mypage .mini-profile { width: 45px; height: 45px; border-radius: 50%; background: #999; }
+.mypage .user-profile p { margin: 0; font-weight: bold; }
+.mypage .user-profile span { font-size: 12px; color: #777; }
 
-.profile-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.nickname {
-  margin-bottom: 20px;
-  color: #24324a;
-}
-
-.profile-image {
-  width: 180px;
-  height: 180px;
-  border-radius: 50%;
-  background: linear-gradient(
-    135deg,
-    #4b4b4b,
-    #787878
-  );
-  margin-bottom: 30px;
-}
-
-.info-box {
-  width: 100%;
-}
-
-.info-row {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 14px;
-}
-
-.label {
-  font-weight: 700;
-  color: #24324a;
-}
-
-.value {
-  color: #555;
-}
-
-/* bio */
-
-.bio-card {
-  position: relative;
-  min-height: 100px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  color: #444;
-  font-size: 18px;
-}
-
-.quote {
-  position: absolute;
-  font-size: 40px;
-  color: #5d7df5;
-
-  left: 20px;
-  top: 10px;
-}
-
-.quote.right {
-  right: 20px;
-  left: auto;
-  bottom: 10px;
-  top: auto;
-}
-
-/* category */
-
-.tag-wrapper {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 15px;
-}
-
-.tag {
-  background: #eef2ff;
-  color: #4d67d6;
-  padding: 8px 14px;
-  border-radius: 30px;
-  font-size: 14px;
-}
-
-/* 버튼 */
-
-.edit-btn {
-  height: 45px;
-  border: none;
-  border-radius: 10px;
-  background: #222;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-.edit-btn:hover {
-  opacity: 0.9;
-}
-
-.small-btn {
-  border: none;
-  background: #222;
-  color: white;
-  padding: 7px 14px;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-/* 상단 */
-
-.schedule-card {
-  flex: 3;
-}
-
-.bookmark-card {
-  flex: 1;
-}
-
-/* 모임 */
-
-.meeting-card {
-  min-height: 180px;
-}
-
-.meeting-tabs {
-  display: flex;
-  gap: 10px;
-  font-size: 13px;
-}
-
-.meeting-tabs span {
-  padding: 6px 10px;
-  border-radius: 20px;
-  background: #f1f1f1;
-}
-
-.active-tab {
-  background: #dbe5ff !important;
-  color: #4d67d6;
-  font-weight: bold;
-}
-
-/* 하단 */
-
-.study-card {
-  flex: 2;
-}
-
-.user-card {
-  flex: 1;
-}
-
-/* 헤더 */
-
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-/* schedule */
-
-.schedule-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 10px;
-  text-align: center;
-  font-size: 13px;
-}
-
-.active {
-  background: #dbe5ff;
-  border-radius: 10px;
-  padding: 4px;
-  color: #4d67d6;
-  font-weight: bold;
-}
-
-/* study */
-
-.sub-text {
-  font-size: 12px;
-  color: #999;
-  margin-top: 5px;
-}
-
-.time-text {
-  font-size: 64px;
-  font-weight: bold;
-  color: #24324a;
-  line-height: 1;
-  margin-top: 20px;
-}
-
-/* user */
-
-.user-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 15px;
-}
-
-.user-profile {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.mini-profile {
-  width: 45px;
-  height: 45px;
-  border-radius: 50%;
-  background: #999;
-}
-
-.user-profile p {
-  margin: 0;
-  font-weight: bold;
-}
-
-.user-profile span {
-  font-size: 12px;
-  color: #777;
-}
-
-/* 반응형 대응 */
+/* 반응형 대응도 .mypage 안에서 작동하게 수정 */
 @media (max-width: 1024px) {
-  .mypage {
-    flex-direction: column; /* 세로로 변경 */
-  }
-  .left-section, .right-section {
-    width: 100%; /* 너비 100%로 확장 */
-  }
+  .mypage { flex-direction: column; }
+  .mypage .left-section, .mypage .right-section { width: 100%; }
 }
 
 @media (max-width: 768px) {
-  .top-row, .bottom-row {
-    flex-direction: column; /* 스케줄/북마크 등도 세로로 */
-  }
-  
-  .schedule-grid {
-    font-size: 11px; /* 모바일에서 글자 크기 조정 */
-    gap: 5px;
-  }
-  
-  .meeting-tabs {
-    flex-wrap: wrap; /* 탭이 너무 많으면 줄바꿈 */
-  }
+  .mypage .top-row, .mypage .bottom-row { flex-direction: column; }
+  .mypage .schedule-grid { font-size: 11px; gap: 5px; }
+  .mypage .meeting-tabs { flex-wrap: wrap; }
 }

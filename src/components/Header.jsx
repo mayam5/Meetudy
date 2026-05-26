@@ -17,11 +17,18 @@ import {
 } from "react-icons/fi";
 
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Login from "../components/Login";
 
 function Header() {
-
     const [isLoginOpen, setIsLoginOpen] = useState(false);
+    const navigate = useNavigate();
+
+    // 💡 로그인 성공 시 호출되어 마이페이지로 이동시키는 함수
+    const handleLoginSuccess = () => {
+        setIsLoginOpen(false); // 로그인 창 닫기
+        navigate("/mypage");   // 마이페이지 주소로 이동
+    };
 
     return (
         <>
@@ -33,7 +40,11 @@ function Header() {
             >
                 <Container fluid>
 
-                    <Navbar.Brand href="#">
+                    {/* 로고 클릭 시 메인 홈으로 이동 */}
+                    <Navbar.Brand 
+                        style={{ cursor: "pointer" }} 
+                        onClick={() => navigate("/")}
+                    >
                         <img src={logo} alt="logo" className="header-logo" />
                     </Navbar.Brand>
 
@@ -48,7 +59,6 @@ function Header() {
                             />
 
                             <div className="search-inner">
-
                                 <Button variant="light" size="sm">
                                     <FiSearch />
                                 </Button>
@@ -74,12 +84,11 @@ function Header() {
                                         <Dropdown.Item>외국어</Dropdown.Item>
                                     </Dropdown.Menu>
                                 </Dropdown>
-
                             </div>
                         </div>
 
                         <Nav className="header-menu">
-
+                            {/* 내 모임 버튼은 기존대로 유지 */}
                             <Button variant="light" size="sm">
                                 내 모임
                             </Button>
@@ -90,14 +99,13 @@ function Header() {
 
                             <FiBell size={20} className="header-icon" />
 
-                            {/* 로그인 아이콘 */}
+                            {/* 💡 프로필 아이콘 클릭 시 로그인 모달만 열기 */}
                             <FiUser
                                 size={20}
                                 className="header-icon"
                                 style={{ cursor: "pointer" }}
                                 onClick={() => setIsLoginOpen(true)}
                             />
-
                         </Nav>
 
                     </Navbar.Collapse>
@@ -105,8 +113,12 @@ function Header() {
                 </Container>
             </Navbar>
             
+            {/* 💡 Login 컴포넌트에 로그인 성공 함수(onLoginSuccess)를 전달 */}
             {isLoginOpen && (
-                <Login onClose={() => setIsLoginOpen(false)} />
+                <Login 
+                    onClose={() => setIsLoginOpen(false)} 
+                    onLoginSuccess={handleLoginSuccess} 
+                />
             )}
         </>
     );

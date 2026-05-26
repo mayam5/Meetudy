@@ -33,7 +33,8 @@ function Login({ onClose, onLoginSuccess }) {
             setLoading(false);
             
             if (mode === "login") {
-                // 💡 로그인 모드일 때: 1초 로딩 후 헤더가 준 마이페이지 이동 로직을 트리거합니다.
+                
+                localStorage.setItem("userEmail", values.email);
                 if (typeof onLoginSuccess === "function") {
                     onLoginSuccess();
                 }

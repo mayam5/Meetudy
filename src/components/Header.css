@@ -79,6 +79,18 @@
     padding-top: 8px;
 }
 
+.chat-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    width: 100vw;
+    height: 100vh;
+
+    background: transparent; /* 필요하면 rgba(0,0,0,0.05)로 살짝 어둡게 */
+    z-index: 9998;
+}
+
 /* 아이콘 */
 .header-icon {
     cursor: pointer;

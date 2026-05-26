@@ -9,6 +9,8 @@ import {
 
 import "./Header.css";
 import logo from "../assets/logo.png";
+import Chat from "../components/Chat";
+import ChatList from "../components/ChatList"; // ChatList 가져오기
 
 import {
     FiSearch,
@@ -27,31 +29,47 @@ function Header() {
     // 로그인 상태 추가
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+    // [변경] 내 모임 목록 창 열림 상태 관리
+    const [isListOpen, setIsListOpen] = useState(false);
+
+    // [변경] 현재 열려있는 상세 채팅창 관리 (null이면 닫힘, 문자열이면 열림)
+    const [activeRoom, setActiveRoom] = useState(null);
+
+    const handleSelectRoom = (room) => {
+        setActiveRoom(room);
+    };
+
+    const closeAll = () => {
+        setIsListOpen(false);
+        setActiveRoom(null);
+    };
     const navigate = useNavigate();
 
     // 로그인 성공 시
     const handleLoginSuccess = () => {
-
         setIsLoggedIn(true);
-
         setIsLoginOpen(false);
-
         navigate("/mypage");
     };
 
     // 프로필 아이콘 클릭
     const handleProfileClick = () => {
-
-        // 로그인 되어있으면 마이페이지 이동
         if (isLoggedIn) {
-
             navigate("/mypage");
-
         } else {
-
-            // 로그인 안되어있으면 로그인창
             setIsLoginOpen(true);
         }
+    };
+
+    // 내 모임 버튼 클릭 핸들러
+    const handleMyGroupClick = () => {
+        if (!isLoggedIn) {
+            alert("로그인이 필요한 서비스입니다.");
+            setIsLoginOpen(true);
+            return;
+        }
+        // 로그인 상태면 모임 목록 창을 토글(켜고 끔)
+        setIsListOpen(!isListOpen);
     };
 
     return (
@@ -110,17 +128,9 @@ function Header() {
                                     </Dropdown.Toggle>
 
                                     <Dropdown.Menu>
-                                        <Dropdown.Item>
-                                            서울
-                                        </Dropdown.Item>
-
-                                        <Dropdown.Item>
-                                            경기
-                                        </Dropdown.Item>
-
-                                        <Dropdown.Item>
-                                            부산
-                                        </Dropdown.Item>
+                                        <Dropdown.Item>서울</Dropdown.Item>
+                                        <Dropdown.Item>경기</Dropdown.Item>
+                                        <Dropdown.Item>부산</Dropdown.Item>
                                     </Dropdown.Menu>
 
                                 </Dropdown>
@@ -135,17 +145,9 @@ function Header() {
                                     </Dropdown.Toggle>
 
                                     <Dropdown.Menu>
-                                        <Dropdown.Item>
-                                            개발
-                                        </Dropdown.Item>
-
-                                        <Dropdown.Item>
-                                            자격증
-                                        </Dropdown.Item>
-
-                                        <Dropdown.Item>
-                                            외국어
-                                        </Dropdown.Item>
+                                        <Dropdown.Item>개발</Dropdown.Item>
+                                        <Dropdown.Item>자격증</Dropdown.Item>
+                                        <Dropdown.Item>외국어</Dropdown.Item>
                                     </Dropdown.Menu>
 
                                 </Dropdown>
@@ -154,11 +156,13 @@ function Header() {
                         </div>
 
                         {/* 우측 메뉴 */}
-                        <Nav className="header-menu">
+                        {/* 목록 배치를 위해 기준이 되는 position-relative 스타일을 인라인으로 추가했습니다 */}
+                        <Nav className="header-menu position-relative">
 
                             <Button
                                 variant="light"
                                 size="sm"
+                                onClick={handleMyGroupClick}
                             >
                                 내 모임
                             </Button>
@@ -183,6 +187,25 @@ function Header() {
                                 onClick={handleProfileClick}
                             />
 
+                            {/* [변경] 버튼 바로 아래쪽에 목록 창을 조건부 렌더링 */}
+                            {isListOpen && (
+    <div className="chat-dropdown-panel">
+
+        <ChatList
+  onSelectRoom={handleSelectRoom}
+  onClose={() => setIsListOpen(false)}
+/>
+
+        {activeRoom && (
+            <Chat
+                roomTitle={activeRoom.title}
+                onClose={() => setActiveRoom(null)}
+            />
+        )}
+
+    </div>
+)}
+
                         </Nav>
 
                     </Navbar.Collapse>
@@ -192,16 +215,20 @@ function Header() {
 
             {/* 로그인 모달 */}
             {isLoginOpen && (
-
                 <Login
-                    onClose={() =>
-                        setIsLoginOpen(false)
-                    }
-                    onLoginSuccess={
-                        handleLoginSuccess
-                    }
+                    onClose={() => setIsLoginOpen(false)}
+                    onLoginSuccess={handleLoginSuccess}
                 />
             )}
+
+            {/* [변경] activeRoomTitle에 값이 담겨 있을 때만 카카오톡 상세 채팅창 오픈 */}
+            {activeRoom && (
+                <Chat
+                    roomTitle={activeRoom.title}
+                    onClose={() => setActiveRoom(null)}
+                />
+            )}
+
         </>
     );
 }

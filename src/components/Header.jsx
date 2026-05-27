@@ -167,7 +167,11 @@ function Header() {
                                 내 모임
                             </Button>
 
-                            <Button variant="light" size="sm">
+                            <Button
+                                variant="light"
+                                size="sm"
+                                onClick={() => navigate("/post-write")}
+                            >
                                 글 작성하기
                             </Button>
 

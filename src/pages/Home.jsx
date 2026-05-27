@@ -3,11 +3,13 @@ import "./Home.css";
 import StudyCard from "../components/StudyCard";
 import StudyListItem from "../components/StudyListItem";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Home() {
 
     const [hoveredField, setHoveredField] = useState(null);
     const [isHovering, setIsHovering] = useState(false);
+    const navigate = useNavigate();
 
     const allStudies = [
         { title: "알고리즘 1", host: "민수", field: "개발", users: ["A", "B"] },
@@ -40,7 +42,12 @@ function Home() {
             {/* 버튼 영역 */}
             <div className="button-group">
 
-                <Button variant="dark" size="sm" style={{ width: "200px" }}>
+                <Button
+                    variant="dark"
+                    size="sm"
+                    style={{ width: "200px" }}
+                    onClick={() => navigate("/post-write")}
+                >
                     스터디 시작하기
                 </Button>
 
@@ -143,7 +150,12 @@ function Home() {
 
                 </div>
 
-                <Button variant="link" size="sm" className="create-study-button">
+                <Button
+                    variant="link"
+                    size="sm"
+                    className="create-study-button"
+                    onClick={() => navigate("/post-write")}
+                >
                     &gt;&gt;click
                 </Button>
 

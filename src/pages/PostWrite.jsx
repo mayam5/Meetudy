@@ -165,8 +165,6 @@ const [popupMessage, setPopupMessage] = useState("");
 
   return (
     <>
-    <Header />
-
     <div
       className="post-write-page"
       onClick={() => {

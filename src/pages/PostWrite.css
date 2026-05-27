@@ -1,0 +1,424 @@
+.post-write-page {
+  width: 100%;
+  min-height: 100vh;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  padding: 120px 0 40px;
+}
+
+.post-write-container {
+  width: 800px;
+  background-color: #f2f2f2;
+  border-radius: 20px;
+  padding: 40px 40px;
+}
+
+.post-write-container h1 {
+  text-align: center;
+  margin-bottom: 35px;
+}
+
+.form-section {
+  background-color: white;
+  padding: 30px;
+  border-radius: 20px;
+  margin-bottom: 40px;
+}
+
+.form-section h4 {
+  margin-bottom: 10px;
+}
+
+.form-section p {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #666;
+  font-size: 15px;
+}
+
+.category-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+
+.category-button {
+  background-color: #f5f5f5;
+  color: black;
+  padding: 10px 10px;
+  border-radius: 20px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.category-button:hover {
+  background-color: #222;
+  color: white;
+}
+
+.category-button.selected {
+  background-color: #222;
+  color: white;
+}
+
+
+.input {
+  width: 100%;
+  padding: 15px;
+  border: 3px solid #f5f5f5;
+  border-radius: 20px;
+  background-color: white;
+  font-size: 14px;
+  color: black;
+  box-sizing: border-box;
+  resize: none;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.input::placeholder {
+  color: #999;
+}
+
+.input:focus {
+  outline: none;
+}
+
+.input::-webkit-scrollbar {
+  width: 6px;
+}
+
+.input::-webkit-scrollbar-track {
+  margin: 11px 0;
+  background-color: #f5f5f5;
+  
+  
+}
+
+.input::-webkit-scrollbar-thumb {
+  background-color: #d9d9d9;
+  border-radius: 20px;
+}
+
+/*
+.dropbox-select {
+  width: 180px;
+  padding: 15px 15px;
+  border: 3px solid #f5f5f5;
+  border-radius: 20px;
+  background-color: white;
+  color: #999;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.dropbox-select:focus {
+  outline: none;
+  border-color: #f5f5f5;
+}
+
+.dropbox-select option {
+  color: #999;
+}
+
+.member-select.selected {
+  color: black;
+}
+*/
+
+.dropdown-row {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.hashtag-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.tag-input-wrapper {
+  display: flex;
+  align-items: center;
+
+  border: 3px solid #f5f5f5;
+  border-radius: 20px;
+
+  padding: 0 15px;
+  background-color: white;
+}
+
+.tag-prefix {
+  font-size: 16px;
+  color: black;
+  margin-right: 5px;
+}
+
+.tag-input {
+  flex: 1;
+
+  border: none;
+  outline: none;
+
+  padding: 15px 0;
+  font-size: 14px;
+
+  background-color: transparent;
+  color: black;
+  caret-color: black;
+}
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.tag-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  background-color: #f5f5f5;
+  border-radius: 12px;
+  padding: 8px 12px;
+
+  font-size: 14px;
+  color: black;
+}
+
+.tag-delete {
+  border: none;
+  background: none;
+  cursor: pointer;
+
+  font-size: 14px;
+  color: #555;
+}
+
+.time-add-button {
+  border: none;
+  border-radius: 20px;
+  padding: 0 13px;
+  margin-top: 11px;
+  margin-bottom: 11px;
+
+  background-color: black;
+  color: white;
+
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.time-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+
+  margin-top: 15px;
+}
+
+.time-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  background-color: #f5f5f5;
+  border-radius: 12px;
+  padding: 8px 12px;
+
+  font-size: 14px;
+  color: black;
+}
+
+.time-delete {
+  border: none;
+  background: none;
+  cursor: pointer;
+
+  font-size: 14px;
+  color: #555;
+}
+
+.place-search-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.place-result-list {
+  background-color: white;
+  border: 3px solid #f5f5f5;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.place-result-item {
+  padding: 15px;
+  cursor: pointer;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.place-result-item:last-child {
+  border-bottom: none;
+}
+
+.place-result-item:hover {
+  background-color: #f5f5f5;
+}
+
+.place-result-item strong {
+  font-size: 14px;
+  color: black;
+}
+
+.place-result-item p {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: #999;
+}
+
+.place-no-result {
+  padding: 15px;
+  background-color: #f5f5f5;
+  border-radius: 20px;
+  font-size: 14px;
+  color: black;
+}
+
+.selected-place {
+  padding: 15px;
+  background-color: #f5f5f5;
+  border-radius: 20px;
+}
+
+.selected-place strong {
+  font-size: 14px;
+  color: black;
+}
+
+.selected-place p {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: #777;
+}
+
+.cost-input-wrapper {
+  display: flex;
+  align-items: center;
+
+  border: 3px solid #f5f5f5;
+  border-radius: 20px;
+
+  padding: 0 15px;
+  background-color: white;
+}
+
+.cost-prefix {
+  font-size: 16px;
+  color: black;
+  margin-right: 5px;
+}
+
+.cost-input {
+  flex: 1;
+
+  border: none;
+  outline: none;
+
+  padding: 15px 0;
+  font-size: 14px;
+
+  background-color: transparent;
+  color: black;
+  caret-color: black;
+}
+
+
+.post-button-group {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+
+  margin-top: 70px;
+}
+
+.post-button {
+  border: none;
+  border-radius: 20px;
+
+  padding: 12px 20px;
+
+  font-size: 14px;
+  font-weight: 500;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+/* 임시 저장 */
+.post-button.save {
+  background-color: black;
+  color: white;
+}
+
+/* 올리기 / 수정하기 */
+.post-button.submit {
+  background-color: black;
+  color: white;
+}
+
+/* 상태 변경 */
+.post-button.status {
+  background-color: black;
+  color: white;
+}
+
+/* 삭제 */
+.post-button.delete {
+  background-color: black;
+  color: white;
+}
+
+/* hover 효과 */
+.post-button:hover {
+  opacity: 0.65;
+}
+
+
+.post-action-wrapper {
+  position: relative;
+}
+
+.status-popup-box {
+  position: absolute;
+
+  top: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: 250px;
+  height: 200px;
+
+  background-color: #666;
+  border-radius: 20px;
+
+  z-index: 100;
+
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+  align-items: center;
+
+  gap: 16px;
+}

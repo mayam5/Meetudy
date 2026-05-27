@@ -334,17 +334,46 @@
 }
 
 .mypage .schedule-cell {
-  padding: 8px;
+  padding: 10px;
   border-radius: 12px;
   cursor: pointer;
-}
+  transition: 0.2s ease;
+  color: #777;
+  background: #fff;
+  border: 1px solid #f0f0f0;
 
-.mypage .active {
+  font-weight: 500;
+  user-select: none;
+}
+/* =========================
+  선택된 상태
+========================= */
+.mypage .schedule-cell.active {
   background: #f2f2f2;
   color: #111;
   font-weight: 600;
-  border-radius: 12px;
+  border: 1px transparent
 }
+
+/* =========================
+   수정 모드
+========================= */
+.mypage .schedule-card.editing .schedule-cell {
+  border: 1px dashed #d6d6d6;
+}
+
+.mypage .schedule-card.editing .schedule-cell:hover {
+  border-color: #007bff;
+  background: rgba(0, 123, 255, 0.06);
+}
+
+.mypage .schedule-card.editing .schedule-cell.active {
+  background: #007bff;
+  color: #fff;
+  font-weight: 600;
+  border: 1px solid #007bff;
+}
+
 
 /* =========================
    MEETING

@@ -364,7 +364,7 @@ function MyPage() {
                 <span className="value">
                   {region.sido && region.sigungu && region.dong
                     ? `${region.sido} ${region.sigungu} ${region.dong}`
-                    : "비공개"}
+                    : "-"}
                 </span>
               )}
             </div>

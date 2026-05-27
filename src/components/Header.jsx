@@ -10,7 +10,7 @@ import {
 import "./Header.css";
 import logo from "../assets/logo.png";
 import Chat from "../components/Chat";
-import ChatList from "../components/ChatList"; // ChatList 가져오기
+import ChatList from "../components/ChatList";
 
 import {
     FiSearch,
@@ -25,34 +25,43 @@ import Login from "../components/Login";
 function Header() {
 
     const [isLoginOpen, setIsLoginOpen] = useState(false);
-
-    // 로그인 상태 추가
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-    // [변경] 내 모임 목록 창 열림 상태 관리
+    // 채팅 목록 열림 상태
     const [isListOpen, setIsListOpen] = useState(false);
 
-    // [변경] 현재 열려있는 상세 채팅창 관리 (null이면 닫힘, 문자열이면 열림)
+    // 현재 선택된 채팅방
     const [activeRoom, setActiveRoom] = useState(null);
 
+    // 채팅방 선택 시 실행
     const handleSelectRoom = (room) => {
         setActiveRoom(room);
     };
 
+    const handleSearch = () => {
+        alert("검색 기능 준비 중");
+    };
+    const handleNotificationClick = () => {
+        alert("알림 기능 준비 중");
+    };
+
+
+    // 모든 창 닫기 (채팅 + 리스트)
     const closeAll = () => {
         setIsListOpen(false);
         setActiveRoom(null);
     };
+
     const navigate = useNavigate();
 
-    // 로그인 성공 시
+    // 로그인 성공 처리
     const handleLoginSuccess = () => {
         setIsLoggedIn(true);
         setIsLoginOpen(false);
         navigate("/mypage");
     };
 
-    // 프로필 아이콘 클릭
+    // 프로필 클릭 처리
     const handleProfileClick = () => {
         if (isLoggedIn) {
             navigate("/mypage");
@@ -61,14 +70,14 @@ function Header() {
         }
     };
 
-    // 내 모임 버튼 클릭 핸들러
+    // 내 모임 버튼 클릭
     const handleMyGroupClick = () => {
         if (!isLoggedIn) {
             alert("로그인이 필요한 서비스입니다.");
             setIsLoginOpen(true);
             return;
         }
-        // 로그인 상태면 모임 목록 창을 토글(켜고 끔)
+
         setIsListOpen(!isListOpen);
     };
 
@@ -101,7 +110,7 @@ function Header() {
                         className="align-items-center"
                     >
 
-                        {/* 검색 */}
+                        {/* 검색 영역 */}
                         <div className="search-wrap">
 
                             <FormControl
@@ -112,51 +121,42 @@ function Header() {
                             <div className="search-inner">
 
                                 <Button
+                                    className="icon-button"
                                     variant="light"
                                     size="sm"
+                                    onClick={handleSearch}
                                 >
                                     <FiSearch />
                                 </Button>
 
+                                {/* 지역 선택 */}
                                 <Dropdown>
-
-                                    <Dropdown.Toggle
-                                        variant="light"
-                                        size="sm"
-                                    >
+                                    <Dropdown.Toggle variant="light" size="sm">
                                         지역
                                     </Dropdown.Toggle>
-
                                     <Dropdown.Menu>
                                         <Dropdown.Item>서울</Dropdown.Item>
                                         <Dropdown.Item>경기</Dropdown.Item>
                                         <Dropdown.Item>부산</Dropdown.Item>
                                     </Dropdown.Menu>
-
                                 </Dropdown>
 
+                                {/* 분야 선택 */}
                                 <Dropdown>
-
-                                    <Dropdown.Toggle
-                                        variant="light"
-                                        size="sm"
-                                    >
+                                    <Dropdown.Toggle variant="light" size="sm">
                                         분야
                                     </Dropdown.Toggle>
-
                                     <Dropdown.Menu>
                                         <Dropdown.Item>개발</Dropdown.Item>
                                         <Dropdown.Item>자격증</Dropdown.Item>
                                         <Dropdown.Item>외국어</Dropdown.Item>
                                     </Dropdown.Menu>
-
                                 </Dropdown>
 
                             </div>
                         </div>
 
                         {/* 우측 메뉴 */}
-                        {/* 목록 배치를 위해 기준이 되는 position-relative 스타일을 인라인으로 추가했습니다 */}
                         <Nav className="header-menu position-relative">
 
                             <Button
@@ -167,46 +167,47 @@ function Header() {
                                 내 모임
                             </Button>
 
-                            <Button
-                                variant="light"
-                                size="sm"
-                            >
+                            <Button variant="light" size="sm">
                                 글 작성하기
                             </Button>
 
-                            <FiBell
-                                size={20}
-                                className="header-icon"
-                            />
+                            <Button
+                                className="icon-button"
+                                variant="light"
+                                size="sm"
+                                onClick={handleNotificationClick}
+                            >
+                                <FiBell size={20} />
+                            </Button>
 
-                            {/* 프로필 */}
-                            <FiUser
-                                size={20}
-                                className="header-icon"
-                                style={{ cursor: "pointer" }}
+                            <Button
+                                variant="light"
+                                size="sm"
+                                className="icon-button"
                                 onClick={handleProfileClick}
-                            />
-
-                            {/* [변경] 버튼 바로 아래쪽에 목록 창을 조건부 렌더링 */}
-                            {isListOpen && (
-    <div className="chat-dropdown-panel">
-
-        <ChatList
-  onSelectRoom={handleSelectRoom}
-  onClose={() => setIsListOpen(false)}
-/>
-
-        {activeRoom && (
-            <Chat
-                roomTitle={activeRoom.title}
-                onClose={() => setActiveRoom(null)}
-            />
-        )}
-
-    </div>
-)}
-
+                            >
+                                <FiUser size={20} />
+                            </Button>
                         </Nav>
+
+                        {/* 채팅 목록 */}
+                        {isListOpen && (
+                            <>
+                                {/* 바깥 클릭 영역 */}
+                                <div
+                                    className="chat-overlay"
+                                    onClick={closeAll}
+                                />
+
+                                {/* 채팅 리스트 */}
+                                <div className="chat-wrapper">
+                                    <ChatList
+                                        onSelectRoom={handleSelectRoom}
+                                        onClose={() => setIsListOpen(false)}
+                                    />
+                                </div>
+                            </>
+                        )}
 
                     </Navbar.Collapse>
 
@@ -221,12 +222,21 @@ function Header() {
                 />
             )}
 
-            {/* [변경] activeRoomTitle에 값이 담겨 있을 때만 카카오톡 상세 채팅창 오픈 */}
+            {/* 채팅창 */}
             {activeRoom && (
-                <Chat
-                    roomTitle={activeRoom.title}
-                    onClose={() => setActiveRoom(null)}
-                />
+                <>
+                    <div
+                        className="chat-overlay"
+                        onClick={closeAll}
+                    />
+
+                    <div className="chat-wrapper">
+                        <Chat
+                            roomTitle={activeRoom.title}
+                            onClose={() => setActiveRoom(null)}
+                        />
+                    </div>
+                </>
             )}
 
         </>

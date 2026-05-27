@@ -4,7 +4,6 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import "./Login.css";
 
-// 💡 1. props로 onLoginSuccess를 추가로 받아옵니다.
 function Login({ onClose, onLoginSuccess }) {
     const [mode, setMode] = useState("login");
     const [subMode, setSubMode] = useState(null);
@@ -31,16 +30,14 @@ function Login({ onClose, onLoginSuccess }) {
 
         setTimeout(() => {
             setLoading(false);
-            
+
             if (mode === "login") {
-                
+
                 localStorage.setItem("userEmail", values.email);
                 if (typeof onLoginSuccess === "function") {
                     onLoginSuccess();
                 }
             } else {
-                // 회원가입 모드일 때 처리 (필요시 추가)
-                console.log("회원가입 성공 데이터:", values);
                 setMode("login"); // 가입 완료 후 로그인 폼으로 전환 등
             }
         }, 1000);
@@ -104,7 +101,7 @@ function Login({ onClose, onLoginSuccess }) {
                         <Formik
                             initialValues={{ email: "", password: "" }}
                             validationSchema={loginSchema}
-                            onSubmit={handleFormSubmit} // 💡 더미 이펙트 대신 실제 서밋 함수 연결
+                            onSubmit={handleFormSubmit}
                         >
                             {({ handleSubmit, handleChange, values, touched, errors }) => (
                                 <Form noValidate onSubmit={handleSubmit}>
@@ -155,7 +152,7 @@ function Login({ onClose, onLoginSuccess }) {
                                 region: "",
                             }}
                             validationSchema={signupSchema}
-                            onSubmit={handleFormSubmit} // 💡 서밋 함수 연결
+                            onSubmit={handleFormSubmit}
                         >
                             {({ handleSubmit, handleChange, values, touched, errors, setFieldValue }) => (
                                 <Form noValidate onSubmit={handleSubmit}>
@@ -321,13 +318,12 @@ function Login({ onClose, onLoginSuccess }) {
                         variant="primary"
                         disabled={loading}
                         onClick={() => {
-                            // 💡 현재 띄워진 활성화된 form 태그를 찾아서 유효성 검사 후 제출시킵니다.
                             document.querySelector(".modal.show form")?.requestSubmit();
                         }}
                     >
                         {loading ? (
                             <>
-                                <Spinner size="sm" animation="border" /> 처리중...
+                                <Spinner size="sm" animation="border" /> 로그인...
                             </>
                         ) : mode === "login" ? (
                             "로그인"

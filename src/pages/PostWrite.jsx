@@ -28,6 +28,7 @@ import { useState } from "react";
 import Header from "../components/Header";
 import "./PostWrite.css";
 import Dropbox from "../components/Dropbox";
+import ConfirmPopup from "../components/ConfirmPopup";
 
 function PostWrite() {
   // const [memberCount, setMemberCount] = useState("");
@@ -155,6 +156,7 @@ const filteredPlaces = dummyPlaces.filter((place) =>
   place.placeName.includes(placeInput)
 );
 
+const [popupMessage, setPopupMessage] = useState("");
 
 
 
@@ -433,9 +435,12 @@ const filteredPlaces = dummyPlaces.filter((place) =>
 
               <div className="post-button-group">
 
-                <button className="post-button delete">
-                  삭제하기
-                </button>
+              <button
+                className="post-button delete"
+                onClick={() => setPopupMessage("삭제되었습니다")}
+              >
+                삭제하기
+              </button>
 
                 <button
                   className="post-button status"
@@ -444,7 +449,9 @@ const filteredPlaces = dummyPlaces.filter((place) =>
                   상태 변경하기
                 </button>
 
-                <button className="post-button submit">
+                <button className="post-button submit"
+                onClick={() => setPopupMessage("수정되었습니다")}
+                >
                   수정하기
                 </button>
 
@@ -469,10 +476,14 @@ const filteredPlaces = dummyPlaces.filter((place) =>
 
                   <button
                     className="post-button submit"
-                    onClick={() => setIsStatusPopupOpen(false)}
+                    onClick={() => {
+                      setIsStatusPopupOpen(false);
+                      setPopupMessage("상태가 변경되었습니다");
+                    }}
                   >
                     상태 변경하기
                   </button>
+
 
                 </div>
               )}
@@ -483,11 +494,15 @@ const filteredPlaces = dummyPlaces.filter((place) =>
 
             <div className="post-button-group">
 
-              <button className="post-button save">
+              <button className="post-button save"
+              onClick={() => setPopupMessage("저장되었습니다")}
+              >
                 임시 저장
               </button>
 
-              <button className="post-button submit">
+              <button className="post-button submit"
+              onClick={() => setPopupMessage("완료했습니다")}
+              >
                 올리기
               </button>
 
@@ -496,9 +511,17 @@ const filteredPlaces = dummyPlaces.filter((place) =>
           )}
 
         </div>
+        
 
       </div>
     </div>
+
+    {popupMessage && (
+      <ConfirmPopup
+        message={popupMessage}
+        onClose={() => setPopupMessage("")}
+      />
+    )}
     </>
   );
 

@@ -1,0 +1,95 @@
+.dropbox {
+  position: relative;
+  width: 200px;
+}
+
+.dropbox-button {
+  width: 100%;
+  padding: 15px;
+  border: 3px solid #f5f5f5;
+  border-radius: 20px;
+  background-color: white;
+  color: #999;
+  font-size: 14px;
+  cursor: pointer;
+  text-align: left;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dropbox-button.selected {
+  color: black;
+}
+
+.dropbox-arrow {
+  font-size: 14px;
+}
+
+
+.dropbox-list {
+  position: absolute;
+  top: 55px;
+  left: 0;
+  width: 100%;
+
+  background-color: white;
+  border: 3px solid #f5f5f5;
+  border-radius: 20px;
+
+  box-sizing: border-box;
+  z-index: 10;
+
+  overflow: hidden;
+}
+
+.dropbox-scroll-area {
+  max-height: 180px;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  margin: 0;
+  padding: 8px 0;
+  list-style: none;
+}
+
+.dropbox-scroll-area::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dropbox-scroll-area::-webkit-scrollbar-track {
+  background-color: #f5f5f5;
+}
+
+.dropbox-scroll-area::-webkit-scrollbar-thumb {
+  background-color: #d9d9d9;
+  border-radius: 20px;
+}
+
+.dropbox-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 15px;
+  min-height: 48px;
+  font-size: 14px;
+  color: #999;
+  cursor: pointer;
+}
+
+/*
+.dropbox-item:first-child {
+  padding-top: 16px;
+}
+
+.dropbox-item:last-child {
+  padding-bottom: 16px;
+}
+*/
+
+.dropbox-item:hover {
+  background-color: #f5f5f5;
+  color: black;
+}
+

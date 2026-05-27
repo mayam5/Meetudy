@@ -9,6 +9,8 @@ import {
 
 import "./Header.css";
 import logo from "../assets/logo.png";
+import Chat from "../components/Chat";
+import ChatList from "../components/ChatList";
 
 import {
     FiSearch,
@@ -17,11 +19,67 @@ import {
 } from "react-icons/fi";
 
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Login from "../components/Login";
 
 function Header() {
 
     const [isLoginOpen, setIsLoginOpen] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    // 채팅 목록 열림 상태
+    const [isListOpen, setIsListOpen] = useState(false);
+
+    // 현재 선택된 채팅방
+    const [activeRoom, setActiveRoom] = useState(null);
+
+    // 채팅방 선택 시 실행
+    const handleSelectRoom = (room) => {
+        setActiveRoom(room);
+    };
+
+    const handleSearch = () => {
+        alert("검색 기능 준비 중");
+    };
+    const handleNotificationClick = () => {
+        alert("알림 기능 준비 중");
+    };
+
+
+    // 모든 창 닫기 (채팅 + 리스트)
+    const closeAll = () => {
+        setIsListOpen(false);
+        setActiveRoom(null);
+    };
+
+    const navigate = useNavigate();
+
+    // 로그인 성공 처리
+    const handleLoginSuccess = () => {
+        setIsLoggedIn(true);
+        setIsLoginOpen(false);
+        navigate("/mypage");
+    };
+
+    // 프로필 클릭 처리
+    const handleProfileClick = () => {
+        if (isLoggedIn) {
+            navigate("/mypage");
+        } else {
+            setIsLoginOpen(true);
+        }
+    };
+
+    // 내 모임 버튼 클릭
+    const handleMyGroupClick = () => {
+        if (!isLoggedIn) {
+            alert("로그인이 필요한 서비스입니다.");
+            setIsLoginOpen(true);
+            return;
+        }
+
+        setIsListOpen(!isListOpen);
+    };
 
     return (
         <>
@@ -33,15 +91,28 @@ function Header() {
             >
                 <Container fluid>
 
-                    <Navbar.Brand href="#">
-                        <img src={logo} alt="logo" className="header-logo" />
+                    {/* 로고 */}
+                    <Navbar.Brand
+                        style={{ cursor: "pointer" }}
+                        onClick={() => navigate("/")}
+                    >
+                        <img
+                            src={logo}
+                            alt="logo"
+                            className="header-logo"
+                        />
                     </Navbar.Brand>
 
                     <Navbar.Toggle aria-controls="navbar" />
 
-                    <Navbar.Collapse id="navbar" className="align-items-center">
+                    <Navbar.Collapse
+                        id="navbar"
+                        className="align-items-center"
+                    >
 
+                        {/* 검색 영역 */}
                         <div className="search-wrap">
+
                             <FormControl
                                 placeholder="스터디를 검색해보세요"
                                 className="search-input"
@@ -49,10 +120,16 @@ function Header() {
 
                             <div className="search-inner">
 
-                                <Button variant="light" size="sm">
+                                <Button
+                                    className="icon-button"
+                                    variant="light"
+                                    size="sm"
+                                    onClick={handleSearch}
+                                >
                                     <FiSearch />
                                 </Button>
 
+                                {/* 지역 선택 */}
                                 <Dropdown>
                                     <Dropdown.Toggle variant="light" size="sm">
                                         지역
@@ -64,6 +141,7 @@ function Header() {
                                     </Dropdown.Menu>
                                 </Dropdown>
 
+                                {/* 분야 선택 */}
                                 <Dropdown>
                                     <Dropdown.Toggle variant="light" size="sm">
                                         분야
@@ -78,9 +156,14 @@ function Header() {
                             </div>
                         </div>
 
-                        <Nav className="header-menu">
+                        {/* 우측 메뉴 */}
+                        <Nav className="header-menu position-relative">
 
-                            <Button variant="light" size="sm">
+                            <Button
+                                variant="light"
+                                size="sm"
+                                onClick={handleMyGroupClick}
+                            >
                                 내 모임
                             </Button>
 
@@ -88,26 +171,74 @@ function Header() {
                                 글 작성하기
                             </Button>
 
-                            <FiBell size={20} className="header-icon" />
+                            <Button
+                                className="icon-button"
+                                variant="light"
+                                size="sm"
+                                onClick={handleNotificationClick}
+                            >
+                                <FiBell size={20} />
+                            </Button>
 
-                            {/* 로그인 아이콘 */}
-                            <FiUser
-                                size={20}
-                                className="header-icon"
-                                style={{ cursor: "pointer" }}
-                                onClick={() => setIsLoginOpen(true)}
-                            />
-
+                            <Button
+                                variant="light"
+                                size="sm"
+                                className="icon-button"
+                                onClick={handleProfileClick}
+                            >
+                                <FiUser size={20} />
+                            </Button>
                         </Nav>
+
+                        {/* 채팅 목록 */}
+                        {isListOpen && (
+                            <>
+                                {/* 바깥 클릭 영역 */}
+                                <div
+                                    className="chat-overlay"
+                                    onClick={closeAll}
+                                />
+
+                                {/* 채팅 리스트 */}
+                                <div className="chat-wrapper">
+                                    <ChatList
+                                        onSelectRoom={handleSelectRoom}
+                                        onClose={() => setIsListOpen(false)}
+                                    />
+                                </div>
+                            </>
+                        )}
 
                     </Navbar.Collapse>
 
                 </Container>
             </Navbar>
-            
+
+            {/* 로그인 모달 */}
             {isLoginOpen && (
-                <Login onClose={() => setIsLoginOpen(false)} />
+                <Login
+                    onClose={() => setIsLoginOpen(false)}
+                    onLoginSuccess={handleLoginSuccess}
+                />
             )}
+
+            {/* 채팅창 */}
+            {activeRoom && (
+                <>
+                    <div
+                        className="chat-overlay"
+                        onClick={closeAll}
+                    />
+
+                    <div className="chat-wrapper">
+                        <Chat
+                            roomTitle={activeRoom.title}
+                            onClose={() => setActiveRoom(null)}
+                        />
+                    </div>
+                </>
+            )}
+
         </>
     );
 }

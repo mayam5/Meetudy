@@ -1,0 +1,241 @@
+.list-item {
+  display: grid;
+  grid-template-columns: 0.2fr 2fr 1.6fr 1.6fr 1fr;
+  column-gap: 28px;
+  align-items: center;
+
+  min-height: 82px;
+  padding-left: 10px;
+  padding-right: 28px;
+
+  background: white;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+}
+ 
+.list-bookmark {
+  font-size: 22px;
+  color: #222;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.list-title-box {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+}
+
+.list-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111;
+}
+
+.list-tags {
+  font-size: 12px;
+  color: #777;
+}
+
+/*
+.list-item .host-box {
+  width: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+*/
+
+.list-host {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-self: start;
+}
+
+.list-host-name {
+  font-size: 13px;
+}
+
+.list-host-profile {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #e0e0e0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 14px;
+  color: #333;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+/*
+.list-item .host-name {
+  font-size: 10px;
+  color: #111;
+}
+
+
+.list-item .tag {
+  font-size: 11px;
+}
+*/
+
+.list-item .avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #e0e0e0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+}
+
+.list-item .more {
+  font-size: 15px !important;
+  font-weight: 600;
+  margin-left: 8px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+
+}
+
+.list-item .avatar-group {
+  display: flex;
+  align-items: center;
+  justify-self: start;
+  margin-left: 0;
+}
+
+.list-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+}
+
+.list-actions button {
+  padding: 7px 10px;
+  border: none;
+  border-radius: 6px;
+
+  background: #222;
+  color: white;
+
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.list-actions .light-btn {
+  background: white;
+  color: #222;
+  border: 1px solid #ddd;
+}
+
+.list-actions .chat-btn {
+  background: white;
+  color: #222;
+  border: 1px solid #bbb;
+
+  min-width: 78px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: red;
+}
+
+.cancel-btn {
+  background: #222;
+  color: white;
+}
+
+.accepted-text {
+  color: #4cd137;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.rejected-text {
+  color: #e84118;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+@media (max-width: 768px) {
+  .list-item {
+    grid-template-columns: 28px 1fr;
+    gap: 8px;
+  }
+
+  .list-item .host-box,
+  .list-item .avatar-group,
+  .list-actions {
+    grid-column: 2;
+  }
+}
+
+.delete-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  background: rgba(0, 0, 0, 0.25);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 999;
+}
+
+.delete-popup {
+  width: 280px;
+  padding: 28px 24px;
+
+  background: white;
+  border-radius: 16px;
+
+  text-align: center;
+}
+
+.delete-popup p {
+  margin-bottom: 20px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.delete-popup button {
+  padding: 8px 24px;
+  border: none;
+  border-radius: 8px;
+
+  background: #222;
+  color: white;
+
+  cursor: pointer;
+}

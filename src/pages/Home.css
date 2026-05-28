@@ -1,0 +1,262 @@
+.home {
+    padding-top: 100px;
+    text-align: center;
+}
+
+/* 메인 제목 */
+.main-title {
+    font-weight: bold;
+}
+
+/* 상단 버튼 */
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+/* 관심 분야 */
+.interest-section {
+    width: 80%;
+    margin: 0 auto;
+    margin-top: 100px;
+
+    padding: 20px;
+
+    text-align: center;
+
+    background: #bababa;
+    border-radius: 20px;
+}
+
+.interest-title {
+    font-weight: bold;
+}
+
+.interest-buttons {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    margin-top: 15px;
+}
+
+/* 스터디 생성 */
+.create-study-box {
+    margin: 100px 20px 0;
+
+    padding: 10px 15px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    background: #000;
+    border-radius: 30px;
+}
+
+.create-study-text {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    color: white;
+    text-align: left;
+}
+
+.create-study-title {
+    margin: 0;
+    font-weight: bold;
+}
+
+.create-study-sub {
+    margin: 0;
+    font-size: 15px;
+}
+
+.create-study-button {
+    color: white !important;
+    text-decoration: none !important;
+}
+
+/* 추천 스터디 */
+.recommend-section {
+    margin: 100px 20px 0;
+
+    padding: 20px;
+
+    text-align: left;
+
+    background: #7e7e7e;
+    border-radius: 20px;
+}
+
+.recommend-text {
+    color: white;
+}
+
+.recommend-title {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.recommend-sub {
+    font-size: 10px;
+}
+
+/* 카드 리스트 */
+.card-wrap {
+    width: 100%;
+
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+
+    gap: 20px;
+
+    margin-top: 15px;
+}
+
+/* 스터디 카드 */
+.study-card {
+    width: 100%;
+
+    padding: 15px;
+
+    text-align: left;
+
+    background: white;
+    border-radius: 15px;
+
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.study-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.study-title {
+    margin: 0;
+
+    font-size: 10px;
+    font-weight: bold;
+}
+
+.study-bottom {
+    margin-top: 10px;
+}
+
+/* 참여자 */
+.avatar-group {
+    display: flex;
+    align-items: center;
+}
+
+.avatar {
+    width: 22px;
+    height: 22px;
+
+    margin-left: -6px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 10px;
+
+    background: #ddd;
+    border: 2px solid white;
+    border-radius: 50%;
+}
+
+.avatar.host {
+    width: 30px;
+    height: 30px;
+
+    margin-left: 0;
+
+    font-size: 12px;
+}
+
+.more {
+    margin-left: 6px;
+
+    font-size: 10px;
+    color: #666;
+}
+
+/* 호스트 */
+.host-box {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.host-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+}
+
+.host-name {
+    font-size: 10px;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.tag {
+    font-size: 10px;
+    line-height: 1;
+    color: #666;
+}
+
+/* 전체 스터디 목록 */
+.all-study-section {
+    margin: 100px 20px 0;
+    text-align: left;
+}
+
+.all-study-title {
+    font-weight: bold;
+}
+
+.all-study-sub {
+    font-size: 12px;
+    color: #666;
+}
+
+/* 리스트 */
+.study-list {
+    margin-top: 20px;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.study-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 14px 20px;
+
+    background: white;
+    border-bottom: 1px solid #ddd;
+}
+
+.study-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.list-study-title {
+    min-width: 180px;
+
+    font-size: 16px;
+    font-weight: bold;
+}

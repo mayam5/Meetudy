@@ -1,0 +1,158 @@
+/* =========================
+   헤더 전체 레이아웃
+========================= */
+
+.header {
+    width: 100%;
+    padding: 8px 0;
+}
+
+.header-logo {
+    width: 120px;
+}
+
+.navbar-collapse {
+    justify-content: flex-end;
+    gap: 20px;
+}
+
+/* =========================
+   검색창 영역
+========================= */
+
+.search-wrap {
+    width: 100%;
+    max-width: 600px;
+    min-width: 300px;
+
+    position: relative;
+    margin: 0;
+}
+
+.search-input {
+    height: 38px;
+
+    padding-right: 260px !important;
+    padding-left: 14px !important;
+
+    font-size: 14px !important;
+
+    border-radius: 999px !important;
+}
+
+.search-input::placeholder {
+    font-size: 14px;
+}
+
+.search-inner {
+    position: absolute;
+    top: 50%;
+    right: 0;
+
+    transform: translateY(-50%);
+
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    padding-right: 12px;
+}
+
+/* =========================
+   버튼 / 아이콘
+========================= */
+
+.icon-button {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 6px;
+    border-radius: 8px;
+
+    transition: all 0.2s ease;
+}
+
+/* hover */
+.icon-button:hover {
+    background: rgba(0, 0, 0, 0.05) !important;
+    color: #007bff;
+}
+
+/* 아이콘 색도 같이 변경 */
+.icon-button svg {
+    transition: 0.2s;
+}
+
+.icon-button:hover svg {
+    color: #007bff;
+}
+/* =========================
+   채팅 UI (레이어 구조)
+========================= */
+
+.chat-overlay {
+    position: fixed;
+    inset: 0;
+
+    background: transparent;
+
+    z-index: 9998;
+}
+
+.chat-wrapper {
+    position: absolute;
+    top: 100%;
+    right: 20px;
+
+    z-index: 9999;
+
+    display: flex;
+    flex-direction: row;
+}
+
+/* =========================
+   헤더 메뉴 영역
+========================= */
+
+.header-menu {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+/* =========================
+   반응형 (모바일)
+========================= */
+
+@media (max-width: 991px) {
+
+    .search-wrap {
+        margin-top: 15px;
+        min-width: 100%;
+    }
+
+    .header-menu {
+        margin-top: 15px;
+
+        display: flex;
+        flex-direction: row;
+
+        justify-content: flex-end;
+        align-items: center;
+        gap: 20px;
+
+        padding-bottom: 7px;
+    }
+
+    .header-menu.navbar-nav {
+        flex-direction: row !important;
+    }
+}

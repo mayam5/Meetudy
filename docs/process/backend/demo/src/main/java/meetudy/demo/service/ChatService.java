@@ -13,6 +13,7 @@ import meetudy.demo.exception.ErrorCode;
 import meetudy.demo.repository.ChatRoomMemberRepository;
 import meetudy.demo.repository.ChatRoomMessageRepository;
 import meetudy.demo.repository.ChatRoomRepository;
+import meetudy.demo.repository.UserBlockRepository;
 import meetudy.demo.repository.UserRepository;
 
 import java.util.List;
@@ -31,6 +32,7 @@ public class ChatService {
     private final ChatRoomMemberRepository chatRoomMemberRepository;
     private final ChatRoomMessageRepository chatRoomMessageRepository;
     private final UserRepository userRepository;
+    private final UserBlockRepository userBlockRepository;
 
  //
 //    /** CHAT-07: 채팅방 생성 (ApplicationService.accept() → PostService.createPost()에서 호출) */
@@ -115,7 +117,7 @@ public class ChatService {
 
 
 
-        /** CHAT 추가: 내 채팅방 목록 조회 */
+    /** CHAT 추가: 내 채팅방 목록 조회 */
     @Transactional(readOnly = true)
     public List<ChatRoomResponse> getMyChatRooms(Long userId) {
         return chatRoomMemberRepository.findAllByUser_UserIdAndLeftAtIsNull(userId)
@@ -124,8 +126,16 @@ public class ChatService {
                 .collect(Collectors.toList());
     }
 
-
-
+    /** 차단하지 않은 활성 멤버 ID 목록 반환 (WebSocket 브로드캐스트 필터링용) */
+    @Transactional(readOnly = true)
+    public List<Long> getRecipientsForMessage(Long chatRoomId, Long senderId) {
+        return chatRoomMemberRepository.findAllByChatRoom_ChatRoomIdAndLeftAtIsNull(chatRoomId)
+                .stream()
+                .map(m -> m.getUser().getUserId())
+                .filter(memberId -> !userBlockRepository
+                        .existsByBlocker_UserIdAndBlocked_UserId(memberId, senderId))
+                .collect(Collectors.toList());
+    }
 
 
 

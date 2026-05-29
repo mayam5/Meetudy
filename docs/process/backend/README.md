@@ -112,7 +112,8 @@ src/main/java/meetudy/demo/
 │   └── ApiResponse.java                  # 공통 응답 포맷
 ├── config/
 │   ├── SecurityConfig.java               # Spring Security 설정
-│   └── WebSocketConfig.java              # STOMP WebSocket 설정
+│   ├── WebSocketConfig.java              # STOMP WebSocket 설정
+│   └── AppConfig.java                    # RestTemplate 빈 등록
 ├── controller/
 │   ├── AuthController.java
 │   ├── UserController.java
@@ -121,7 +122,12 @@ src/main/java/meetudy/demo/
 │   ├── PostController.java
 │   ├── ApplicationController.java
 │   ├── ChatController.java
-│   └── BlockController.java
+│   ├── BlockController.java
+│   ├── BookmarkController.java
+│   ├── ScheduleController.java
+│   ├── StudyLogController.java
+│   ├── StudyGroupController.java
+│   └── PlaceController.java
 ├── service/
 │   ├── AuthService.java
 │   ├── UserService.java
@@ -130,7 +136,13 @@ src/main/java/meetudy/demo/
 │   ├── PostService.java
 │   ├── ApplicationService.java
 │   ├── ChatService.java
-│   └── BlockService.java
+│   ├── BlockService.java
+│   ├── BookmarkService.java
+│   ├── ScheduleService.java
+│   ├── StudyLogService.java
+│   ├── StudyGroupService.java
+│   ├── PlaceService.java
+│   └── RefreshTokenService.java
 ├── repository/
 │   ├── UserRepository.java
 │   ├── CategoryRepository.java
@@ -143,8 +155,13 @@ src/main/java/meetudy/demo/
 │   ├── ChatRoomRepository.java
 │   ├── ChatRoomMemberRepository.java
 │   ├── ChatRoomMessageRepository.java
-│   └── UserBlockRepository.java
-├── entity/                               # JPA 엔티티 19개
+│   ├── UserBlockRepository.java
+│   ├── PostBookmarkRepository.java
+│   ├── UserScheduleRepository.java
+│   ├── TimeSlotRepository.java
+│   ├── StudyLogRepository.java
+│   └── RefreshTokenRepository.java
+├── entity/                               # JPA 엔티티 20개
 ├── dto/
 │   ├── request/
 │   └── response/
@@ -153,7 +170,8 @@ src/main/java/meetudy/demo/
 │   ├── JwtFilter.java
 │   └── CustomUserDetailsService.java
 ├── websocket/
-│   └── ChatMessageHandler.java           # 실시간 메시지 송수신 (STOMP)
+│   ├── ChatMessageHandler.java           # 실시간 메시지 송수신 (STOMP)
+│   └── WebSocketAuthInterceptor.java     # CONNECT 시 JWT → Principal 설정
 └── exception/
     ├── ErrorCode.java
     ├── CustomException.java
@@ -174,7 +192,7 @@ src/main/java/meetudy/demo/
 | 스터디 운영 | Study_Groups, Study_Group_Members |
 | 채팅 | Chat_Rooms, Chat_Room_Members, Chat_Room_Messages |
 | 장소 | Places |
-| 인증 | User_Refresh_Tokens (추가 예정) |
+| 인증 | User_Refresh_Tokens |
 
 ---
 
@@ -276,6 +294,7 @@ PATCH /applications/{id}/accept
 
 | 메서드 | URL | 설명 | 인증 필요 |
 |---|---|---|---|
+| GET | `/chats/me` | 내 채팅방 목록 | O |
 | GET | `/chats/{roomId}` | 채팅방 정보 조회 | O |
 | GET | `/chats/{roomId}/messages` | 메시지 목록 조회 (페이징) | O |
 | PATCH | `/chats/{roomId}/read` | 읽음 처리 | O |
@@ -283,9 +302,30 @@ PATCH /applications/{id}/accept
 **WebSocket 실시간 채팅**
 ```
 연결:   ws://localhost:8080/ws
-구독:   /topic/chat.{roomId}
-전송:   /app/chat.send
-헤더:   Authorization: Bearer {token}
+        └─ CONNECT 헤더: Authorization: Bearer {token}
+
+메시지 전송:  /app/chat.send
+메시지 수신:  /user/queue/chat.{roomId}   ← 차단 유저 메시지 서버에서 필터링
+에러 수신:    /user/queue/errors
+```
+
+> ⚠️ 이전 구독 경로(`/topic/chat.{roomId}`)에서 변경됨.
+> 프론트엔드에서 CONNECT 시 `Authorization` 헤더 추가 및 구독 경로 수정 필요.
+
+### 스터디 그룹 (GRP)
+
+| 메서드 | URL | 설명 | 인증 필요 |
+|---|---|---|---|
+| GET | `/study-groups/me` | 내 스터디 그룹 목록 | O |
+| GET | `/study-groups/{groupId}` | 그룹 상세 조회 (멤버만) | O |
+| GET | `/study-groups/{groupId}/members` | 그룹 멤버 목록 (멤버만) | O |
+| PATCH | `/study-groups/{groupId}/leave` | 그룹 나가기 (채팅방 동시 처리) | O |
+
+**그룹 나가기 처리 (트랜잭션 내)**
+```
+PATCH /study-groups/{groupId}/leave
+  ├─ StudyGroupMember.leftAt 설정 (INACTIVE)
+  └─ ChatRoomMember.leftAt 설정 (INACTIVE)
 ```
 
 ### 차단 (BLK)
@@ -350,6 +390,33 @@ PUT /schedules
 
 ---
 
+### 장소 (PLC)
+
+| 메서드 | URL | 설명 | 인증 필요 |
+|---|---|---|---|
+| GET | `/places/search?query={검색어}` | 카카오 Local API로 장소 검색 | O |
+| POST | `/places` | 선택한 장소 DB 저장 | O |
+| GET | `/places/{placeId}` | 저장된 장소 단건 조회 | O |
+
+**장소 검색 흐름**
+```
+GET /places/search?query=강남 카페
+  └─ 백엔드가 KakaoAK 키로 dapi.kakao.com 호출
+  └─ 결과 변환 후 반환 (kakaoPlaceId, name, address, latitude, longitude 등)
+```
+
+**장소 저장 요청 형식**
+```json
+{
+  "name": "스타벅스 강남점",
+  "address": "서울 강남구 역삼동 123",
+  "latitude": 37.49794,
+  "longitude": 127.02759
+}
+```
+
+---
+
 ## 에러 코드
 
 | 코드 | HTTP | 메시지 |
@@ -376,7 +443,9 @@ PUT /schedules
 | BOOKMARK_ALREADY_EXISTS | 409 | 이미 북마크한 게시글입니다 |
 | BOOKMARK_NOT_FOUND | 404 | 북마크 내역이 존재하지 않습니다 |
 | STUDY_LOG_NOT_FOUND | 404 | 존재하지 않는 학습 로그입니다 |
+| STUDY_GROUP_NOT_FOUND | 404 | 존재하지 않는 스터디 그룹입니다 |
 | PLACE_NOT_FOUND | 404 | 존재하지 않는 장소입니다 |
+| KAKAO_API_ERROR | 502 | 카카오 장소 검색 API 호출에 실패했습니다 |
 | SCHEDULE_NOT_FOUND | 404 | 존재하지 않는 스케줄입니다 |
 | SCHEDULE_ALREADY_EXISTS | 409 | 이미 등록된 스케줄입니다 |
 | TIMESLOT_NOT_FOUND | 404 | 존재하지 않는 타임슬롯입니다 |
@@ -428,12 +497,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9...
 ✅ POST    스터디 모집 게시글 CRUD (작성/조회/수정/마감/삭제)
 ✅ BM      북마크
 ✅ APP     스터디 신청/수락/거절
-✅ GRP     스터디 그룹 생성/관리
-✅ CHAT    채팅 (WebSocket/STOMP)
+✅ GRP     스터디 그룹 조회/나가기
+✅ CHAT    채팅 (WebSocket/STOMP, 차단 필터링, 에러 처리)
 ✅ BLK     차단
 ✅ SCH     스케줄 관리
 ✅ LOG     학습 로그
-⬜ PLC     장소 등록/검색 (KakaoMap)
+✅ PLC     장소 등록/검색 (KakaoMap)
 ```
 
 ---

@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
+
 public interface StudyGroupMemberRepository extends JpaRepository<StudyGroupMember, Long> {
     /** 그룹 멤버 목록 */
     List<StudyGroupMember> findAllByStudyGroup_StudyGroupId(Long studyGroupId);
@@ -13,4 +14,7 @@ public interface StudyGroupMemberRepository extends JpaRepository<StudyGroupMemb
     Optional<StudyGroupMember> findByStudyGroup_StudyGroupIdAndUser_UserId(Long studyGroupId, Long userId);
     /** 멤버 존재 여부 */
     boolean existsByStudyGroup_StudyGroupIdAndUser_UserId(Long studyGroupId, Long userId);
+
+    /** 내가 속한 활성 그룹 목록 */
+    List<StudyGroupMember> findAllByUser_UserIdAndLeftAtIsNull(Long userId);
 }

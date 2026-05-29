@@ -123,22 +123,6 @@ function Home() {
                         둘러보기 →
                     </button>
                 </div>
-                <div className="hero-stats">
-                    <div className="hero-stat">
-                        <div className="hero-stat-num">2,8<em>47</em></div>
-                        <div className="hero-stat-label">활성 스터디</div>
-                    </div>
-                    <div className="hero-stat-divider" />
-                    <div className="hero-stat">
-                        <div className="hero-stat-num">12<em>K+</em></div>
-                        <div className="hero-stat-label">스터디원</div>
-                    </div>
-                    <div className="hero-stat-divider" />
-                    <div className="hero-stat">
-                        <div className="hero-stat-num">98<em>%</em></div>
-                        <div className="hero-stat-label">만족도</div>
-                    </div>
-                </div>
             </div>
 
             {/* ===== MARQUEE ===== */}

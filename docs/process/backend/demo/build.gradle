@@ -37,8 +37,8 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok' // // 컴파일 시 Lombok 어노테이션을 해석하고 코드를 생성할 프로세서 추가
 	
 	// flyway 마이그레이션
-	implementation 'org.flywaydb:flyway-core'
-	implementation 'org.flywaydb:flyway-mysql'
+	//implementation 'org.flywaydb:flyway-core'
+	//implementation 'org.flywaydb:flyway-mysql'
 
 	// MySQL
 

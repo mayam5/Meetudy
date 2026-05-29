@@ -11,6 +11,8 @@ function Login({ onClose, onLoginSuccess }) {
     const [loading, setLoading] = useState(false);
     const [shake, setShake] = useState(false);
 
+    const [categoryOptions, setCategoryOptions] = useState([]);
+
     const handleClose = () => {
         if (typeof onClose === "function") onClose();
     };
@@ -24,23 +26,99 @@ function Login({ onClose, onLoginSuccess }) {
         return () => window.removeEventListener("keydown", handleEsc);
     }, []);
 
+    useEffect(() => {
+    fetch("http://localhost:8080/categories")
+        .then((res) => res.json())
+        .then((result) => {
+        setCategoryOptions(result.data);
+        })
+        .catch((error) => {
+        console.error("카테고리 불러오기 실패:", error);
+        });
+    }, []);
+
     // 💡 2. 로그인/회원가입 버튼 클릭 후 Formik의 유효성 검사를 통과하면 실행되는 최종 서밋 함수입니다.
-    const handleFormSubmit = (values) => {
+    const handleFormSubmit = async (values) => {
         setLoading(true);
 
-        setTimeout(() => {
-            setLoading(false);
+        try {
 
+            // ================= LOGIN =================
             if (mode === "login") {
 
-                localStorage.setItem("userEmail", values.email);
-                if (typeof onLoginSuccess === "function") {
-                    onLoginSuccess();
+                const response = await fetch("http://localhost:8080/auth/login", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        email: values.email,
+                        password: values.password,
+                    }),
+                });
+
+                const result = await response.json();
+
+                console.log(result);
+
+                // 로그인 성공
+                if (result.success) {
+
+                    // 토큰 저장
+                    localStorage.setItem(
+                        "accessToken",
+                        result.data.accessToken
+                    );
+
+                    localStorage.setItem(
+                        "userEmail",
+                        values.email
+                    );
+
+                    if (typeof onLoginSuccess === "function") {
+                        onLoginSuccess();
+                    }
+
+                    handleClose();
                 }
-            } else {
-                setMode("login"); // 가입 완료 후 로그인 폼으로 전환 등
+
             }
-        }, 1000);
+
+            // ================= SIGNUP =================
+            else {
+
+                const response = await fetch("http://localhost:8080/auth/register", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        email: values.email,
+                        password: values.password,
+                        nickname: values.username,
+                    }),
+                });
+
+                const result = await response.json();
+
+                console.log(result);
+
+                if (result.success) {
+                    alert("회원가입 되었습니다");
+                    setMode("login");
+                }
+            }
+
+        } catch (error) {
+
+            console.error(error);
+            alert("서버 연결 실패");
+
+        } finally {
+
+            setLoading(false);
+
+        }
     };
 
     // ======================
@@ -229,29 +307,24 @@ function Login({ onClose, onLoginSuccess }) {
                                                 <div className="category-title">카테고리</div>
 
                                                 <div className="category-wrap">
-                                                    {[
-                                                        { key: "dev", label: "개발" },
-                                                        { key: "design", label: "디자인" },
-                                                        { key: "plan", label: "기획" },
-                                                        { key: "language", label: "언어" },
-                                                    ].map((item) => (
-                                                        <Form.Check
-                                                            key={item.key}
-                                                            type="checkbox"
-                                                            id={`cat-${item.key}`}
-                                                            className="category-check"
-                                                            label={item.label}
-                                                            checked={values.category.includes(item.key)}
-                                                            onChange={() => {
-                                                                const exists = values.category.includes(item.key);
+                                                    {categoryOptions.map((item) => (
+<Form.Check
+  key={item.categoryId}
+  type="checkbox"
+  id={`cat-${item.categoryId}`}
+  className="category-check"
+  label={item.categoryName}
+  checked={values.category.includes(item.categoryId)}
+  onChange={() => {
+    const exists = values.category.includes(item.categoryId);
 
-                                                                const newValue = exists
-                                                                    ? values.category.filter((v) => v !== item.key)
-                                                                    : [...values.category, item.key];
+    const newValue = exists
+      ? values.category.filter((v) => v !== item.categoryId)
+      : [...values.category, item.categoryId];
 
-                                                                setFieldValue("category", newValue);
-                                                            }}
-                                                        />
+    setFieldValue("category", newValue);
+  }}
+/>
                                                     ))}
                                                 </div>
                                             </Form.Group>

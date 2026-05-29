@@ -2,13 +2,19 @@ import { Button } from "react-bootstrap";
 import "./Home.css";
 import StudyCard from "../components/StudyCard";
 import StudyListItem from "../components/StudyListItem";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function Home() {
 
     const [hoveredField, setHoveredField] = useState(null);
     const [isHovering, setIsHovering] = useState(false);
 
+    const [posts, setPosts] = useState([]);
+    const [categories, setCategories] = useState([]);
+
+
+
+    /* 
     const allStudies = [
         { title: "알고리즘 1", host: "민수", field: "개발", users: ["A", "B"] },
         { title: "알고리즘 2", host: "철수", field: "개발", users: ["A"] },
@@ -23,11 +29,42 @@ function Home() {
         { title: "자격증 1", host: "철수", field: "자격증", users: ["A", "B", "C"] },
         { title: "취업 1", host: "영희", field: "취업", users: ["A"] },
     ];
+    */
 
     const filteredStudies =
-        isHovering && hoveredField
-            ? allStudies.filter((s) => s.field === hoveredField)
-            : [];
+    isHovering && hoveredField
+        ? posts.filter((s) => s.field === hoveredField)
+        : [];
+
+
+
+    useEffect(() => {
+        fetch("http://localhost:8080/posts")
+            .then((res) => res.json())
+            .then((result) => {
+            const mappedPosts = result.data.map((post) => ({
+                title: post.postTitle,
+                host: post.nickname,
+                field: post.categoryName,
+                // users: [{ id: post.userId, name: post.nickname }],
+                users: [post.nickname],
+            }));
+
+            setPosts(mappedPosts);
+            })
+            .catch((error) => {
+            console.error("홈 게시글 불러오기 실패:", error);
+            });
+
+        fetch("http://localhost:8080/categories")
+            .then((res) => res.json())
+            .then((result) => {
+            setCategories(result.data);
+            })
+            .catch((error) => {
+            console.error("홈 카테고리 불러오기 실패:", error);
+            });
+        }, []);
 
     return (
         <main className="home">
@@ -70,45 +107,16 @@ function Home() {
 
                 <div className="interest-buttons">
 
-                    <Button
-                        variant="light"
-                        style={{ width: "100px" }}
-                        onMouseEnter={() => setHoveredField("개발")}
-                    >
-                        개발
-                    </Button>
-
-                    <Button
-                        variant="light"
-                        style={{ width: "100px" }}
-                        onMouseEnter={() => setHoveredField("디자인")}
-                    >
-                        디자인
-                    </Button>
-
-                    <Button
-                        variant="light"
-                        style={{ width: "100px" }}
-                        onMouseEnter={() => setHoveredField("언어")}
-                    >
-                        언어
-                    </Button>
-
-                    <Button
-                        variant="light"
-                        style={{ width: "100px" }}
-                        onMouseEnter={() => setHoveredField("자격증")}
-                    >
-                        자격증
-                    </Button>
-
-                    <Button
-                        variant="light"
-                        style={{ width: "100px" }}
-                        onMouseEnter={() => setHoveredField("취업")}
-                    >
-                        취업
-                    </Button>
+{categories.map((category) => (
+  <Button
+    key={category.categoryId}
+    variant="light"
+    style={{ width: "130px" }}
+    onMouseEnter={() => setHoveredField(category.categoryName)}
+  >
+    {category.categoryName}
+  </Button>
+))}
 
                 </div>
 
@@ -191,7 +199,7 @@ function Home() {
 
                 <div className="study-list">
 
-                    {allStudies.slice(0, 5).map((study, index) => (
+                    {posts.slice(0, 5).map((study, index) => (
                         <StudyListItem
                             key={index}
                             title={study.title}

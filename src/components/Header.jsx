@@ -7,6 +7,8 @@ import {
     Button
 } from "react-bootstrap";
 
+
+
 import "./Header.css";
 import logo from "../assets/logo.png";
 import Chat from "../components/Chat";
@@ -18,7 +20,7 @@ import {
     FiUser
 } from "react-icons/fi";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Login from "../components/Login";
 
@@ -44,6 +46,10 @@ function Header() {
     const handleNotificationClick = () => {
         alert("알림 기능 준비 중");
     };
+
+
+
+
 
 
     // 모든 창 닫기 (채팅 + 리스트)
@@ -80,6 +86,33 @@ function Header() {
 
         setIsListOpen(!isListOpen);
     };
+
+    // 글 작성하기 버튼 클릭
+    const handlePostWriteClick = () => {
+
+        if (!isLoggedIn) {
+            alert("로그인이 필요한 서비스입니다.");
+            setIsLoginOpen(true);
+            return;
+        }
+
+        navigate("/postwrite");
+    };
+
+
+    // 카테고리 연결
+    const [categoryOptions, setCategoryOptions] = useState([]);
+
+    useEffect(() => {
+    fetch("http://localhost:8080/categories")
+        .then((res) => res.json())
+        .then((result) => {
+        setCategoryOptions(result.data);
+        })
+        .catch((error) => {
+        console.error("헤더 카테고리 불러오기 실패:", error);
+        });
+    }, []);
 
     return (
         <>
@@ -143,14 +176,17 @@ function Header() {
 
                                 {/* 분야 선택 */}
                                 <Dropdown>
-                                    <Dropdown.Toggle variant="light" size="sm">
-                                        분야
-                                    </Dropdown.Toggle>
-                                    <Dropdown.Menu>
-                                        <Dropdown.Item>개발</Dropdown.Item>
-                                        <Dropdown.Item>자격증</Dropdown.Item>
-                                        <Dropdown.Item>외국어</Dropdown.Item>
-                                    </Dropdown.Menu>
+                                <Dropdown.Toggle variant="light" size="sm">
+                                    분야
+                                </Dropdown.Toggle>
+
+                                <Dropdown.Menu>
+                                    {categoryOptions.map((category) => (
+                                    <Dropdown.Item key={category.categoryId}>
+                                        {category.categoryName}
+                                    </Dropdown.Item>
+                                    ))}
+                                </Dropdown.Menu>
                                 </Dropdown>
 
                             </div>
@@ -167,15 +203,19 @@ function Header() {
                                 내 모임
                             </Button>
 
-                            <Button variant="light" size="sm">
-                                글 작성하기
+                            <Button
+                            variant="light"
+                            size="sm"
+                            onClick={() => navigate("/postwrite")}
+                            >
+                            글 작성하기
                             </Button>
 
                             <Button
                                 className="icon-button"
                                 variant="light"
                                 size="sm"
-                                onClick={handleNotificationClick}
+                                onClick={handlePostWriteClick}
                             >
                                 <FiBell size={20} />
                             </Button>

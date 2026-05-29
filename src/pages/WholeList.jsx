@@ -36,7 +36,8 @@
 */ }
 
 
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
 import Header from "../components/Header";
 import WholeListItem from "../components/WholeListItem";
 import Dropbox from "../components/Dropbox";
@@ -69,25 +70,8 @@ const tabDescriptions = {
 
 
 
-/*
-const dummyStudies = [
-  { title: "Title", host: "닉네임", profileImage: "", users: ["A", "B", "C"] },
-  { title: "Title", host: "닉네임", field: "분야", users: ["A", "B", "C"] },
-  { title: "Title", host: "닉네임", field: "분야", users: ["A", "B", "C"] },
-  { title: "Title", host: "닉네임", field: "분야", users: ["A", "B", "C"] },
-  { title: "Title", host: "닉네임", field: "분야", users: ["A", "B", "C"] },
-  { title: "Title", host: "닉네임", field: "분야", users: ["A", "B", "C"] },
-  { title: "Title", host: "닉네임", field: "분야", users: ["A", "B", "C"] },
-  { title: "Title", host: "닉네임", field: "분야", users: ["A", "B", "C"] },
-  { title: "Title", host: "닉네임", field: "분야", users: ["A", "B", "C"] },
-  { title: "Title", host: "닉네임", field: "분야", users: ["A", "B", "C"] },
-  { title: "Title", host: "닉네임", field: "분야", users: ["A", "B", "C"] },
-  { title: "Title", host: "닉네임", field: "분야", users: ["A", "B", "C"] },
-  { title: "Title", host: "닉네임", field: "분야", users: ["A", "B", "C"] },
-  { title: "Title", host: "닉네임", field: "분야", users: ["A", "B", "C"] },
-];
-*/
 
+/*
 const dummyStudies = [
   {
     title: "Title",
@@ -223,11 +207,16 @@ const dummyStudies = [
 
   
 ];
+*/
 
 function ListPage() {
   const [activeTab, setActiveTab] = useState("내가 작성한 모임");
   const [category, setCategory] = useState("");
   const [region, setRegion] = useState("");
+
+  
+  const [categoryOptions, setCategoryOptions] = useState([]);
+  const [posts, setPosts] = useState([]);
 
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -237,7 +226,36 @@ function ListPage() {
   const indexOfFirst = indexOfLast - studiesPerPage;
 
   const currentStudies =
-    dummyStudies.slice(indexOfFirst, indexOfLast);
+    posts.slice(indexOfFirst, indexOfLast);
+
+
+
+  useEffect(() => {
+    fetch("http://localhost:8080/categories")
+      .then((res) => res.json())
+      .then((result) => {
+        const options = result.data.map((item) => ({
+          value: item.categoryId,
+          label: item.categoryName,
+        }));
+
+        setCategoryOptions(options);
+      })
+      .catch((error) => {
+        console.error("카테고리 불러오기 실패:", error);
+      });
+  }, []);
+
+  useEffect(() => {
+    fetch("http://localhost:8080/posts")
+      .then((res) => res.json())
+      .then((result) => {
+        setPosts(result.data);
+      })
+      .catch((error) => {
+        console.error("게시글 불러오기 실패:", error);
+      });
+  }, []);
 
   return (
     <div className="whole-page">
@@ -283,24 +301,26 @@ function ListPage() {
                 placeholder="카테고리"
                 value={category}
                 onChange={setCategory}
-                options={[
-                  { value: "it", label: "IT" },
-                  { value: "design", label: "디자인" },
-                  { value: "language", label: "언어" },
-                ]}
+                options={categoryOptions}
               />
 
             </div>
           </div>
 
           <div className="whole-scroll-area">
-            {currentStudies.map((study, index) => (
-            <WholeListItem
-                key={index}
-                {...study}
-                type={getItemType(activeTab)}
-            />
-            ))}
+{currentStudies.map((study) => (
+  <WholeListItem
+    key={study.postId}
+    title={study.postTitle}
+    host={study.nickname}
+    hostId={study.userId}
+    users={[
+      { id: study.userId, name: study.nickname }
+    ]}
+    type={getItemType(activeTab)}
+    categoryName={study.categoryName}
+  />
+))}
           </div>
 
           <div className="whole-pagination">
@@ -312,7 +332,7 @@ function ListPage() {
                 }
               />
 
-              {[...Array(Math.ceil(dummyStudies.length / studiesPerPage))].map(
+              {[...Array(Math.ceil(posts.length / studiesPerPage))].map(
                 (_, i) => (
                   <Pagination.Item
                     key={i + 1}
@@ -329,7 +349,7 @@ function ListPage() {
                   setCurrentPage((prev) =>
                     Math.min(
                       prev + 1,
-                      Math.ceil(dummyStudies.length / studiesPerPage)
+                      Math.ceil(posts.length / studiesPerPage)
                     )
                   )
                 }

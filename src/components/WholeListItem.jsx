@@ -13,8 +13,8 @@ import "./WholeListItem.css";
 function WholeListItem({
   title,
   host,
-  hostID,
-  users,
+  hostId,
+  users = [],
   type = "written",
   profileImage,
   applicationStatus = "pending"

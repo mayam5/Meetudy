@@ -17,10 +17,10 @@ public class CreatePostRequest {
     @NotBlank(message = "내용은 필수입니다.")
     private String postContent;
 
-    @NotNull(message = "모임 시작 시간은 필수입니다.")
+    // @NotNull(message = "모임 시작 시간은 필수입니다.")
     private LocalDateTime meetingTime;
 
-    @NotNull(message = "모임 종료 시간은 필수입니다.")
+    // @NotNull(message = "모임 종료 시간은 필수입니다.")
     private LocalDateTime endTime;
 
     @NotNull(message = "최대 인원은 필수입니다.")

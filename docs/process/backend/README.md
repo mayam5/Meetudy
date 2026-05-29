@@ -112,7 +112,8 @@ src/main/java/meetudy/demo/
 │   └── ApiResponse.java                  # 공통 응답 포맷
 ├── config/
 │   ├── SecurityConfig.java               # Spring Security 설정
-│   └── WebSocketConfig.java              # STOMP WebSocket 설정
+│   ├── WebSocketConfig.java              # STOMP WebSocket 설정
+│   └── AppConfig.java                    # RestTemplate 빈 등록
 ├── controller/
 │   ├── AuthController.java
 │   ├── UserController.java
@@ -125,7 +126,8 @@ src/main/java/meetudy/demo/
 │   ├── BookmarkController.java
 │   ├── ScheduleController.java
 │   ├── StudyLogController.java
-│   └── StudyGroupController.java
+│   ├── StudyGroupController.java
+│   └── PlaceController.java
 ├── service/
 │   ├── AuthService.java
 │   ├── UserService.java
@@ -139,6 +141,7 @@ src/main/java/meetudy/demo/
 │   ├── ScheduleService.java
 │   ├── StudyLogService.java
 │   ├── StudyGroupService.java
+│   ├── PlaceService.java
 │   └── RefreshTokenService.java
 ├── repository/
 │   ├── UserRepository.java
@@ -387,6 +390,33 @@ PUT /schedules
 
 ---
 
+### 장소 (PLC)
+
+| 메서드 | URL | 설명 | 인증 필요 |
+|---|---|---|---|
+| GET | `/places/search?query={검색어}` | 카카오 Local API로 장소 검색 | O |
+| POST | `/places` | 선택한 장소 DB 저장 | O |
+| GET | `/places/{placeId}` | 저장된 장소 단건 조회 | O |
+
+**장소 검색 흐름**
+```
+GET /places/search?query=강남 카페
+  └─ 백엔드가 KakaoAK 키로 dapi.kakao.com 호출
+  └─ 결과 변환 후 반환 (kakaoPlaceId, name, address, latitude, longitude 등)
+```
+
+**장소 저장 요청 형식**
+```json
+{
+  "name": "스타벅스 강남점",
+  "address": "서울 강남구 역삼동 123",
+  "latitude": 37.49794,
+  "longitude": 127.02759
+}
+```
+
+---
+
 ## 에러 코드
 
 | 코드 | HTTP | 메시지 |
@@ -415,6 +445,7 @@ PUT /schedules
 | STUDY_LOG_NOT_FOUND | 404 | 존재하지 않는 학습 로그입니다 |
 | STUDY_GROUP_NOT_FOUND | 404 | 존재하지 않는 스터디 그룹입니다 |
 | PLACE_NOT_FOUND | 404 | 존재하지 않는 장소입니다 |
+| KAKAO_API_ERROR | 502 | 카카오 장소 검색 API 호출에 실패했습니다 |
 | SCHEDULE_NOT_FOUND | 404 | 존재하지 않는 스케줄입니다 |
 | SCHEDULE_ALREADY_EXISTS | 409 | 이미 등록된 스케줄입니다 |
 | TIMESLOT_NOT_FOUND | 404 | 존재하지 않는 타임슬롯입니다 |
@@ -471,7 +502,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9...
 ✅ BLK     차단
 ✅ SCH     스케줄 관리
 ✅ LOG     학습 로그
-⬜ PLC     장소 등록/검색 (KakaoMap)
+✅ PLC     장소 등록/검색 (KakaoMap)
 ```
 
 ---

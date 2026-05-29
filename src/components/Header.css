@@ -635,28 +635,43 @@
    DROPDOWN ANIMATION
 ========================= */
 
-/* 지역/분야 드롭다운 - 부드럽게 열리고 닫히기 */
-.search-inner .dropdown-menu,
-.header-menu .dropdown-menu {
+.search-inner .dropdown-menu {
     display: block !important;
+    position: absolute !important;
 
-    /* 닫힌 상태 (기본) */
     opacity: 0;
     transform: translateY(-6px) scale(0.98);
+    transform-origin: top center;
     pointer-events: none;
     visibility: hidden;
 
     transition:
-        opacity 0.2s ease,
-        transform 0.2s ease,
-        visibility 0.2s ease;
+        opacity 0.18s ease,
+        transform 0.18s ease,
+        visibility 0s linear 0.18s;
 }
 
 /* 열린 상태 */
-.search-inner .dropdown-menu.show,
-.header-menu .dropdown-menu.show {
+.search-inner .dropdown.show .dropdown-menu:not(.dropdown-closing) {
     opacity: 1;
     transform: translateY(0) scale(1);
     pointer-events: auto;
     visibility: visible;
+
+    transition:
+        opacity 0.18s ease,
+        transform 0.18s ease,
+        visibility 0s linear 0s;
+}
+
+/* 닫히는 중 */
+.search-inner .dropdown.show .dropdown-menu.dropdown-closing {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+    pointer-events: none;
+    visibility: visible;
+
+    transition:
+        opacity 0.18s ease,
+        transform 0.18s ease;
 }

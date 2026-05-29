@@ -35,39 +35,38 @@
 
 */ }
 
-
 import { useState } from "react";
-import Header from "../components/Header";
 import WholeListItem from "../components/WholeListItem";
 import Dropbox from "../components/Dropbox";
 import Pagination from "react-bootstrap/Pagination";
 import "./WholeList.css";
 
-const tabs = [
-  "내가 작성한 모임",
-  "전체 모임",
-  "참여 중인 모임",
-  "신청한 모임",
-  "북마크",
+const TABS = [
+    "내가 작성한 모임",
+    "전체 모임",
+    "참여 중인 모임",
+    "신청한 모임",
+    "북마크",
 ];
 
+const TAB_DESCRIPTIONS = {
+    "내가 작성한 모임": "내가 만든 모임을 확인할 수 있습니다.",
+    "전체 모임": "현재 진행 중인 스터디",
+    "참여 중인 모임": "내가 참여하고 있는 모임입니다.",
+    "신청한 모임": "내가 신청한 모임을 확인할 수 있습니다.",
+    "북마크": "북마크한 모임을 확인할 수 있습니다.",
+};
+
 const getItemType = (tab) => {
-  if (tab === "내가 작성한 모임") return "written";
-  if (tab === "전체 모임") return "all";
-  if (tab === "참여 중인 모임") return "joined";
-  if (tab === "신청한 모임") return "applied";
-  if (tab === "북마크") return "bookmark";
+    const map = {
+        "내가 작성한 모임": "written",
+        "전체 모임": "all",
+        "참여 중인 모임": "joined",
+        "신청한 모임": "applied",
+        "북마크": "bookmark",
+    };
+    return map[tab] ?? "all";
 };
-
-const tabDescriptions = {
-  "내가 작성한 모임": "내가 만든 모임을 확인할 수 있습니다.",
-  "전체 모임": "현재 진행 중인 스터디",
-  "참여 중인 모임": "내가 참여하고 있는 모임입니다.",
-  "신청한 모임": "내가 신청한 모임을 확인할 수 있습니다.",
-  "북마크": "북마크한 모임을 확인할 수 있습니다.",
-};
-
-
 
 /*
 const dummyStudies = [
@@ -88,266 +87,127 @@ const dummyStudies = [
 ];
 */
 
-const dummyStudies = [
-  {
-    title: "Title",
+const DUMMY_STUDIES = Array.from({ length: 11 }, (_, i) => ({
+    id: i + 1,
+    title: `스터디 ${i + 1}`,
     host: "닉네임",
     hostId: 1,
-    users: [
-      { id: 2, name: "A" },
-      { id: 3, name: "B" },
-      { id: 4, name: "C" },
-    ],
-    applicationStatus: "pending",
-  },
+    tags: ["IT", "개발"],
+    users: ["A", "B", "C"],
+    applicationStatus: i === 1 ? "accepted" : i === 2 ? "rejected" : "pending",
+}));
 
-  {
-    title: "Title",
-    host: "닉네임",
-    hostId: 1,
-    users: [
-      { id: 2, name: "A" },
-      { id: 3, name: "B" },
-      { id: 4, name: "C" },
-    ],
-    applicationStatus: "accepted",
-  },
+const STUDIES_PER_PAGE = 10;
 
-  {
-    title: "Title",
-    host: "닉네임",
-    hostId: 1,
-    users: [
-      { id: 2, name: "A" },
-      { id: 3, name: "B" },
-      { id: 4, name: "C" },
-    ],
-    applicationStatus: "rejected",
-  },
+function WholeList() {
+    const [activeTab, setActiveTab] = useState("내가 작성한 모임");
+    const [category, setCategory] = useState("");
+    const [region, setRegion] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
 
-  {
-    title: "Title",
-    host: "닉네임",
-    hostId: 1,
-    users: [
-      { id: 2, name: "A" },
-      { id: 3, name: "B" },
-      { id: 4, name: "C" },
-    ],
-    applicationStatus: "pending",
-  },
+    const handleTabChange = (tab) => {
+        setActiveTab(tab);
+        setCurrentPage(1);
+    };
 
-  {
-    title: "Title",
-    host: "닉네임",
-    hostId: 1,
-    users: [
-      { id: 2, name: "A" },
-      { id: 3, name: "B" },
-      { id: 4, name: "C" },
-    ],
-    applicationStatus: "pending",
-  },
+    const totalPages = Math.ceil(DUMMY_STUDIES.length / STUDIES_PER_PAGE);
+    const currentStudies = DUMMY_STUDIES.slice(
+        (currentPage - 1) * STUDIES_PER_PAGE,
+        currentPage * STUDIES_PER_PAGE
+    );
 
-  {
-    title: "Title",
-    host: "닉네임",
-    hostId: 1,
-    users: [
-      { id: 2, name: "A" },
-      { id: 3, name: "B" },
-      { id: 4, name: "C" },
-    ],
-    applicationStatus: "pending",
-  },
+    return (
+        <div className="whole-page">
+            <div className="whole-layout">
 
-  {
-    title: "Title",
-    host: "닉네임",
-    hostId: 1,
-    users: [
-      { id: 2, name: "A" },
-      { id: 3, name: "B" },
-      { id: 4, name: "C" },
-    ],
-    applicationStatus: "pending",
-  },
+                {/* 사이드바 */}
+                <aside className="whole-sidebar">
+                    <h4>☰ 모임 목록</h4>
+                    {TABS.map((tab) => (
+                        <button
+                            key={tab}
+                            className={`whole-tab ${activeTab === tab ? "active" : ""}`}
+                            onClick={() => handleTabChange(tab)}
+                        >
+                            {tab}
+                        </button>
+                    ))}
+                </aside>
 
-  {
-    title: "Title",
-    host: "닉네임",
-    hostId: 1,
-    users: [
-      { id: 2, name: "A" },
-      { id: 3, name: "B" },
-      { id: 4, name: "C" },
-    ],
-    applicationStatus: "pending",
-  },
+                {/* 메인 */}
+                <main className="whole-main">
+                    <div className="whole-main-header">
+                        <div>
+                            <h2>{activeTab}</h2>
+                            <p>{TAB_DESCRIPTIONS[activeTab]}</p>
+                        </div>
 
-  {
-    title: "Title",
-    host: "닉네임",
-    hostId: 1,
-    users: [
-      { id: 2, name: "A" },
-      { id: 3, name: "B" },
-      { id: 4, name: "C" },
-    ],
-    applicationStatus: "pending",
-  },
+                        <div className="whole-filters">
+                            <Dropbox
+                                placeholder="지역"
+                                value={region}
+                                onChange={setRegion}
+                                options={[
+                                    { value: "seoul", label: "서울" },
+                                    { value: "busan", label: "부산" },
+                                    { value: "incheon", label: "인천" },
+                                ]}
+                            />
+                            <Dropbox
+                                placeholder="카테고리"
+                                value={category}
+                                onChange={setCategory}
+                                options={[
+                                    { value: "it", label: "IT" },
+                                    { value: "design", label: "디자인" },
+                                    { value: "language", label: "언어" },
+                                ]}
+                            />
+                        </div>
+                    </div>
 
-  {
-    title: "Title",
-    host: "닉네임",
-    hostId: 1,
-    users: [
-      { id: 2, name: "A" },
-      { id: 3, name: "B" },
-      { id: 4, name: "C" },
-    ],
-    applicationStatus: "pending",
-  },
+                    <div className="whole-scroll-area">
+                        {currentStudies.map((study) => (
+                            <WholeListItem
+                                key={study.id}
+                                {...study}
+                                type={getItemType(activeTab)}
+                            />
+                        ))}
+                    </div>
 
-  {
-    title: "Title",
-    host: "닉네임",
-    hostId: 1,
-    users: [
-      { id: 2, name: "A" },
-      { id: 3, name: "B" },
-      { id: 4, name: "C" },
-    ],
-    applicationStatus: "pending",
-  },
-
-  
-];
-
-function ListPage() {
-  const [activeTab, setActiveTab] = useState("내가 작성한 모임");
-  const [category, setCategory] = useState("");
-  const [region, setRegion] = useState("");
-
-  const [currentPage, setCurrentPage] = useState(1);
-
-  const studiesPerPage = 10;
-
-  const indexOfLast = currentPage * studiesPerPage;
-  const indexOfFirst = indexOfLast - studiesPerPage;
-
-  const currentStudies =
-    dummyStudies.slice(indexOfFirst, indexOfLast);
-
-  return (
-    <div className="whole-page">
-      <Header />
-
-      <div className="whole-layout">
-        <aside className="whole-sidebar">
-          <h4>☰ 모임 목록</h4>
-
-          {tabs.map((tab) => (
-            <button
-              key={tab}
-              className={`whole-tab ${activeTab === tab ? "active" : ""}`}
-              onClick={() => setActiveTab(tab)}
-            >
-              {tab}
-            </button>
-          ))}
-        </aside>
-
-        <main className="whole-main">
-          <div className="whole-main-header">
-            <div>
-              <h2>{activeTab}</h2>
-              <p>{tabDescriptions[activeTab]}</p>
+                    <div className="whole-pagination">
+                        <Pagination>
+                            <Pagination.Prev
+                                disabled={currentPage === 1}
+                                onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                            />
+                            {[...Array(totalPages)].map((_, i) => (
+                                <Pagination.Item
+                                    key={i + 1}
+                                    active={i + 1 === currentPage}
+                                    onClick={() => setCurrentPage(i + 1)}
+                                >
+                                    {i + 1}
+                                </Pagination.Item>
+                            ))}
+                            <Pagination.Next
+                                disabled={currentPage === totalPages}
+                                onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+                            />
+                        </Pagination>
+                    </div>
+                </main>
             </div>
 
-            <div className="whole-filters">
+            { /*
+            <footer className="whole-footer">
+                하단 리소스 영역
+            </footer>
+            */ }
 
-
-              <Dropbox
-                placeholder="지역"
-                value={region}
-                onChange={setRegion}
-                options={[
-                  { value: "seoul", label: "서울" },
-                  { value: "busan", label: "부산" },
-                  { value: "incheon", label: "인천" },
-                ]}
-              />
-
-              <Dropbox
-                placeholder="카테고리"
-                value={category}
-                onChange={setCategory}
-                options={[
-                  { value: "it", label: "IT" },
-                  { value: "design", label: "디자인" },
-                  { value: "language", label: "언어" },
-                ]}
-              />
-
-            </div>
-          </div>
-
-          <div className="whole-scroll-area">
-            {currentStudies.map((study, index) => (
-            <WholeListItem
-                key={index}
-                {...study}
-                type={getItemType(activeTab)}
-            />
-            ))}
-          </div>
-
-          <div className="whole-pagination">
-            <Pagination>
-
-              <Pagination.Prev
-                onClick={() =>
-                  setCurrentPage((prev) => Math.max(prev - 1, 1))
-                }
-              />
-
-              {[...Array(Math.ceil(dummyStudies.length / studiesPerPage))].map(
-                (_, i) => (
-                  <Pagination.Item
-                    key={i + 1}
-                    active={i + 1 === currentPage}
-                    onClick={() => setCurrentPage(i + 1)}
-                  >
-                    {i + 1}
-                  </Pagination.Item>
-                )
-              )}
-
-              <Pagination.Next
-                onClick={() =>
-                  setCurrentPage((prev) =>
-                    Math.min(
-                      prev + 1,
-                      Math.ceil(dummyStudies.length / studiesPerPage)
-                    )
-                  )
-                }
-              />
-
-            </Pagination>
-          </div>
-        </main>
-      </div>
-
-      { /*
-      <footer className="whole-footer">
-        하단 리소스 영역
-      </footer>
-      */ }
-
-    </div>
-  );
+        </div>
+    );
 }
 
-export default ListPage;
+export default WholeList;

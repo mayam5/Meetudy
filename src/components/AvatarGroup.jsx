@@ -1,17 +1,19 @@
 import Avatar from "./Avatar";
 
-function AvatarGroup({ users }) {
+const MAX_DISPLAY = 3;
+
+function AvatarGroup({ users = [] }) {
+    const visible = users.slice(0, MAX_DISPLAY);
+    const extra = users.length - MAX_DISPLAY;
+
     return (
         <div className="avatar-group">
-
-            {users.map((u, i) => (
-                <Avatar key={i} name={u} />
+            {visible.map((u) => (
+                <Avatar key={u} name={u} />
             ))}
-
-            <div className="more">
-                +{users.length}
-            </div>
-
+            {extra > 0 && (
+                <div className="more">+{extra}</div>
+            )}
         </div>
     );
 }

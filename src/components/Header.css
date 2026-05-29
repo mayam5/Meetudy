@@ -11,7 +11,7 @@
     width: 120px;
 }
 
-.navbar-collapse {
+.header .navbar-collapse {
     justify-content: flex-end;
     gap: 20px;
 }
@@ -24,38 +24,46 @@
     width: 100%;
     max-width: 600px;
     min-width: 300px;
-
     position: relative;
     margin: 0;
 }
 
 .search-input {
     height: 38px;
-
-    padding-right: 260px !important;
+    padding-right: 220px !important;
     padding-left: 14px !important;
-
     font-size: 14px !important;
-
     border-radius: 999px !important;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .search-input::placeholder {
     font-size: 14px;
 }
 
+/* 검색어 없을 때 흔들기 */
+.search-error {
+    border-color: #ff4d4f !important;
+    animation: shake 0.4s ease;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(6px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(4px); }
+}
+
 .search-inner {
     position: absolute;
     top: 50%;
     right: 0;
-
     transform: translateY(-50%);
-
     display: flex;
     align-items: center;
-    gap: 8px;
-
-    padding-right: 12px;
+    gap: 6px;
+    padding-right: 10px;
 }
 
 /* =========================
@@ -66,24 +74,19 @@
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     padding: 6px;
     border-radius: 8px;
-
     transition: all 0.2s ease;
 }
 
-/* hover */
 .icon-button:hover {
     background: rgba(0, 0, 0, 0.05) !important;
     color: #007bff;
 }
 
-/* 아이콘 색도 같이 변경 */
 .icon-button svg {
     transition: 0.2s;
 }
@@ -91,16 +94,15 @@
 .icon-button:hover svg {
     color: #007bff;
 }
+
 /* =========================
-   채팅 UI (레이어 구조)
+   채팅 UI
 ========================= */
 
 .chat-overlay {
     position: fixed;
     inset: 0;
-
     background: transparent;
-
     z-index: 9998;
 }
 
@@ -108,9 +110,17 @@
     position: absolute;
     top: 100%;
     right: 20px;
-
     z-index: 9999;
+    display: flex;
+    flex-direction: row;
+}
 
+/* 채팅창은 fixed 기준으로 */
+.chat-wrapper-fixed {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
     display: flex;
     flex-direction: row;
 }
@@ -123,7 +133,6 @@
     display: flex;
     align-items: center;
     gap: 12px;
-
     flex-wrap: wrap;
     justify-content: flex-end;
 }
@@ -141,15 +150,8 @@
 
     .header-menu {
         margin-top: 15px;
-
-        display: flex;
-        flex-direction: row;
-
-        justify-content: flex-end;
-        align-items: center;
-        gap: 20px;
-
         padding-bottom: 7px;
+        gap: 20px;
     }
 
     .header-menu.navbar-nav {

@@ -1,14 +1,18 @@
+/* 카드 */
 .study-card {
     width: 100%;
     padding: 15px;
-
     text-align: left;
-
     background: white;
     border-radius: 15px;
-
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.study-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
 }
 
 /* 상단 */
@@ -20,7 +24,7 @@
 
 .study-title {
     margin: 0;
-    font-size: 10px;
+    font-size: 14px;
     font-weight: bold;
 }
 
@@ -29,7 +33,7 @@
     margin-top: 10px;
 }
 
-/* 참여자 */
+/* 아바타 그룹 */
 .avatar-group {
     display: flex;
     align-items: center;
@@ -38,15 +42,11 @@
 .avatar {
     width: 22px;
     height: 22px;
-
     margin-left: -6px;
-
     display: flex;
     justify-content: center;
     align-items: center;
-
     font-size: 10px;
-
     background: #ddd;
     border: 2px solid white;
     border-radius: 50%;
@@ -79,13 +79,13 @@
 }
 
 .host-name {
-    font-size: 10px;
+    font-size: 11px;
     font-weight: bold;
     line-height: 1;
 }
 
 .tag {
-    font-size: 10px;
+    font-size: 11px;
     color: #666;
     line-height: 1;
 }

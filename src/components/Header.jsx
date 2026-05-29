@@ -25,43 +25,47 @@ import Login from "../components/Login";
 function Header() {
 
     const [isLoginOpen, setIsLoginOpen] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-    // 채팅 목록 열림 상태
+    const [isLoggedIn, setIsLoggedIn] = useState(
+        () => localStorage.getItem("isLoggedIn") === "true"
+    );
     const [isListOpen, setIsListOpen] = useState(false);
-
-    // 현재 선택된 채팅방
     const [activeRoom, setActiveRoom] = useState(null);
+    const [searchValue, setSearchValue] = useState("");
+    const [searchError, setSearchError] = useState(false);
+    const [selectedRegion, setSelectedRegion] = useState("지역");
+    const [selectedField, setSelectedField] = useState("분야");
 
-    // 채팅방 선택 시 실행
-    const handleSelectRoom = (room) => {
-        setActiveRoom(room);
-    };
+    const navigate = useNavigate();
 
     const handleSearch = () => {
-        alert("검색 기능 준비 중");
+        if (!searchValue.trim()) {
+            setSearchError(true);
+            setTimeout(() => setSearchError(false), 600);
+            return;
+        }
+        navigate(`/whole-list?search=${searchValue}&region=${selectedRegion}&field=${selectedField}`);
     };
+
     const handleNotificationClick = () => {
         alert("알림 기능 준비 중");
     };
 
+    const handleSelectRoom = (room) => {
+        setActiveRoom(room);
+    };
 
-    // 모든 창 닫기 (채팅 + 리스트)
     const closeAll = () => {
         setIsListOpen(false);
         setActiveRoom(null);
     };
 
-    const navigate = useNavigate();
-
-    // 로그인 성공 처리
     const handleLoginSuccess = () => {
         setIsLoggedIn(true);
+        localStorage.setItem("isLoggedIn", "true");
         setIsLoginOpen(false);
         navigate("/mypage");
     };
 
-    // 프로필 클릭 처리
     const handleProfileClick = () => {
         if (isLoggedIn) {
             navigate("/mypage");
@@ -70,16 +74,17 @@ function Header() {
         }
     };
 
-    // 내 모임 버튼 클릭
     const handleMyGroupClick = () => {
         if (!isLoggedIn) {
             alert("로그인이 필요한 서비스입니다.");
             setIsLoginOpen(true);
             return;
         }
-
         setIsListOpen(!isListOpen);
     };
+
+    const REGIONS = ["서울", "경기", "부산"];
+    const FIELDS = ["개발", "자격증", "외국어"];
 
     return (
         <>
@@ -115,7 +120,10 @@ function Header() {
 
                             <FormControl
                                 placeholder="스터디를 검색해보세요"
-                                className="search-input"
+                                className={`search-input ${searchError ? "search-error" : ""}`}
+                                value={searchValue}
+                                onChange={(e) => setSearchValue(e.target.value)}
+                                onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                             />
 
                             <div className="search-inner">
@@ -132,24 +140,40 @@ function Header() {
                                 {/* 지역 선택 */}
                                 <Dropdown>
                                     <Dropdown.Toggle variant="light" size="sm">
-                                        지역
+                                        {selectedRegion}
                                     </Dropdown.Toggle>
                                     <Dropdown.Menu>
-                                        <Dropdown.Item>서울</Dropdown.Item>
-                                        <Dropdown.Item>경기</Dropdown.Item>
-                                        <Dropdown.Item>부산</Dropdown.Item>
+                                        <Dropdown.Item onClick={() => setSelectedRegion("지역")}>
+                                            전체
+                                        </Dropdown.Item>
+                                        {REGIONS.map((r) => (
+                                            <Dropdown.Item
+                                                key={r}
+                                                onClick={() => setSelectedRegion(r)}
+                                            >
+                                                {r}
+                                            </Dropdown.Item>
+                                        ))}
                                     </Dropdown.Menu>
                                 </Dropdown>
 
                                 {/* 분야 선택 */}
                                 <Dropdown>
                                     <Dropdown.Toggle variant="light" size="sm">
-                                        분야
+                                        {selectedField}
                                     </Dropdown.Toggle>
                                     <Dropdown.Menu>
-                                        <Dropdown.Item>개발</Dropdown.Item>
-                                        <Dropdown.Item>자격증</Dropdown.Item>
-                                        <Dropdown.Item>외국어</Dropdown.Item>
+                                        <Dropdown.Item onClick={() => setSelectedField("분야")}>
+                                            전체
+                                        </Dropdown.Item>
+                                        {FIELDS.map((f) => (
+                                            <Dropdown.Item
+                                                key={f}
+                                                onClick={() => setSelectedField(f)}
+                                            >
+                                                {f}
+                                            </Dropdown.Item>
+                                        ))}
                                     </Dropdown.Menu>
                                 </Dropdown>
 
@@ -185,32 +209,32 @@ function Header() {
                             </Button>
 
                             <Button
+                                className="icon-button"
                                 variant="light"
                                 size="sm"
-                                className="icon-button"
                                 onClick={handleProfileClick}
                             >
                                 <FiUser size={20} />
                             </Button>
+
                         </Nav>
+
+                        {/* 채팅 overlay */}
+                        {(isListOpen || activeRoom) && (
+                            <div
+                                className="chat-overlay"
+                                onClick={closeAll}
+                            />
+                        )}
 
                         {/* 채팅 목록 */}
                         {isListOpen && (
-                            <>
-                                {/* 바깥 클릭 영역 */}
-                                <div
-                                    className="chat-overlay"
-                                    onClick={closeAll}
+                            <div className="chat-wrapper">
+                                <ChatList
+                                    onSelectRoom={handleSelectRoom}
+                                    onClose={() => setIsListOpen(false)}
                                 />
-
-                                {/* 채팅 리스트 */}
-                                <div className="chat-wrapper">
-                                    <ChatList
-                                        onSelectRoom={handleSelectRoom}
-                                        onClose={() => setIsListOpen(false)}
-                                    />
-                                </div>
-                            </>
+                            </div>
                         )}
 
                     </Navbar.Collapse>
@@ -218,29 +242,22 @@ function Header() {
                 </Container>
             </Navbar>
 
+            {/* 채팅창 */}
+            {activeRoom && (
+                <div className="chat-wrapper-fixed">
+                    <Chat
+                        roomTitle={activeRoom.title}
+                        onClose={() => setActiveRoom(null)}
+                    />
+                </div>
+            )}
+
             {/* 로그인 모달 */}
             {isLoginOpen && (
                 <Login
                     onClose={() => setIsLoginOpen(false)}
                     onLoginSuccess={handleLoginSuccess}
                 />
-            )}
-
-            {/* 채팅창 */}
-            {activeRoom && (
-                <>
-                    <div
-                        className="chat-overlay"
-                        onClick={closeAll}
-                    />
-
-                    <div className="chat-wrapper">
-                        <Chat
-                            roomTitle={activeRoom.title}
-                            onClose={() => setActiveRoom(null)}
-                        />
-                    </div>
-                </>
             )}
 
         </>

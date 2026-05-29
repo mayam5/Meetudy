@@ -433,3 +433,15 @@
     gap: 16px;
     padding: 20px;
 }
+
+/* 유효성 에러 */
+.field-error {
+    color: #e84118;
+    font-size: 12px;
+    margin-top: 6px;
+    margin-bottom: 0;
+}
+
+.input-error {
+    border-color: #e84118 !important;
+}

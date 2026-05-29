@@ -202,6 +202,26 @@
     background: transparent;
 }
 
+
+/* 검색 키워드 표시 */
+.search-keyword {
+    font-size: 12px;
+    color: #007bff;
+    margin-top: 4px;
+}
+
+/* 로딩 / 에러 / 빈 상태 */
+.whole-status {
+    padding: 60px 0;
+    text-align: center;
+    font-size: 14px;
+    color: #aaa;
+}
+
+.whole-status.error {
+    color: #e84118;
+}
+
 /* =========================
    반응형
 ========================= */

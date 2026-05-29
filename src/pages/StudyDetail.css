@@ -1,0 +1,266 @@
+.study-detail-page {
+    padding-top: 90px;
+    padding-bottom: 60px;
+    min-height: 100vh;
+    background: #f5f5f5;
+}
+
+.study-detail-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.study-detail-status {
+    text-align: center;
+    margin-top: 200px;
+    font-size: 16px;
+    color: #888;
+}
+
+.study-detail-status.error {
+    color: #e84118;
+}
+
+/* 헤더 */
+.study-detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-top: 20px;
+}
+
+.study-detail-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.study-detail-tag {
+    background: #f0f0f0;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    color: #555;
+}
+
+.study-detail-bookmark {
+    background: none;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    color: #222;
+    transition: color 0.2s;
+    flex-shrink: 0;
+}
+
+.study-detail-bookmark:hover {
+    color: #007bff;
+}
+
+/* 제목 */
+.study-detail-title {
+    font-size: 28px;
+    font-weight: 800;
+    color: #111;
+    margin-bottom: 20px;
+    line-height: 1.3;
+}
+
+/* 호스트 row */
+.study-detail-host-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 0;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 20px;
+}
+
+/* 섹션 */
+.study-detail-section {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 16px;
+}
+
+.study-detail-section h4 {
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: #111;
+    font-size: 16px;
+}
+
+.study-detail-section p {
+    font-size: 15px;
+    color: #444;
+    line-height: 1.7;
+}
+
+/* 정보 그리드 */
+.study-detail-info-grid {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.study-detail-info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.info-label {
+    font-size: 12px;
+    color: #888;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-value {
+    font-size: 15px;
+    color: #111;
+    font-weight: 500;
+}
+
+.info-value.status.recruiting { color: #4cd137; }
+.info-value.status.completed { color: #888; }
+.info-value.status.paused { color: #f39c12; }
+
+/* 액션 */
+.study-detail-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.detail-back-btn {
+    background: none;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    color: #555;
+    transition: 0.2s;
+}
+
+.detail-back-btn:hover {
+    border-color: #888;
+    color: #111;
+}
+
+.detail-apply-btn {
+    background: #111;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 32px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.detail-apply-btn:hover {
+    background: #007bff;
+}
+
+.detail-status-text {
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 10px;
+}
+
+.detail-status-text.pending { background: #fff3cd; color: #856404; }
+.detail-status-text.accepted { background: #d4edda; color: #155724; }
+.detail-status-text.rejected { background: #f8d7da; color: #721c24; }
+
+/* 기존 코드 유지하고 아래 추가 */
+
+.detail-action-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.detail-cancel-btn {
+    background: white;
+    color: #555;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.detail-cancel-btn:hover {
+    border-color: #e84118;
+    color: #e84118;
+}
+
+.detail-chat-btn {
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.detail-chat-btn:hover {
+    background: #0056d2;
+}
+
+.detail-edit-btn {
+    background: #111;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.detail-edit-btn:hover {
+    background: #333;
+}
+
+.detail-delete-btn {
+    background: white;
+    color: #e84118;
+    border: 1px solid #e84118;
+    border-radius: 10px;
+    padding: 10px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.detail-delete-btn:hover {
+    background: #e84118;
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .study-detail-info-grid { grid-template-columns: 1fr; }
+    .study-detail-title { font-size: 22px; }
+}

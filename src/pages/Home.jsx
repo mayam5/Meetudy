@@ -2,34 +2,34 @@ import { Button } from "react-bootstrap";
 import "./Home.css";
 import StudyCard from "../components/StudyCard";
 import StudyListItem from "../components/StudyListItem";
-import { useState } from "react";
+import InterestSection from "../components/InterestSection";
 import { useNavigate } from "react-router-dom";
+import { ALL_STUDIES } from "../data/dummyData";
+import { useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
 
-const ALL_STUDIES = [
-    { title: "알고리즘 1", host: "민수", field: "개발", users: ["A", "B"] },
-    { title: "알고리즘 2", host: "철수", field: "개발", users: ["A"] },
-    { title: "알고리즘 3", host: "영희", field: "개발", users: ["A", "B", "C"] },
-    { title: "UIUX 1", host: "수빈", field: "디자인", users: ["A"] },
-    { title: "UIUX 2", host: "지훈", field: "디자인", users: ["A", "B"] },
-    { title: "토익 1", host: "민지", field: "언어", users: ["A", "B"] },
-    { title: "토익 2", host: "준호", field: "언어", users: ["A"] },
-    { title: "자격증 1", host: "철수", field: "자격증", users: ["A", "B", "C"] },
-    { title: "취업 1", host: "영희", field: "취업", users: ["A"] },
-];
 
 const FIELDS = ["개발", "디자인", "언어", "자격증", "취업"];
 
 function Home() {
-    const [selectedField, setSelectedField] = useState(null);
-    const navigate = useNavigate();
+    const location = useLocation();
+    const [showLoginAlert, setShowLoginAlert] = useState(false);
 
-    const filteredStudies = selectedField
-        ? ALL_STUDIES.filter((s) => s.field === selectedField)
-        : [];
+    useEffect(() => {
+        if (location.state?.needLogin) {
+            setShowLoginAlert(true);
+            setTimeout(() => setShowLoginAlert(false), 3000);
+        }
+    }, [location]);
 
     return (
         <main className="home">
-
+            {/* 로그인 필요 알림 */}
+            {showLoginAlert && (
+                <div className="login-alert">
+                    로그인이 필요한 서비스입니다.
+                </div>
+            )}
             {/* 메인 제목 */}
             <h2 className="main-title">
                 함께 공부할 사람을 찾고있나요?
@@ -55,37 +55,9 @@ function Home() {
                 </Button>
             </div>
 
-            {/* 관심 분야 */}
-            <div className="interest-section">
-                <h3 className="interest-title">어떤 스터디를 찾고있나요?</h3>
-                <h6>관심있는 분야를 선택해보세요!</h6>
-
-                <div className="interest-buttons">
-                    {FIELDS.map((field) => (
-                        <Button
-                            key={field}
-                            variant={selectedField === field ? "dark" : "light"}
-                            style={{ width: "100px" }}
-                            onClick={() =>
-                                setSelectedField(selectedField === field ? null : field)
-                            }
-                        >
-                            {field}
-                        </Button>
-                    ))}
-                </div>
-
-                <div className={`study-list hover-list ${selectedField ? "open" : ""}`}>
-                    {filteredStudies.map((study) => (
-                        <StudyListItem
-                            key={study.title}
-                            title={study.title}
-                            host={study.host}
-                            field={study.field}
-                            users={study.users}
-                        />
-                    ))}
-                </div>
+            {/* 관심 분야 - InterestSection 컴포넌트 사용 */}
+            <div style={{ width: "80%", margin: "100px auto 0" }}>
+                <InterestSection allStudies={ALL_STUDIES} />
             </div>
 
             {/* 스터디 생성 유도 */}
@@ -115,7 +87,8 @@ function Home() {
                 <div className="card-wrap">
                     {ALL_STUDIES.slice(0, 3).map((study) => (
                         <StudyCard
-                            key={study.title}
+                            key={study.id}
+                            id={study.id}
                             title={study.title}
                             host={study.host}
                             field={study.field}
@@ -139,11 +112,11 @@ function Home() {
                         더보기 →
                     </span>
                 </div>
-
                 <div className="study-list">
                     {ALL_STUDIES.slice(0, 5).map((study) => (
                         <StudyListItem
-                            key={study.title}
+                            key={study.id}
+                            id={study.id}
                             title={study.title}
                             host={study.host}
                             field={study.field}

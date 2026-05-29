@@ -1,42 +1,50 @@
 import {
-    Navbar,
-    Nav,
-    Container,
-    FormControl,
-    Dropdown,
-    Button
+    Navbar, Nav, Container, FormControl, Dropdown, Button
 } from "react-bootstrap";
 
 import "./Header.css";
 import logo from "../assets/logo.png";
 import Chat from "../components/Chat";
 import ChatList from "../components/ChatList";
+import NotificationList from "../components/NotificationList";
 
-import {
-    FiSearch,
-    FiBell,
-    FiUser
-} from "react-icons/fi";
+import { FiSearch, FiBell, FiUser, FiX } from "react-icons/fi";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import Login from "../components/Login";
+import { fetchNotifications, markNotificationRead } from "../api/notification";
 
 function Header() {
-
+    const { isLoggedIn, logout } = useAuth();
     const [isLoginOpen, setIsLoginOpen] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(
-        () => localStorage.getItem("isLoggedIn") === "true"
-    );
     const [isListOpen, setIsListOpen] = useState(false);
+    const [isNotiOpen, setIsNotiOpen] = useState(false);
     const [activeRoom, setActiveRoom] = useState(null);
     const [searchValue, setSearchValue] = useState("");
     const [searchError, setSearchError] = useState(false);
     const [selectedRegion, setSelectedRegion] = useState("지역");
     const [selectedField, setSelectedField] = useState("분야");
     const [navExpanded, setNavExpanded] = useState(false);
+    const [notifications, setNotifications] = useState([]);
 
     const navigate = useNavigate();
+    const unreadCount = notifications.filter((n) => !n.read).length;
+
+    // 로그인 시 알림 로드
+    useEffect(() => {
+        if (!isLoggedIn) return;
+        const load = async () => {
+            try {
+                const data = await fetchNotifications();
+                setNotifications(data);
+            } catch (e) {
+                console.error("알림 로드 실패:", e);
+            }
+        };
+        load();
+    }, [isLoggedIn]);
 
     const closeNav = () => setNavExpanded(false);
 
@@ -50,39 +58,57 @@ function Header() {
         navigate(`/whole-list?search=${searchValue}&region=${selectedRegion}&field=${selectedField}`);
     };
 
-    // 알림 - closeNav 없음 (드롭다운 예정)
+    const handleClearSearch = () => setSearchValue("");
+
     const handleNotificationClick = () => {
-        alert("알림 기능 준비 중");
+        setIsNotiOpen(!isNotiOpen);
+        setIsListOpen(false);
+    };
+
+    const handleReadNotification = async (id) => {
+        try {
+            await markNotificationRead(id);
+            setNotifications((prev) =>
+                prev.map((n) => n.id === id ? { ...n, read: true } : n)
+            );
+        } catch (e) {
+            console.error("알림 읽음 처리 실패:", e);
+        }
+    };
+
+    const handleReadAll = () => {
+        setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
     };
 
     const handleSelectRoom = (room) => {
         setActiveRoom(room);
+        setIsListOpen(false);
     };
 
     const closeAll = () => {
         setIsListOpen(false);
+        setIsNotiOpen(false);
         setActiveRoom(null);
     };
 
     const handleLoginSuccess = () => {
-        setIsLoggedIn(true);
-        localStorage.setItem("isLoggedIn", "true");
         setIsLoginOpen(false);
         closeNav();
         navigate("/mypage");
     };
 
-    const handleProfileClick = () => {
+    const handleLogout = () => {
+        logout();
         closeNav();
-        if (isLoggedIn) {
-            navigate("/mypage");
-        } else {
-            setIsLoginOpen(true);
-        }
+        navigate("/");
     };
 
-    // 내 모임 - closeNav 없음 (채팅리스트 드롭다운)
-    // 단, 비로그인 시에는 닫기
+    const handleProfileClick = () => {
+        closeNav();
+        if (isLoggedIn) navigate("/mypage");
+        else setIsLoginOpen(true);
+    };
+
     const handleMyGroupClick = () => {
         if (!isLoggedIn) {
             alert("로그인이 필요한 서비스입니다.");
@@ -91,6 +117,7 @@ function Header() {
             return;
         }
         setIsListOpen(!isListOpen);
+        setIsNotiOpen(false);
     };
 
     const REGIONS = ["서울", "경기", "부산"];
@@ -108,31 +135,19 @@ function Header() {
             >
                 <Container fluid>
 
-                    {/* 로고 */}
                     <Navbar.Brand
                         style={{ cursor: "pointer" }}
-                        onClick={() => {
-                            closeNav();
-                            navigate("/");
-                        }}
+                        onClick={() => { closeNav(); navigate("/"); }}
                     >
-                        <img
-                            src={logo}
-                            alt="logo"
-                            className="header-logo"
-                        />
+                        <img src={logo} alt="logo" className="header-logo" />
                     </Navbar.Brand>
 
                     <Navbar.Toggle aria-controls="navbar" />
 
-                    <Navbar.Collapse
-                        id="navbar"
-                        className="align-items-center"
-                    >
+                    <Navbar.Collapse id="navbar" className="align-items-center">
 
-                        {/* 검색 영역 */}
+                        {/* 검색 */}
                         <div className="search-wrap">
-
                             <FormControl
                                 placeholder="스터디를 검색해보세요"
                                 className={`search-input ${searchError ? "search-error" : ""}`}
@@ -140,94 +155,60 @@ function Header() {
                                 onChange={(e) => setSearchValue(e.target.value)}
                                 onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                             />
-
                             <div className="search-inner">
-
-                                <Button
-                                    className="icon-button"
-                                    variant="light"
-                                    size="sm"
-                                    onClick={handleSearch}
-                                >
+                                {searchValue && (
+                                    <Button className="icon-button" variant="light" size="sm" onClick={handleClearSearch}>
+                                        <FiX size={14} />
+                                    </Button>
+                                )}
+                                <Button className="icon-button" variant="light" size="sm" onClick={handleSearch}>
                                     <FiSearch />
                                 </Button>
-
-                                {/* 지역 선택 */}
                                 <Dropdown>
-                                    <Dropdown.Toggle variant="light" size="sm">
-                                        {selectedRegion}
-                                    </Dropdown.Toggle>
+                                    <Dropdown.Toggle variant="light" size="sm">{selectedRegion}</Dropdown.Toggle>
                                     <Dropdown.Menu>
-                                        <Dropdown.Item onClick={() => setSelectedRegion("지역")}>
-                                            전체
-                                        </Dropdown.Item>
+                                        <Dropdown.Item onClick={() => setSelectedRegion("지역")}>전체</Dropdown.Item>
                                         {REGIONS.map((r) => (
-                                            <Dropdown.Item
-                                                key={r}
-                                                onClick={() => setSelectedRegion(r)}
-                                            >
-                                                {r}
-                                            </Dropdown.Item>
+                                            <Dropdown.Item key={r} onClick={() => setSelectedRegion(r)}>{r}</Dropdown.Item>
                                         ))}
                                     </Dropdown.Menu>
                                 </Dropdown>
-
-                                {/* 분야 선택 */}
                                 <Dropdown>
-                                    <Dropdown.Toggle variant="light" size="sm">
-                                        {selectedField}
-                                    </Dropdown.Toggle>
+                                    <Dropdown.Toggle variant="light" size="sm">{selectedField}</Dropdown.Toggle>
                                     <Dropdown.Menu>
-                                        <Dropdown.Item onClick={() => setSelectedField("분야")}>
-                                            전체
-                                        </Dropdown.Item>
+                                        <Dropdown.Item onClick={() => setSelectedField("분야")}>전체</Dropdown.Item>
                                         {FIELDS.map((f) => (
-                                            <Dropdown.Item
-                                                key={f}
-                                                onClick={() => setSelectedField(f)}
-                                            >
-                                                {f}
-                                            </Dropdown.Item>
+                                            <Dropdown.Item key={f} onClick={() => setSelectedField(f)}>{f}</Dropdown.Item>
                                         ))}
                                     </Dropdown.Menu>
                                 </Dropdown>
-
                             </div>
                         </div>
 
                         {/* 우측 메뉴 */}
                         <Nav className="header-menu position-relative">
 
-                            <Button
-                                variant="light"
-                                size="sm"
-                                onClick={handleMyGroupClick}
-                            >
+                            <Button variant="light" size="sm" onClick={handleMyGroupClick}>
                                 내 모임
                             </Button>
 
-                            <Button
-                                variant="light"
-                                size="sm"
-                                onClick={() => {
-                                    closeNav();
-                                    navigate("/post-write");
-                                }}
-                            >
+                            <Button variant="light" size="sm" onClick={() => { closeNav(); navigate("/post-write"); }}>
                                 글 작성하기
                             </Button>
 
-                            <Button
-                                className="icon-button"
-                                variant="light"
-                                size="sm"
-                                onClick={handleNotificationClick}
-                            >
-                                <FiBell size={20} />
-                            </Button>
+                            {/* 알림 */}
+                            <div className="noti-bell-wrap">
+                                <Button className="icon-button" variant="light" size="sm" onClick={handleNotificationClick}>
+                                    <FiBell size={20} />
+                                </Button>
+                                {unreadCount > 0 && (
+                                    <span className="noti-badge">{unreadCount}</span>
+                                )}
+                            </div>
 
+                            {/* 프로필 */}
                             <Button
-                                className="icon-button"
+                                className={`icon-button ${isLoggedIn ? "logged-in" : ""}`}
                                 variant="light"
                                 size="sm"
                                 onClick={handleProfileClick}
@@ -235,14 +216,18 @@ function Header() {
                                 <FiUser size={20} />
                             </Button>
 
+                            {/* 로그아웃 */}
+                            {isLoggedIn && (
+                                <Button variant="light" size="sm" className="logout-btn" onClick={handleLogout}>
+                                    로그아웃
+                                </Button>
+                            )}
+
                         </Nav>
 
-                        {/* 채팅 overlay */}
-                        {(isListOpen || activeRoom) && (
-                            <div
-                                className="chat-overlay"
-                                onClick={closeAll}
-                            />
+                        {/* overlay */}
+                        {(isListOpen || activeRoom || isNotiOpen) && (
+                            <div className="chat-overlay" onClick={closeAll} />
                         )}
 
                         {/* 채팅 목록 */}
@@ -251,6 +236,18 @@ function Header() {
                                 <ChatList
                                     onSelectRoom={handleSelectRoom}
                                     onClose={() => setIsListOpen(false)}
+                                />
+                            </div>
+                        )}
+
+                        {/* 알림 목록 */}
+                        {isNotiOpen && (
+                            <div className="chat-wrapper">
+                                <NotificationList
+                                    notifications={notifications}
+                                    onRead={handleReadNotification}
+                                    onReadAll={handleReadAll}
+                                    onClose={() => setIsNotiOpen(false)}
                                 />
                             </div>
                         )}
@@ -264,12 +261,12 @@ function Header() {
             {activeRoom && (
                 <div className="chat-wrapper-fixed">
                     <Chat
+                        roomId={activeRoom.id}
                         roomTitle={activeRoom.title}
                         onClose={() => setActiveRoom(null)}
                     />
                 </div>
             )}
-
             {/* 로그인 모달 */}
             {isLoginOpen && (
                 <Login
@@ -277,7 +274,6 @@ function Header() {
                     onLoginSuccess={handleLoginSuccess}
                 />
             )}
-
         </>
     );
 }

@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { Modal, Form, Button, Spinner, Dropdown, DropdownButton } from "react-bootstrap";
 import { Formik } from "formik";
 import * as yup from "yup";
+import { useAuth } from "../context/AuthContext";
+import { loginApi, signupApi } from "../api/auth";
 import "./Login.css";
 
 function Login({ onClose, onLoginSuccess }) {
@@ -9,7 +11,9 @@ function Login({ onClose, onLoginSuccess }) {
     const [subMode, setSubMode] = useState(null);
     const [loading, setLoading] = useState(false);
     const [shake, setShake] = useState(false);
-    const formRef = useRef(null);
+    const loginFormRef = useRef(null);
+    const signupFormRef = useRef(null);
+    const { login } = useAuth();
 
     const handleClose = () => {
         if (typeof onClose === "function") onClose();
@@ -23,17 +27,25 @@ function Login({ onClose, onLoginSuccess }) {
         return () => window.removeEventListener("keydown", handleEsc);
     }, [onClose]);
 
-    const handleFormSubmit = (values) => {
+    const handleFormSubmit = async (values) => {
         setLoading(true);
-        setTimeout(() => {
-            setLoading(false);
+        try {
             if (mode === "login") {
-                localStorage.setItem("userEmail", values.email);
+                await loginApi({ email: values.email, password: values.password });
+                login(values.email);
                 if (typeof onLoginSuccess === "function") onLoginSuccess();
             } else {
+                await signupApi(values);
                 setMode("login");
+                setSubMode(null);
             }
-        }, 1000);
+        } catch (e) {
+            // 실패 시 shake 애니메이션
+            setShake(true);
+            setTimeout(() => setShake(false), 500);
+        } finally {
+            setLoading(false);
+        }
     };
 
     const loginSchema = yup.object().shape({
@@ -66,6 +78,11 @@ function Login({ onClose, onLoginSuccess }) {
         return mode === "login" ? "로그인" : "회원가입";
     };
 
+    const handleSubmitClick = () => {
+        if (mode === "login") loginFormRef.current?.requestSubmit();
+        else signupFormRef.current?.requestSubmit();
+    };
+
     return (
         <Modal show onHide={handleClose} centered>
             <div className={shake ? "shake" : ""}>
@@ -76,7 +93,7 @@ function Login({ onClose, onLoginSuccess }) {
 
                 <Modal.Body>
 
-                    {/* ================= LOGIN ================= */}
+                    {/* LOGIN */}
                     {!subMode && mode === "login" && (
                         <Formik
                             initialValues={{ email: "", password: "" }}
@@ -84,7 +101,7 @@ function Login({ onClose, onLoginSuccess }) {
                             onSubmit={handleFormSubmit}
                         >
                             {({ handleSubmit, handleChange, values, touched, errors }) => (
-                                <Form noValidate onSubmit={handleSubmit} ref={formRef}>
+                                <Form noValidate onSubmit={handleSubmit} ref={loginFormRef}>
                                     <Form.Group className="mb-3">
                                         <Form.Control
                                             name="email"
@@ -98,7 +115,6 @@ function Login({ onClose, onLoginSuccess }) {
                                             {errors.email}
                                         </Form.Control.Feedback>
                                     </Form.Group>
-
                                     <Form.Group className="mb-3">
                                         <Form.Control
                                             name="password"
@@ -117,87 +133,58 @@ function Login({ onClose, onLoginSuccess }) {
                         </Formik>
                     )}
 
-                    {/* ================= SIGNUP ================= */}
+                    {/* SIGNUP */}
                     {!subMode && mode === "signup" && (
                         <Formik
                             initialValues={{
-                                username: "",
-                                email: "",
-                                password: "",
-                                confirmPassword: "",
-                                category: [],
-                                region: "",
+                                username: "", email: "", password: "",
+                                confirmPassword: "", category: [], region: "",
                             }}
                             validationSchema={signupSchema}
                             onSubmit={handleFormSubmit}
                         >
                             {({ handleSubmit, handleChange, values, touched, errors, setFieldValue }) => (
-                                <Form noValidate onSubmit={handleSubmit} ref={formRef}>
+                                <Form noValidate onSubmit={handleSubmit} ref={signupFormRef}>
                                     <div className="signup-flex">
-
-                                        {/* LEFT */}
                                         <div className="signup-left">
                                             <Form.Group className="mb-3">
                                                 <div className="category-title">Nickname</div>
                                                 <Form.Control
-                                                    name="username"
-                                                    placeholder="닉네임"
-                                                    value={values.username}
-                                                    onChange={handleChange}
+                                                    name="username" placeholder="닉네임"
+                                                    value={values.username} onChange={handleChange}
                                                     isInvalid={touched.username && !!errors.username}
                                                 />
-                                                <Form.Control.Feedback type="invalid">
-                                                    {errors.username}
-                                                </Form.Control.Feedback>
+                                                <Form.Control.Feedback type="invalid">{errors.username}</Form.Control.Feedback>
                                             </Form.Group>
-
                                             <Form.Group className="mb-3">
                                                 <div className="category-title">Email</div>
                                                 <Form.Control
-                                                    name="email"
-                                                    type="email"
-                                                    placeholder="Email"
-                                                    value={values.email}
-                                                    onChange={handleChange}
+                                                    name="email" type="email" placeholder="Email"
+                                                    value={values.email} onChange={handleChange}
                                                     isInvalid={touched.email && !!errors.email}
                                                 />
-                                                <Form.Control.Feedback type="invalid">
-                                                    {errors.email}
-                                                </Form.Control.Feedback>
+                                                <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
                                             </Form.Group>
-
                                             <Form.Group className="mb-3">
                                                 <div className="category-title">Password</div>
                                                 <Form.Control
-                                                    name="password"
-                                                    type="password"
-                                                    placeholder="비밀번호"
-                                                    value={values.password}
-                                                    onChange={handleChange}
+                                                    name="password" type="password" placeholder="비밀번호"
+                                                    value={values.password} onChange={handleChange}
                                                     isInvalid={touched.password && !!errors.password}
                                                 />
-                                                <Form.Control.Feedback type="invalid">
-                                                    {errors.password}
-                                                </Form.Control.Feedback>
+                                                <Form.Control.Feedback type="invalid">{errors.password}</Form.Control.Feedback>
                                             </Form.Group>
-
                                             <Form.Group className="mb-3">
                                                 <div className="category-title">Confirm Password</div>
                                                 <Form.Control
-                                                    name="confirmPassword"
-                                                    type="password"
-                                                    placeholder="비밀번호 확인"
-                                                    value={values.confirmPassword}
-                                                    onChange={handleChange}
+                                                    name="confirmPassword" type="password" placeholder="비밀번호 확인"
+                                                    value={values.confirmPassword} onChange={handleChange}
                                                     isInvalid={touched.confirmPassword && !!errors.confirmPassword}
                                                 />
-                                                <Form.Control.Feedback type="invalid">
-                                                    {errors.confirmPassword}
-                                                </Form.Control.Feedback>
+                                                <Form.Control.Feedback type="invalid">{errors.confirmPassword}</Form.Control.Feedback>
                                             </Form.Group>
                                         </div>
 
-                                        {/* RIGHT */}
                                         <div className="signup-right">
                                             <Form.Group className="mb-3">
                                                 <div className="category-title">카테고리</div>
@@ -252,14 +239,13 @@ function Login({ onClose, onLoginSuccess }) {
                                                 )}
                                             </Form.Group>
                                         </div>
-
                                     </div>
                                 </Form>
                             )}
                         </Formik>
                     )}
 
-                    {/* ================= SUBMODE ================= */}
+                    {/* SUBMODE */}
                     {subMode === "findEmail" && (
                         <div className="submode-wrap">
                             <p className="submode-desc">닉네임을 입력하면 이메일을 찾아드려요.</p>
@@ -286,14 +272,20 @@ function Login({ onClose, onLoginSuccess }) {
                             {mode === "login" ? (
                                 <>
                                     계정이 없나요?{" "}
-                                    <span className="auth-switch-link" onClick={() => setMode("signup")}>
+                                    <span
+                                        className="auth-switch-link"
+                                        onClick={() => { setMode("signup"); setSubMode(null); }}
+                                    >
                                         회원가입
                                     </span>
                                 </>
                             ) : (
                                 <>
                                     이미 계정이 있나요?{" "}
-                                    <span className="auth-switch-link" onClick={() => setMode("login")}>
+                                    <span
+                                        className="auth-switch-link"
+                                        onClick={() => { setMode("login"); setSubMode(null); }}
+                                    >
                                         로그인
                                     </span>
                                 </>
@@ -304,19 +296,23 @@ function Login({ onClose, onLoginSuccess }) {
                 </Modal.Body>
 
                 <Modal.Footer className="d-flex justify-content-between">
-                    <div className="small text-muted">
-                        <div className="auth-sub-link" onClick={() => setSubMode("findEmail")}>
-                            Forgot Email?
+                    {!subMode ? (
+                        <div className="small text-muted">
+                            <div className="auth-sub-link" onClick={() => setSubMode("findEmail")}>
+                                Forgot Email?
+                            </div>
+                            <div className="auth-sub-link" onClick={() => setSubMode("resetPassword")}>
+                                Forgot Password?
+                            </div>
                         </div>
-                        <div className="auth-sub-link" onClick={() => setSubMode("resetPassword")}>
-                            Forgot Password?
-                        </div>
-                    </div>
+                    ) : (
+                        <div />
+                    )}
 
                     <Button
                         variant="primary"
                         disabled={loading}
-                        onClick={() => formRef.current?.requestSubmit()}
+                        onClick={handleSubmitClick}
                     >
                         {loading ? (
                             <><Spinner size="sm" animation="border" /> 처리 중...</>

@@ -4,9 +4,11 @@ import AvatarGroup from "./AvatarGroup";
 import { FiBookmark, FiMessageCircle } from "react-icons/fi";
 import { BsBookmarkFill } from "react-icons/bs";
 import ConfirmPopup from "./ConfirmPopup";
+import { toggleBookmark } from "../api/user";
 import "./WholeListItem.css";
 
 function WholeListItem({
+    id,
     title = "",
     host = "",
     hostId,
@@ -28,13 +30,17 @@ function WholeListItem({
         navigate(`/profile/${hostId}`);
     };
 
-    const openPopup = (message, onConfirm) => {
-        setPopup({ open: true, message, onConfirm });
+    const handleBookmark = async () => {
+        try {
+            await toggleBookmark(id);
+            setIsBookmarked(!isBookmarked);
+        } catch (e) {
+            console.error("북마크 실패:", e);
+        }
     };
 
-    const closePopup = () => {
-        setPopup({ open: false, message: "", onConfirm: null });
-    };
+    const openPopup = (message, onConfirm) => setPopup({ open: true, message, onConfirm });
+    const closePopup = () => setPopup({ open: false, message: "", onConfirm: null });
 
     return (
         <div className="list-item">
@@ -42,15 +48,19 @@ function WholeListItem({
             <button
                 type="button"
                 className="list-bookmark"
-                onClick={() => setIsBookmarked(!isBookmarked)}
+                onClick={handleBookmark}
             >
                 {isBookmarked ? <BsBookmarkFill /> : <FiBookmark />}
             </button>
 
-            <div className="list-title-box">
+            <div
+                className="list-title-box"
+                onClick={() => navigate(`/study/${id}`)}
+                style={{ cursor: "pointer" }}
+            >
                 <strong className="list-title">{title}</strong>
                 <span className="list-tags">
-                    {tags.length > 0 ? tags.map((t) => `#${t}`).join(" ") : "#태그없음"}
+                    {tags.length > 0 ? tags.map((t) => `#${t}`).join(" ") : ""}
                 </span>
             </div>
 
@@ -58,9 +68,7 @@ function WholeListItem({
                 {profileImage ? (
                     <img className="list-host-profile" src={profileImage} alt="profile" />
                 ) : (
-                    <div className="list-host-profile">
-                        {host?.[0] || "닉"}
-                    </div>
+                    <div className="list-host-profile">{host?.[0] || "닉"}</div>
                 )}
                 <span className="list-host-name">{host}</span>
             </div>
@@ -70,7 +78,7 @@ function WholeListItem({
             <div className="list-actions">
                 {type === "written" && (
                     <>
-                        <button onClick={() => navigate("/post-write")}>수정</button>
+                        <button onClick={() => navigate(`/post-edit/${id}`)}>수정</button>
                         <button
                             onClick={() =>
                                 openPopup("정말 삭제하시겠습니까?", () => {
@@ -135,7 +143,6 @@ function WholeListItem({
                     onClose={closePopup}
                 />
             )}
-
         </div>
     );
 }

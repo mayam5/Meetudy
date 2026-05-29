@@ -1,31 +1,27 @@
 import "./ChatList.css";
 import { FiX } from "react-icons/fi";
+import { useState, useEffect } from "react";
+import { fetchChatRooms } from "../api/chat";
 
-const DEFAULT_ROOMS = [
-    {
-        id: 1,
-        title: "React 초보 스터디",
-        lastMessage: "오늘 과제 어디까지인가요?",
-        time: "2m",
-        unread: 2
-    },
-    {
-        id: 2,
-        title: "알고리즘 1일 1문제",
-        lastMessage: "방금 깃허브에 인증했습니다!",
-        time: "10m",
-        unread: 0
-    },
-    {
-        id: 3,
-        title: "토익 스피킹 메이트",
-        lastMessage: "녹음본 확인 부탁드려요.",
-        time: "1h",
-        unread: 1
-    }
-];
+function ChatList({ onSelectRoom, onClose }) {
+    const [rooms, setRooms] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-function ChatList({ onSelectRoom, onClose, rooms = DEFAULT_ROOMS }) {
+    useEffect(() => {
+        const load = async () => {
+            setLoading(true);
+            try {
+                const data = await fetchChatRooms();
+                setRooms(data);
+            } catch (e) {
+                console.error("채팅방 목록 로드 실패:", e);
+            } finally {
+                setLoading(false);
+            }
+        };
+        load();
+    }, []);
+
     return (
         <div className="chat-list-dropdown">
             <div className="chat-list-header">
@@ -36,39 +32,35 @@ function ChatList({ onSelectRoom, onClose, rooms = DEFAULT_ROOMS }) {
             </div>
 
             <div className="chat-list-body">
-                {rooms.length === 0 ? (
-                    <div className="chat-list-empty">
-                        참여 중인 모임이 없어요
-                    </div>
-                ) : (
-                    rooms.map((room) => (
-                        <div
-                            key={room.id}
-                            className={`chat-list-item ${room.unread > 0 ? "unread" : ""}`}
-                            onClick={() => onSelectRoom?.(room)}
-                        >
-                            <div className="room-avatar">
-                                {room.title[0]}
-                            </div>
-
-                            <div className="room-content">
-                                <div className="room-title">
-                                    {room.title}
-                                    <span className="room-time">{room.time}</span>
-                                </div>
-                                <div className="room-last-msg">
-                                    {room.lastMessage}
-                                </div>
-                            </div>
-
-                            {room.unread > 0 && (
-                                <div className="room-badge">
-                                    {room.unread}
-                                </div>
-                            )}
-                        </div>
-                    ))
+                {loading && (
+                    <div className="chat-list-empty">불러오는 중...</div>
                 )}
+                {!loading && rooms.length === 0 && (
+                    <div className="chat-list-empty">참여 중인 모임이 없어요</div>
+                )}
+                {!loading && rooms.map((room) => (
+                    <div
+                        key={room.id}
+                        className={`chat-list-item ${room.unread > 0 ? "unread" : ""}`}
+                        onClick={() => onSelectRoom?.(room)}
+                    >
+                        <div className="room-avatar">
+                            {room.title[0]}
+                        </div>
+                        <div className="room-content">
+                            <div className="room-title">
+                                {room.title}
+                                <span className="room-time">{room.time}</span>
+                            </div>
+                            <div className="room-last-msg">
+                                {room.lastMessage}
+                            </div>
+                        </div>
+                        {room.unread > 0 && (
+                            <div className="room-badge">{room.unread}</div>
+                        )}
+                    </div>
+                ))}
             </div>
         </div>
     );

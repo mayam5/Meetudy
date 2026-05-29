@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import "./PostWrite.css";
 import Dropbox from "../components/Dropbox";
 import ConfirmPopup from "../components/ConfirmPopup";
+import { fetchStudyById, createStudy, updateStudy, deleteStudy } from "../api/study";
 
 const DAY_OPTIONS = [
     { value: "mon", label: "월요일" },
@@ -30,39 +32,73 @@ const DUMMY_PLACES = [
 ];
 
 function PostWrite({ isEditMode = false }) {
+    const { id } = useParams();
+    const navigate = useNavigate();
+
     const [selectedCategory, setSelectedCategory] = useState("");
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [number, setNumber] = useState("");
-
     const [day, setDay] = useState("");
     const [time, setTime] = useState("");
     const [meetingTimes, setMeetingTimes] = useState([]);
-
     const [hashtags, setHashtags] = useState([]);
     const [tagInput, setTagInput] = useState("");
     const [isTagFocused, setIsTagFocused] = useState(false);
-
     const [placeInput, setPlaceInput] = useState("");
     const [selectedPlace, setSelectedPlace] = useState(null);
-
     const [cost, setCost] = useState("");
     const [isCostFocused, setIsCostFocused] = useState(false);
-
     const [isStatusPopupOpen, setIsStatusPopupOpen] = useState(false);
     const [postStatus, setPostStatus] = useState("");
-
     const [popup, setPopup] = useState({ open: false, message: "", onConfirm: null });
+    const [loading, setLoading] = useState(false);
 
-    const openPopup = (message, onConfirm) => {
-        setPopup({ open: true, message, onConfirm });
+    // 유효성 검사 에러
+    const [errors, setErrors] = useState({});
+
+    // 수정 모드 - 기존 데이터 불러오기
+    useEffect(() => {
+        if (isEditMode && id) {
+            const load = async () => {
+                setLoading(true);
+                try {
+                    const data = await fetchStudyById(id);
+                    if (data) {
+                        setTitle(data.title ?? "");
+                        setSelectedCategory(data.field ?? "");
+                        setDescription(data.description ?? "");
+                        setNumber(data.maxMembers ? String(data.maxMembers) : "");
+                        setHashtags(data.tags ?? []);
+                        setMeetingTimes(data.meetingTimes ?? []);
+                        setPlaceInput(data.place ?? "");
+                        setCost(data.cost ? String(data.cost) : "");
+                        setPostStatus(data.status ?? "");
+                    }
+                } catch (e) {
+                    console.error("데이터 불러오기 실패:", e);
+                } finally {
+                    setLoading(false);
+                }
+            };
+            load();
+        }
+    }, [isEditMode, id]);
+
+    const openPopup = (message, onConfirm) => setPopup({ open: true, message, onConfirm });
+    const closePopup = () => setPopup({ open: false, message: "", onConfirm: null });
+
+    // 유효성 검사
+    const validate = () => {
+        const newErrors = {};
+        if (!selectedCategory) newErrors.category = "카테고리를 선택해주세요.";
+        if (!title.trim()) newErrors.title = "제목을 입력해주세요.";
+        if (!description.trim()) newErrors.description = "모임 설명을 입력해주세요.";
+        if (!number) newErrors.number = "최대 인원을 선택해주세요.";
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
     };
 
-    const closePopup = () => {
-        setPopup({ open: false, message: "", onConfirm: null });
-    };
-
-    // 해시태그
     const handleTagKeyDown = (e) => {
         if (e.key === "Enter" && tagInput.trim() !== "") {
             e.preventDefault();
@@ -77,16 +113,13 @@ function PostWrite({ isEditMode = false }) {
         setHashtags(hashtags.filter((tag) => tag !== tagToRemove));
     };
 
-    // 모임 시간
     const handleAddMeetingTime = () => {
         if (day === "" || meetingTimes.length >= 3) return;
-
         const dayLabel = DAY_OPTIONS.find((o) => o.value === day)?.label;
         const timeLabel = TIME_OPTIONS.find((o) => o.value === time)?.label;
         const meetingTimeText = !time || time === "notDecided"
             ? dayLabel
             : `${dayLabel} ${timeLabel}`;
-
         if (!meetingTimes.includes(meetingTimeText)) {
             setMeetingTimes([...meetingTimes, meetingTimeText]);
         }
@@ -98,22 +131,73 @@ function PostWrite({ isEditMode = false }) {
         setMeetingTimes(meetingTimes.filter((t) => t !== timeToRemove));
     };
 
-    // 장소 검색
     const filteredPlaces = DUMMY_PLACES.filter((place) =>
         place.placeName.includes(placeInput)
     );
+
+    const buildPayload = () => ({
+        title,
+        field: selectedCategory,
+        description,
+        maxMembers: Number(number),
+        tags: hashtags,
+        meetingTimes,
+        place: selectedPlace?.placeName ?? placeInput,
+        cost: Number(cost) || 0,
+        status: postStatus || "recruiting",
+    });
+
+    const handleSubmit = async () => {
+        setLoading(true);
+        try {
+            if (isEditMode && id) {
+                await updateStudy(id, buildPayload());
+            } else {
+                await createStudy(buildPayload());
+            }
+            navigate("/whole-list");
+        } catch (e) {
+            console.error("저장 실패:", e);
+        } finally {
+            setLoading(false);
+            closePopup();
+        }
+    };
+
+    const handleDelete = async () => {
+        setLoading(true);
+        try {
+            await deleteStudy(id);
+            navigate("/whole-list");
+        } catch (e) {
+            console.error("삭제 실패:", e);
+        } finally {
+            setLoading(false);
+            closePopup();
+        }
+    };
+
+    const handleSubmitClick = () => {
+        if (!validate()) return;
+        openPopup(
+            isEditMode ? "수정하시겠습니까?" : "게시글을 올리시겠습니까?",
+            handleSubmit
+        );
+    };
+
+    if (loading && isEditMode && !title) {
+        return <div style={{ textAlign: "center", marginTop: "200px" }}>불러오는 중...</div>;
+    }
 
     return (
         <>
             <div
                 className="post-write-page"
-                onClick={() => {
-                    if (isStatusPopupOpen) setIsStatusPopupOpen(false);
-                }}
+                onClick={() => { if (isStatusPopupOpen) setIsStatusPopupOpen(false); }}
             >
                 <div className="post-write-container">
 
-                    <h1>게시글 작성하기</h1>
+                    <h1>게시글 {isEditMode ? "수정하기" : "작성하기"}</h1>
 
                     {/* 1. 카테고리 */}
                     <div className="form-section">
@@ -124,12 +208,16 @@ function PostWrite({ isEditMode = false }) {
                                 <button
                                     key={cat}
                                     className={`category-button ${selectedCategory === cat ? "selected" : ""}`}
-                                    onClick={() => setSelectedCategory(cat)}
+                                    onClick={() => {
+                                        setSelectedCategory(cat);
+                                        setErrors((prev) => ({ ...prev, category: undefined }));
+                                    }}
                                 >
                                     {cat}
                                 </button>
                             ))}
                         </div>
+                        {errors.category && <p className="field-error">{errors.category}</p>}
                     </div>
 
                     {/* 2. 제목 */}
@@ -138,15 +226,19 @@ function PostWrite({ isEditMode = false }) {
                         <p>필수 입력 사항입니다</p>
                         <div className="input-count-wrapper">
                             <input
-                                className="input"
+                                className={`input ${errors.title ? "input-error" : ""}`}
                                 type="text"
                                 placeholder="글 제목을 입력해 주세요"
                                 maxLength={50}
                                 value={title}
-                                onChange={(e) => setTitle(e.target.value)}
+                                onChange={(e) => {
+                                    setTitle(e.target.value);
+                                    setErrors((prev) => ({ ...prev, title: undefined }));
+                                }}
                             />
                             <span className="char-count">{title.length}/50</span>
                         </div>
+                        {errors.title && <p className="field-error">{errors.title}</p>}
                     </div>
 
                     {/* 3. 모임 설명 */}
@@ -155,14 +247,18 @@ function PostWrite({ isEditMode = false }) {
                         <p>필수 입력 사항입니다</p>
                         <div className="input-count-wrapper">
                             <textarea
-                                className="input"
+                                className={`input ${errors.description ? "input-error" : ""}`}
                                 placeholder="모임에 대해 설명해주세요"
                                 maxLength={500}
                                 value={description}
-                                onChange={(e) => setDescription(e.target.value)}
+                                onChange={(e) => {
+                                    setDescription(e.target.value);
+                                    setErrors((prev) => ({ ...prev, description: undefined }));
+                                }}
                             />
                             <span className="char-count">{description.length}/500</span>
                         </div>
+                        {errors.description && <p className="field-error">{errors.description}</p>}
                     </div>
 
                     {/* 4. 모임 최대 인원 */}
@@ -173,13 +269,17 @@ function PostWrite({ isEditMode = false }) {
                             <Dropbox
                                 placeholder="인원 선택"
                                 value={number}
-                                onChange={setNumber}
+                                onChange={(v) => {
+                                    setNumber(v);
+                                    setErrors((prev) => ({ ...prev, number: undefined }));
+                                }}
                                 options={Array.from({ length: 9 }, (_, i) => ({
                                     value: String(i + 2),
                                     label: `${i + 2}명`,
                                 }))}
                             />
                         </div>
+                        {errors.number && <p className="field-error">{errors.number}</p>}
                     </div>
 
                     {/* 5. 해시태그 */}
@@ -196,9 +296,7 @@ function PostWrite({ isEditMode = false }) {
                                     onChange={(e) => setTagInput(e.target.value)}
                                     onKeyDown={handleTagKeyDown}
                                     onFocus={() => setIsTagFocused(true)}
-                                    onBlur={() => {
-                                        if (tagInput === "") setIsTagFocused(false);
-                                    }}
+                                    onBlur={() => { if (tagInput === "") setIsTagFocused(false); }}
                                 />
                             </div>
                             <div className="tag-list">
@@ -216,21 +314,9 @@ function PostWrite({ isEditMode = false }) {
                     <div className="form-section">
                         <h4>6. 모임 시간</h4>
                         <div className="dropdown-row">
-                            <Dropbox
-                                placeholder="요일 선택"
-                                value={day}
-                                onChange={setDay}
-                                options={DAY_OPTIONS}
-                            />
-                            <Dropbox
-                                placeholder="시간대 선택"
-                                value={time}
-                                onChange={setTime}
-                                options={TIME_OPTIONS}
-                            />
-                            <button className="time-add-button" onClick={handleAddMeetingTime}>
-                                추가
-                            </button>
+                            <Dropbox placeholder="요일 선택" value={day} onChange={setDay} options={DAY_OPTIONS} />
+                            <Dropbox placeholder="시간대 선택" value={time} onChange={setTime} options={TIME_OPTIONS} />
+                            <button className="time-add-button" onClick={handleAddMeetingTime}>추가</button>
                         </div>
                         <div className="time-list">
                             {meetingTimes.map((meetingTime) => (
@@ -251,10 +337,7 @@ function PostWrite({ isEditMode = false }) {
                                 type="text"
                                 placeholder="모임 장소를 입력해 주세요"
                                 value={placeInput}
-                                onChange={(e) => {
-                                    setPlaceInput(e.target.value);
-                                    setSelectedPlace(null);
-                                }}
+                                onChange={(e) => { setPlaceInput(e.target.value); setSelectedPlace(null); }}
                             />
                             {placeInput && !selectedPlace && (
                                 <div className="place-result-list">
@@ -263,10 +346,7 @@ function PostWrite({ isEditMode = false }) {
                                             <div
                                                 className="place-result-item"
                                                 key={place.id}
-                                                onClick={() => {
-                                                    setSelectedPlace(place);
-                                                    setPlaceInput(place.placeName);
-                                                }}
+                                                onClick={() => { setSelectedPlace(place); setPlaceInput(place.placeName); }}
                                             >
                                                 <strong>{place.placeName}</strong>
                                                 <p>{place.address}</p>
@@ -299,9 +379,7 @@ function PostWrite({ isEditMode = false }) {
                                 value={cost}
                                 onChange={(e) => setCost(e.target.value.replace(/[^0-9]/g, ""))}
                                 onFocus={() => setIsCostFocused(true)}
-                                onBlur={() => {
-                                    if (cost === "") setIsCostFocused(false);
-                                }}
+                                onBlur={() => { if (cost === "") setIsCostFocused(false); }}
                             />
                         </div>
                     </div>
@@ -313,32 +391,19 @@ function PostWrite({ isEditMode = false }) {
                                 <div className="post-button-group">
                                     <button
                                         className="post-button delete"
-                                        onClick={() =>
-                                            openPopup("정말 삭제하시겠습니까?", () => {
-                                                console.log("삭제");
-                                                closePopup();
-                                            })
-                                        }
+                                        onClick={() => openPopup("정말 삭제하시겠습니까?", handleDelete)}
                                     >
                                         삭제하기
                                     </button>
                                     <button
                                         className="post-button status"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            setIsStatusPopupOpen(true);
-                                        }}
+                                        onClick={(e) => { e.stopPropagation(); setIsStatusPopupOpen(true); }}
                                     >
                                         상태 변경하기
                                     </button>
                                     <button
                                         className="post-button submit"
-                                        onClick={() =>
-                                            openPopup("수정하시겠습니까?", () => {
-                                                console.log("수정");
-                                                closePopup();
-                                            })
-                                        }
+                                        onClick={handleSubmitClick}
                                     >
                                         수정하기
                                     </button>
@@ -363,7 +428,7 @@ function PostWrite({ isEditMode = false }) {
                                             className="post-button submit"
                                             onClick={() => {
                                                 setIsStatusPopupOpen(false);
-                                                openPopup("상태를 변경하시겠습니까?", () => {
+                                                openPopup("상태를 변경하시겠습니까?", async () => {
                                                     console.log("상태 변경:", postStatus);
                                                     closePopup();
                                                 });
@@ -378,23 +443,16 @@ function PostWrite({ isEditMode = false }) {
                             <div className="post-button-group">
                                 <button
                                     className="post-button save"
-                                    onClick={() =>
-                                        openPopup("임시 저장하시겠습니까?", () => {
-                                            console.log("임시 저장");
-                                            closePopup();
-                                        })
-                                    }
+                                    onClick={() => openPopup("임시 저장하시겠습니까?", async () => {
+                                        console.log("임시 저장");
+                                        closePopup();
+                                    })}
                                 >
                                     임시 저장
                                 </button>
                                 <button
                                     className="post-button submit"
-                                    onClick={() =>
-                                        openPopup("게시글을 올리시겠습니까?", () => {
-                                            console.log("올리기");
-                                            closePopup();
-                                        })
-                                    }
+                                    onClick={handleSubmitClick}
                                 >
                                     올리기
                                 </button>

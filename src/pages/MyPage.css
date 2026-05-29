@@ -3,12 +3,12 @@
 ========================= */
 
 .mypage {
-  display: flex;
-  gap: 20px;
-  padding: 20px;
-  min-height: 100vh;
-  background: #f5f5f5;
-  margin-top: 90px;
+    display: flex;
+    gap: 24px;
+    padding: 24px;
+    min-height: 100vh;
+    background: #f0f2f5;
+    margin-top: 90px;
 }
 
 /* =========================
@@ -16,23 +16,25 @@
 ========================= */
 
 .mypage .left-section {
-  width: 30%;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+    width: 28%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    flex-shrink: 0;
 }
 
 .mypage .right-section {
-  width: 70%;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 0;
 }
 
 .mypage .top-row,
 .mypage .bottom-row {
-  display: flex;
-  gap: 16px;
+    display: flex;
+    gap: 16px;
 }
 
 /* =========================
@@ -40,24 +42,24 @@
 ========================= */
 
 .mypage .card {
-  background: #ffffff;
-  border-radius: 24px;
-  padding: 24px;
-  border: 1px solid #e9e9e9;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.04);
-  transition: 0.25s;
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 24px;
+    border: 1px solid #eaecef;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+    transition: box-shadow 0.2s ease;
 }
 
 .mypage .card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 24px rgba(0,0,0,0.06);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
 .mypage h3 {
-  font-weight: 800;
-  font-size: 22px;
-  color: #111;
-  margin: 0;
+    font-weight: 800;
+    font-size: 16px;
+    color: #111;
+    margin: 0;
+    letter-spacing: -0.3px;
 }
 
 /* =========================
@@ -65,125 +67,121 @@
 ========================= */
 
 .mypage .profile-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .mypage .nickname {
-  margin-bottom: 20px;
-  color: #111;
-  font-size: 28px;
-  font-weight: 800;
-  letter-spacing: -0.5px;
+    margin-bottom: 16px;
+    color: #111;
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
 }
 
 .mypage .profile-image {
-  width: 180px;
-  height: 180px;
-  border-radius: 50%;
-  background: #1f1f1f;
-  margin-bottom: 30px;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: #1f1f1f;
+    margin-bottom: 24px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border: 3px solid #fff;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
 }
 
 .mypage .profile-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.mypage .profile-upload-btn {
+    margin-top: 10px;
 }
 
 /* =========================
-   INFO SECTION (AGE / GENDER / REGION)
+   INFO SECTION
 ========================= */
 
 .mypage .info-box {
-  width: 100%;
-  align-self: stretch;
+    width: 100%;
+    align-self: stretch;
 }
 
 .mypage .info-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 4px;
-  margin-bottom: 12px;
-  border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.mypage .info-row:last-child {
+    border-bottom: none;
 }
 
 .mypage .label {
-  font-weight: 700;
-  color: #111;
+    font-weight: 700;
+    font-size: 12px;
+    color: #888;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
 }
 
 .mypage .value {
-  color: #555;
-  font-weight: 500;
-  font-size: 14px;
-  text-align: right;
-  flex: 1;
+    color: #222;
+    font-weight: 500;
+    font-size: 13px;
+    text-align: right;
 }
 
-/* duplicate (kept as-is) */
-.mypage .value {
-  color: #555;
-  font-weight: 500;
-  font-size: 13px;
-  margin-left: 10px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-}
+/* =========================
+   PASSWORD CARD
+========================= */
 
-.mypage .email-readonly {
-  color: #888;
-  font-weight: 600;
-  font-size: 14px;
-  background: #fafafa;
-  border: 1px solid #dcdcdc;
-  border-radius: 14px;
-  padding: 12px 14px;
-  width: 100%;
-  display: block;
+.mypage .password-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .mypage .password-card .small-btn {
-  background: #007bff;
-  color: white;
+    background: #007bff;
+    color: white;
+    align-self: flex-end;
 }
 
 .mypage .password-card .small-btn:hover {
-  background: #0056d2;
+    background: #0056d2;
 }
+
 /* =========================
    REGION SELECT
 ========================= */
 
 .mypage .region-select-group {
-  display: flex;
-  gap: 10px;
-  width: 100%;
-  flex-wrap: wrap;
+    display: flex;
+    gap: 8px;
+    width: 100%;
+    flex-wrap: wrap;
 }
 
 .mypage .region-select-group select {
-  flex: 1;
-  min-width: 120px;
-}
-
-.mypage .region-select-group select:hover {
-  border-color: #bbb;
+    flex: 1;
+    min-width: 100px;
 }
 
 .mypage .region-select-group select:disabled {
-  background: #f2f2f2;
-  color: #aaa;
-  cursor: not-allowed;
+    background: #f2f2f2;
+    color: #aaa;
+    cursor: not-allowed;
 }
 
 /* =========================
@@ -191,29 +189,32 @@
 ========================= */
 
 .mypage .bio-card {
-  position: relative;
-  min-height: 120px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #333;
-  font-size: 16px;
-  line-height: 1.7;
+    position: relative;
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #444;
+    font-size: 15px;
+    line-height: 1.7;
+    padding: 32px 24px;
 }
 
 .mypage .quote {
-  position: absolute;
-  font-size: 44px;
-  color: #007bff;
-  left: 20px;
-  top: 10px;
+    position: absolute;
+    font-size: 40px;
+    color: #e0e0e0;
+    left: 16px;
+    top: 8px;
+    font-family: Georgia, serif;
+    line-height: 1;
 }
 
 .mypage .quote.right {
-  right: 20px;
-  left: auto;
-  bottom: 10px;
-  top: auto;
+    right: 16px;
+    left: auto;
+    bottom: 8px;
+    top: auto;
 }
 
 /* =========================
@@ -221,33 +222,37 @@
 ========================= */
 
 .mypage .tag-wrapper {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
 }
 
 .mypage .category-card .tag {
-  background: #f2f2f2;
-  color: #111;
-  padding: 10px 16px;
-  border-radius: 999px;
-  font-size: 14px;
-  font-weight: 600;
-  transition: 0.2s;
-  cursor: pointer;
-  border: 1px solid transparent;
+    background: #f5f5f5;
+    color: #555;
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    transition: 0.2s;
+    cursor: pointer;
+    border: 1px solid transparent;
+}
+
+.mypage .category-card .tag:hover {
+    background: #eee;
 }
 
 .mypage .category-card .active-tag {
-  background: #111;
-  color: white;
-  border: 1px solid #111;
+    background: #111;
+    color: white;
+    border: 1px solid #111;
 }
 
 .mypage.editing .active-tag {
-  background: #007bff;
-  border-color: #007bff;
+    background: #007bff;
+    border-color: #007bff;
 }
 
 /* =========================
@@ -255,42 +260,48 @@
 ========================= */
 
 .mypage .edit-btn {
-  height: 50px;
-  border: none;
-  border-radius: 14px;
-  background: #111;
-  color: white;
-  font-weight: 700;
-  font-size: 15px;
-  cursor: pointer;
-  transition: 0.2s;
+    height: 48px;
+    border: none;
+    border-radius: 12px;
+    background: #111;
+    color: white;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.2s;
+    letter-spacing: 0.2px;
 }
 
 .mypage .edit-btn:hover {
-  background: #007bff;
+    background: #333;
 }
 
 .mypage.editing .edit-btn {
-  background: #007bff;
+    background: #007bff;
+}
+
+.mypage.editing .edit-btn:hover {
+    background: #0056d2;
 }
 
 .mypage .small-btn {
-  border: none;
-  background: #111;
-  color: white;
-  padding: 8px 15px;
-  border-radius: 10px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: 0.2s;
+    border: none;
+    background: #111;
+    color: white;
+    padding: 7px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 13px;
+    transition: 0.2s;
 }
 
 .mypage .small-btn:hover {
-  background: #007bff;
+    background: #333;
 }
 
 .mypage .small-btn.active-edit-btn {
-  background: #007bff;
+    background: #007bff;
 }
 
 /* =========================
@@ -298,9 +309,8 @@
 ========================= */
 
 .mypage .schedule-card { flex: 3; }
-.mypage .bookmark-card { flex: 1; }
-.mypage .meeting-card { min-height: 180px; }
-.mypage .study-card { flex: 2; }
+.mypage .bookmark-card { flex: 2; }
+.mypage .study-card { flex: 1; }
 .mypage .user-card { flex: 1; }
 
 /* =========================
@@ -308,17 +318,18 @@
 ========================= */
 
 .mypage .card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
 }
 
 .mypage .card-header > div {
-  display: flex;
-  gap: 3px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
 }
 
 /* =========================
@@ -326,82 +337,148 @@
 ========================= */
 
 .mypage .schedule-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 10px;
-  text-align: center;
-  font-size: 13px;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    text-align: center;
+    font-size: 12px;
+}
+
+.mypage .schedule-grid > div:not(.schedule-cell) {
+    font-size: 12px;
+    font-weight: 700;
+    color: #888;
+    padding: 6px 0;
 }
 
 .mypage .schedule-cell {
-  padding: 10px;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: 0.2s ease;
-  color: #777;
-  background: #fff;
-  border: 1px solid #f0f0f0;
-
-  font-weight: 500;
-  user-select: none;
+    padding: 8px 4px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.15s ease;
+    color: #bbb;
+    background: #fafafa;
+    border: 1px solid #f0f0f0;
+    font-weight: 500;
+    user-select: none;
+    font-size: 11px;
 }
-/* =========================
-  선택된 상태
-========================= */
+
 .mypage .schedule-cell.active {
-  background: #f2f2f2;
-  color: #111;
-  font-weight: 600;
-  border: 1px transparent
+    background: #111;
+    color: #fff;
+    font-weight: 700;
+    border-color: #111;
 }
 
-/* =========================
-   수정 모드
-========================= */
 .mypage .schedule-card.editing .schedule-cell {
-  border: 1px dashed #d6d6d6;
+    border: 1px dashed #ddd;
+    cursor: pointer;
 }
 
 .mypage .schedule-card.editing .schedule-cell:hover {
-  border-color: #007bff;
-  background: rgba(0, 123, 255, 0.06);
+    border-color: #007bff;
+    background: rgba(0, 123, 255, 0.06);
+    color: #007bff;
 }
 
 .mypage .schedule-card.editing .schedule-cell.active {
-  background: #007bff;
-  color: #fff;
-  font-weight: 600;
-  border: 1px solid #007bff;
+    background: #007bff;
+    color: #fff;
+    border-color: #007bff;
 }
-
 
 /* =========================
    MEETING
 ========================= */
 
+.mypage .meeting-card-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.mypage .meeting-card-header h3 {
+    flex-shrink: 0;
+}
+
 .mypage .meeting-tabs {
-  display: flex;
-  gap: 10px;
-  font-size: 13px;
-  flex-wrap: wrap;
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.mypage .meeting-tabs::-webkit-scrollbar {
+    display: none;
 }
 
 .mypage .meeting-tabs span {
-  padding: 7px 12px;
-  border-radius: 999px;
-  background: #f3f3f3;
-  cursor: pointer;
+    padding: 7px 14px;
+    border-radius: 999px;
+    background: #f3f3f3;
+    cursor: pointer;
+    color: #888;
+    font-weight: 500;
+    font-size: 13px;
+    transition: 0.2s;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.mypage .meeting-tabs span:hover {
+    background: #e8e8e8;
+    color: #333;
 }
 
 .mypage .active-tab {
-  background: #111 !important;
-  color: white;
+    background: #111 !important;
+    color: white !important;
+    font-weight: 700 !important;
 }
 
 .mypage .meeting-list {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
+    display: flex;
+    flex-direction: column;
+}
+
+.mypage .meeting-list .study-item {
+    padding: 14px 4px;
+    border-bottom: 1px solid #f5f5f5;
+    border-radius: 0;
+    transition: all 0.15s;
+}
+
+.mypage .meeting-list .study-item:last-child {
+    border-bottom: none;
+}
+
+.mypage .meeting-list .study-item:hover {
+    background: #fafafa;
+    border-radius: 10px;
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+.mypage .meeting-empty {
+    padding: 40px 0;
+    text-align: center;
+    color: #bbb;
+    font-size: 14px;
+}
+
+.mypage .meeting-loading {
+    padding: 40px 0;
+    text-align: center;
+    color: #ccc;
+    font-size: 13px;
 }
 
 /* =========================
@@ -409,16 +486,18 @@
 ========================= */
 
 .mypage .sub-text {
-  font-size: 12px;
-  color: #888;
-  margin-top: 5px;
+    font-size: 12px;
+    color: #aaa;
+    margin-top: 3px;
 }
 
 .mypage .time-text {
-  font-size: 72px;
-  font-weight: 800;
-  color: #007bff;
-  line-height: 1;
+    font-size: 56px;
+    font-weight: 900;
+    color: #111;
+    line-height: 1;
+    margin-top: 16px;
+    letter-spacing: -2px;
 }
 
 /* =========================
@@ -426,34 +505,45 @@
 ========================= */
 
 .mypage .user-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px;
-  border-radius: 16px;
-  transition: 0.2s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 8px;
+    border-radius: 12px;
+    transition: 0.15s;
 }
 
 .mypage .user-item:hover {
-  background: #f7f7f7;
+    background: #f7f7f7;
 }
 
 .mypage .user-action-btn {
-  padding: 4px 8px;
-  font-size: 10px;
-  border-radius: 20px;
-  width: fit-content;
-  height: 26px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  background: #111;
-  color: white;
+    padding: 5px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 999px;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: #f0f0f0;
+    color: #333;
+    border: 1px solid #e0e0e0;
 }
 
 .mypage .user-action-btn:hover {
-  opacity: 0.9;
+    background: #e0e0e0;
+}
+
+.mypage .user-action-btn.blocked {
+    background: #fff0ee;
+    color: #e84118;
+    border-color: #ffd0c8;
+}
+
+.mypage .user-action-btn.blocked:hover {
+    background: #ffe0d8;
 }
 
 /* =========================
@@ -463,86 +553,160 @@
 .mypage .edit-input,
 .mypage .bio-textarea,
 .mypage select {
-  width: 100%;
-  padding: 12px 14px;
-  border: 1px solid #dcdcdc;
-  border-radius: 14px;
-  background: #fafafa;
-  font-size: 14px;
-  outline: none;
-  color: #111;
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid #e8e8e8;
+    border-radius: 10px;
+    background: #fafafa;
+    font-size: 14px;
+    outline: none;
+    color: #111;
+    transition: border-color 0.15s ease;
+}
+
+.mypage .edit-input:focus,
+.mypage .bio-textarea:focus {
+    border-color: #111;
+    background: #fff;
 }
 
 .mypage .nickname-input {
-  text-align: center;
-  font-size: 26px;
-  font-weight: 700;
+    text-align: center;
+    font-size: 22px;
+    font-weight: 700;
 }
 
 /* =========================
    BOOKMARK
 ========================= */
 
-.bookmark-card {
-  overflow: hidden;
+.mypage .bookmark-card {
+    overflow: hidden;
 }
 
-.bookmark-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  max-height: 250px;
-  overflow: hidden;
+.mypage .bookmark-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 8px;
+    max-height: 300px;
+    overflow-y: auto;
 }
 
-.bookmark-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.mypage .bookmark-list::-webkit-scrollbar {
+    width: 4px;
 }
 
-.bookmark-icon {
-  width: 34px;
-  height: 34px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: #111;
-  transition: 0.2s;
+.mypage .bookmark-list::-webkit-scrollbar-thumb {
+    background: #e0e0e0;
+    border-radius: 4px;
 }
 
-.bookmark-icon:hover {
-  background: #f5f5f5;
+.mypage .bookmark-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 4px;
+    border-radius: 10px;
+    transition: background 0.15s;
+}
+
+.mypage .bookmark-item:hover {
+    background: #f8f8f8;
+}
+
+.mypage .bookmark-icon {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #ccc;
+    transition: 0.15s;
+    border-radius: 6px;
+    flex-shrink: 0;
+    font-size: 14px;
+}
+
+.mypage .bookmark-icon:hover {
+    color: #111;
+    background: #f0f0f0;
+}
+
+.mypage .bookmark-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.mypage .bookmark-content .study-item {
+    padding: 4px 0;
+    border-bottom: none;
+    background: transparent;
+}
+
+.mypage .bookmark-content .study-item:hover {
+    background: transparent;
 }
 
 /* =========================
    RESPONSIVE
 ========================= */
 
-@media (max-width: 1024px) {
-  .mypage {
-    flex-direction: column;
-  }
+@media (max-width: 1200px) {
+    .mypage .left-section {
+        width: 30%;
+    }
+}
 
-  .mypage .left-section,
-  .mypage .right-section {
-    width: 100%;
-  }
+@media (max-width: 1024px) {
+    .mypage {
+        flex-direction: column;
+    }
+
+    .mypage .left-section,
+    .mypage .right-section {
+        width: 100%;
+    }
+
+    .mypage .meeting-card .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 }
 
 @media (max-width: 768px) {
-  .mypage .top-row,
-  .mypage .bottom-row {
-    flex-direction: column;
-  }
+    .mypage {
+        padding: 12px;
+        gap: 12px;
+    }
 
-  .mypage .schedule-grid {
-    font-size: 11px;
-    gap: 5px;
-  }
+    .mypage .top-row,
+    .mypage .bottom-row {
+        flex-direction: column;
+    }
 
-  .mypage .meeting-tabs {
-    flex-wrap: wrap;
-  }
+    .mypage .schedule-grid {
+        font-size: 10px;
+        gap: 4px;
+    }
+
+    .mypage .schedule-cell {
+        padding: 6px 2px;
+        font-size: 10px;
+    }
+
+    .mypage .meeting-tabs {
+        overflow-x: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    .mypage .meeting-tabs::-webkit-scrollbar {
+        display: none;
+    }
+
+    .mypage .time-text {
+        font-size: 48px;
+    }
 }

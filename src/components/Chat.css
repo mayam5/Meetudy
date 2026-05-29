@@ -1,26 +1,21 @@
 /* =========================
-   CHAT CARD (LIST 스타일 통일)
+   CHAT CARD
 ========================= */
 
 .chat-card {
-  position: fixed;
+    width: 300px;
+    height: 450px;
 
-  right: 24px;
-  bottom: 24px;
+    z-index: 999999;
 
-  width: 300px;
-  height: 450px;
+    background: #fff;
+    border: 1px solid #e9e9e9;
+    border-radius: 24px;
 
-  z-index: 999999;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
 
-  background: #fff;
-  border: 1px solid #e9e9e9;
-  border-radius: 24px;
-
-  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
 }
 
 /* =========================
@@ -28,84 +23,81 @@
 ========================= */
 
 .chat-card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
 }
 
 .chat-card-header h3 {
-  font-size: 18px;
-  font-weight: 800;
-  margin: 0;
+    font-size: 18px;
+    font-weight: 800;
+    margin: 0;
 }
 
 .chat-card-header button {
-  border: none;
-  background: transparent;   /* ⭐ 핵심 */
-  padding: 6px;
-
-  cursor: pointer;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  color: #888;
-  border-radius: 8px;
-
-  transition: 0.2s;
+    border: none;
+    background: transparent;
+    padding: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #888;
+    border-radius: 8px;
+    transition: 0.2s;
 }
 
 .chat-card-header button:hover {
-  color: #007bff;
+    color: #007bff;
 }
-
 
 /* =========================
    BODY
 ========================= */
 
 .chat-card-body {
-  min-height: 300px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+    flex: 1;
+    overflow-y: auto;
 
-  padding: 10px;
-  background: #fafafa;
-  border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    padding: 10px;
+    background: #fafafa;
+    border-radius: 16px;
 }
 
 /* 메시지 */
 .chat-msg {
-  font-size: 14px;
-  padding: 8px 12px;
-  border-radius: 12px;
-  width: fit-content;
-  max-width: 70%;
+    font-size: 14px;
+    padding: 8px 12px;
+    border-radius: 12px;
+    width: fit-content;
+    max-width: 70%;
 }
 
 /* 시스템 */
 .chat-msg.system {
-  align-self: center;
-  font-size: 12px;
-  color: #888;
-  background: transparent;
+    align-self: center;
+    font-size: 12px;
+    color: #888;
+    background: transparent;
 }
 
 /* 상대 */
 .chat-msg.other {
-  background: #fff;
-  border: 1px solid #eee;
-  align-self: flex-start;
+    background: #fff;
+    border: 1px solid #eee;
+    align-self: flex-start;
 }
 
 /* 나 */
 .chat-msg.me {
-  background: #111;
-  color: white;
-  align-self: flex-end;
+    background: #111;
+    color: white;
+    align-self: flex-end;
 }
 
 /* =========================
@@ -113,68 +105,52 @@
 ========================= */
 
 .chat-card-footer {
-  display: flex;
+    display: flex;
     align-items: flex-end;
-  gap: 10px;
-  padding: 10px;
+    gap: 10px;
+    padding: 10px;
 }
 
 .chat-card-footer textarea {
-  flex: 1;
-
-  resize: none;
-  border: 1px solid #e5e5e5;
-  border-radius: 12px;
-
-  padding: 10px 12px;
-  font-size: 14px;
-
-  outline: none;
-
-  background: #fafafa;
-
-  transition: 0.15s ease;
-
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE */
+    flex: 1;
+    resize: none;
+    border: 1px solid #e5e5e5;
+    border-radius: 12px;
+    padding: 10px 12px;
+    font-size: 14px;
+    outline: none;
+    background: #fafafa;
+    transition: 0.15s ease;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
 .chat-card-footer textarea::-webkit-scrollbar {
-  width: 0px;
-  display: none;
+    display: none;
 }
 
-/* focus */
 .chat-card-footer textarea:focus {
-  border-color: #2f6fed;
-  background: #fff;
+    border-color: #007bff;
+    background: #fff;
 }
 
 .chat-card-footer button {
-  align-self: flex-end;
-
-  border: none;
-  background: #007bff;
-  color: white;
-
-  padding: 6px 12px;
-  border-radius: 10px;
-
-  cursor: pointer;
-
-  font-weight: 600;
-  font-size: 13px;
-
-  transition: 0.15s ease;
+    align-self: flex-end;
+    border: none;
+    background: #007bff;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 13px;
+    transition: 0.15s ease;
 }
 
-/* hover */
 .chat-card-footer button:hover {
-  background: #0069d9;
+    background: #0069d9;
 }
 
-/* 클릭 */
 .chat-card-footer button:active {
-  transform: scale(0.97);
+    transform: scale(0.97);
 }
-

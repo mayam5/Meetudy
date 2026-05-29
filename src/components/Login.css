@@ -32,16 +32,16 @@
 }
 
 /* ========================= */
-/* input */
+/* input - 모달 안에서만 */
 /* ========================= */
-.form-control {
+.modal-content .form-control {
     border-radius: 10px !important;
     padding: 12px;
     border: 1px solid #eee !important;
     box-shadow: none !important;
 }
 
-.form-control:focus {
+.modal-content .form-control:focus {
     border-color: #111 !important;
     box-shadow: none !important;
     background: #fafafa;
@@ -61,13 +61,14 @@
 /* ========================= */
 /* forgot 영역 */
 /* ========================= */
-.small div {
+.auth-sub-link {
     font-size: 12px;
     color: #888;
     cursor: pointer;
+    margin-bottom: 2px;
 }
 
-.small div:hover {
+.auth-sub-link:hover {
     color: #007bff;
     text-decoration: underline;
 }
@@ -75,24 +76,25 @@
 /* ========================= */
 /* switch 영역 */
 /* ========================= */
-.text-center {
+.auth-switch-text {
     font-size: 13px;
 }
 
-.text-center span {
+.auth-switch-link {
     color: #007bff;
     cursor: pointer;
     margin-left: 5px;
+    font-weight: 500;
 }
 
-.text-center span:hover {
+.auth-switch-link:hover {
     text-decoration: underline;
 }
 
 /* ========================= */
-/* 버튼 */
+/* 버튼 - 모달 안에서만 */
 /* ========================= */
-.btn-primary {
+.modal-content .btn-primary {
     width: 120px;
     padding: 10px 12px;
     border-radius: 10px !important;
@@ -100,7 +102,7 @@
     border: none !important;
 }
 
-.btn-primary:hover {
+.modal-content .btn-primary:hover {
     opacity: 0.9;
 }
 
@@ -119,74 +121,78 @@
 }
 
 @keyframes shake {
-    0% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    50% { transform: translateX(5px); }
-    75% { transform: translateX(-5px); }
+    0%   { transform: translateX(0); }
+    25%  { transform: translateX(-5px); }
+    50%  { transform: translateX(5px); }
+    75%  { transform: translateX(-5px); }
     100% { transform: translateX(0); }
 }
 
+/* ========================= */
+/* submode */
+/* ========================= */
+.submode-wrap {
+    padding: 8px 0;
+}
+
+.submode-desc {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 12px;
+}
+
 /* ===================================================== */
-/* ================= CATEGORY UI ======================= */
+/* CATEGORY UI */
 /* ===================================================== */
 
-/* 카테고리 타이틀 */
 .category-title {
     font-size: 13px;
     margin-bottom: 8px;
     color: #333;
     font-weight: 500;
-    display: flex;
-    justify-content: space-between;
 }
 
-/* 카테고리 영역 */
 .category-wrap {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
 }
 
-/* checkbox 기본 숨기기 */
 .category-check input {
     display: none;
 }
 
-/* pill 버튼 기본 */
 .category-check label {
     display: inline-block;
     padding: 6px 14px;
     font-size: 13px;
-
     border: 1px solid #ddd;
     border-radius: 999px;
-
     cursor: pointer;
     user-select: none;
-
     transition: all 0.2s ease;
     background-color: #fff;
     color: #333;
 }
 
-/* hover */
 .category-check label:hover {
     border-color: #999;
     transform: translateY(-1px);
 }
 
-/* 선택 상태 */
 .category-check input:checked + label {
     background-color: #111;
     color: #fff;
     border-color: #111;
 }
 
-/* 클릭 느낌 */
 .category-check label:active {
     transform: scale(0.96);
 }
 
+/* ========================= */
+/* signup 레이아웃 */
+/* ========================= */
 .signup-flex {
     display: flex;
     gap: 20px;

@@ -1,424 +1,447 @@
 .post-write-page {
-  width: 100%;
-  min-height: 100vh;
-  background-color: white;
-  display: flex;
-  justify-content: center;
-  padding: 120px 0 40px;
+    width: 100%;
+    min-height: 100vh;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    padding: 120px 0 40px;
 }
 
 .post-write-container {
-  width: 800px;
-  background-color: #f2f2f2;
-  border-radius: 20px;
-  padding: 40px 40px;
+    width: 800px;
+    background-color: #f2f2f2;
+    border-radius: 20px;
+    padding: 40px;
 }
 
 .post-write-container h1 {
-  text-align: center;
-  margin-bottom: 35px;
+    text-align: center;
+    margin-bottom: 35px;
 }
 
+/* =========================
+   FORM SECTION
+========================= */
+
 .form-section {
-  background-color: white;
-  padding: 30px;
-  border-radius: 20px;
-  margin-bottom: 40px;
+    background-color: white;
+    padding: 30px;
+    border-radius: 20px;
+    margin-bottom: 40px;
 }
 
 .form-section h4 {
-  margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
 .form-section p {
-  text-align: center;
-  margin-bottom: 30px;
-  color: #666;
-  font-size: 15px;
+    margin-bottom: 20px;
+    color: #999;
+    font-size: 13px;
 }
+
+/* =========================
+   CATEGORY
+========================= */
 
 .category-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  flex-wrap: wrap;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
-
 .category-button {
-  background-color: #f5f5f5;
-  color: black;
-  padding: 10px 10px;
-  border-radius: 20px;
-  border: none;
-  outline: none;
-  cursor: pointer;
-  font-size: 14px;
+    background-color: #f5f5f5;
+    color: black;
+    padding: 10px 16px;
+    border-radius: 20px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.2s;
 }
 
 .category-button:hover {
-  background-color: #222;
-  color: white;
+    background-color: #ddd;
 }
 
 .category-button.selected {
-  background-color: #222;
-  color: white;
+    background-color: #222;
+    color: white;
 }
 
+/* =========================
+   INPUT
+========================= */
+
+.input-count-wrapper {
+    position: relative;
+}
+
+.char-count {
+    position: absolute;
+    bottom: 12px;
+    right: 14px;
+    font-size: 12px;
+    color: #aaa;
+}
 
 .input {
-  width: 100%;
-  padding: 15px;
-  border: 3px solid #f5f5f5;
-  border-radius: 20px;
-  background-color: white;
-  font-size: 14px;
-  color: black;
-  box-sizing: border-box;
-  resize: none;
-
-  overflow-y: auto;
-  overflow-x: hidden;
+    width: 100%;
+    padding: 15px;
+    border: 3px solid #f5f5f5;
+    border-radius: 20px;
+    background-color: white;
+    font-size: 14px;
+    color: black;
+    box-sizing: border-box;
+    resize: none;
+    overflow-y: auto;
+    overflow-x: hidden;
+    transition: border-color 0.15s ease;
 }
 
 .input::placeholder {
-  color: #999;
+    color: #999;
 }
 
 .input:focus {
-  outline: none;
+    outline: none;
+    border-color: #ccc;
 }
 
 .input::-webkit-scrollbar {
-  width: 6px;
+    width: 6px;
 }
 
 .input::-webkit-scrollbar-track {
-  margin: 11px 0;
-  background-color: #f5f5f5;
-  
-  
+    margin: 11px 0;
+    background-color: #f5f5f5;
 }
 
 .input::-webkit-scrollbar-thumb {
-  background-color: #d9d9d9;
-  border-radius: 20px;
+    background-color: #d9d9d9;
+    border-radius: 20px;
 }
 
-/*
-.dropbox-select {
-  width: 180px;
-  padding: 15px 15px;
-  border: 3px solid #f5f5f5;
-  border-radius: 20px;
-  background-color: white;
-  color: #999;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-.dropbox-select:focus {
-  outline: none;
-  border-color: #f5f5f5;
-}
-
-.dropbox-select option {
-  color: #999;
-}
-
-.member-select.selected {
-  color: black;
-}
-*/
+/* =========================
+   DROPDOWN ROW
+========================= */
 
 .dropdown-row {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  flex-wrap: wrap;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
 }
 
+/* =========================
+   HASHTAG
+========================= */
+
 .hashtag-container {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
 
 .tag-input-wrapper {
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
+    border: 3px solid #f5f5f5;
+    border-radius: 20px;
+    padding: 0 15px;
+    background-color: white;
+    transition: border-color 0.15s ease;
+}
 
-  border: 3px solid #f5f5f5;
-  border-radius: 20px;
-
-  padding: 0 15px;
-  background-color: white;
+.tag-input-wrapper:focus-within {
+    border-color: #ccc;
 }
 
 .tag-prefix {
-  font-size: 16px;
-  color: black;
-  margin-right: 5px;
+    font-size: 16px;
+    color: black;
+    margin-right: 5px;
 }
 
 .tag-input {
-  flex: 1;
-
-  border: none;
-  outline: none;
-
-  padding: 15px 0;
-  font-size: 14px;
-
-  background-color: transparent;
-  color: black;
-  caret-color: black;
+    flex: 1;
+    border: none;
+    outline: none;
+    padding: 15px 0;
+    font-size: 14px;
+    background-color: transparent;
+    color: black;
+    caret-color: black;
 }
 
 .tag-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 .tag-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-
-  background-color: #f5f5f5;
-  border-radius: 12px;
-  padding: 8px 12px;
-
-  font-size: 14px;
-  color: black;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background-color: #f5f5f5;
+    border-radius: 12px;
+    padding: 8px 12px;
+    font-size: 14px;
+    color: black;
 }
 
 .tag-delete {
-  border: none;
-  background: none;
-  cursor: pointer;
-
-  font-size: 14px;
-  color: #555;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 14px;
+    color: #555;
+    transition: color 0.15s;
 }
 
+.tag-delete:hover {
+    color: #e84118;
+}
+
+/* =========================
+   MEETING TIME
+========================= */
+
 .time-add-button {
-  border: none;
-  border-radius: 20px;
-  padding: 0 13px;
-  margin-top: 11px;
-  margin-bottom: 11px;
+    border: none;
+    border-radius: 20px;
+    padding: 0 16px;
+    margin-top: 11px;
+    margin-bottom: 11px;
+    background-color: black;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
 
-  background-color: black;
-  color: white;
-
-  font-size: 14px;
-  cursor: pointer;
+.time-add-button:hover {
+    opacity: 0.7;
 }
 
 .time-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-
-  margin-top: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
 }
 
 .time-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-
-  background-color: #f5f5f5;
-  border-radius: 12px;
-  padding: 8px 12px;
-
-  font-size: 14px;
-  color: black;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background-color: #f5f5f5;
+    border-radius: 12px;
+    padding: 8px 12px;
+    font-size: 14px;
+    color: black;
 }
 
 .time-delete {
-  border: none;
-  background: none;
-  cursor: pointer;
-
-  font-size: 14px;
-  color: #555;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 14px;
+    color: #555;
+    transition: color 0.15s;
 }
 
+.time-delete:hover {
+    color: #e84118;
+}
+
+/* =========================
+   PLACE SEARCH
+========================= */
+
 .place-search-container {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
 .place-result-list {
-  background-color: white;
-  border: 3px solid #f5f5f5;
-  border-radius: 20px;
-  overflow: hidden;
+    background-color: white;
+    border: 3px solid #f5f5f5;
+    border-radius: 20px;
+    overflow: hidden;
 }
 
 .place-result-item {
-  padding: 15px;
-  cursor: pointer;
-  border-bottom: 1px solid #f5f5f5;
+    padding: 15px;
+    cursor: pointer;
+    border-bottom: 1px solid #f5f5f5;
+    transition: background-color 0.15s;
 }
 
 .place-result-item:last-child {
-  border-bottom: none;
+    border-bottom: none;
 }
 
 .place-result-item:hover {
-  background-color: #f5f5f5;
+    background-color: #f5f5f5;
 }
 
 .place-result-item strong {
-  font-size: 14px;
-  color: black;
+    font-size: 14px;
+    color: black;
 }
 
 .place-result-item p {
-  margin: 6px 0 0;
-  font-size: 13px;
-  color: #999;
+    margin: 6px 0 0;
+    font-size: 13px;
+    color: #999;
 }
 
 .place-no-result {
-  padding: 15px;
-  background-color: #f5f5f5;
-  border-radius: 20px;
-  font-size: 14px;
-  color: black;
+    padding: 15px;
+    font-size: 14px;
+    color: #999;
+    text-align: center;
 }
 
 .selected-place {
-  padding: 15px;
-  background-color: #f5f5f5;
-  border-radius: 20px;
+    padding: 15px;
+    background-color: #f5f5f5;
+    border-radius: 20px;
 }
 
 .selected-place strong {
-  font-size: 14px;
-  color: black;
+    font-size: 14px;
+    color: black;
 }
 
 .selected-place p {
-  margin: 6px 0 0;
-  font-size: 13px;
-  color: #777;
+    margin: 6px 0 0;
+    font-size: 13px;
+    color: #777;
 }
 
+/* =========================
+   COST INPUT
+========================= */
+
 .cost-input-wrapper {
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
+    border: 3px solid #f5f5f5;
+    border-radius: 20px;
+    padding: 0 15px;
+    background-color: white;
+    transition: border-color 0.15s ease;
+}
 
-  border: 3px solid #f5f5f5;
-  border-radius: 20px;
-
-  padding: 0 15px;
-  background-color: white;
+.cost-input-wrapper:focus-within {
+    border-color: #ccc;
 }
 
 .cost-prefix {
-  font-size: 16px;
-  color: black;
-  margin-right: 5px;
+    font-size: 16px;
+    color: black;
+    margin-right: 5px;
 }
 
 .cost-input {
-  flex: 1;
-
-  border: none;
-  outline: none;
-
-  padding: 15px 0;
-  font-size: 14px;
-
-  background-color: transparent;
-  color: black;
-  caret-color: black;
+    flex: 1;
+    border: none;
+    outline: none;
+    padding: 15px 0;
+    font-size: 14px;
+    background-color: transparent;
+    color: black;
+    caret-color: black;
 }
 
+/* =========================
+   BOTTOM BUTTONS
+========================= */
+
+.post-action-wrapper {
+    position: relative;
+}
 
 .post-button-group {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-
-  margin-top: 70px;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 70px;
 }
 
 .post-button {
-  border: none;
-  border-radius: 20px;
-
-  padding: 12px 20px;
-
-  font-size: 14px;
-  font-weight: 500;
-
-  cursor: pointer;
-
-  transition: 0.2s;
+    border: none;
+    border-radius: 20px;
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.2s;
 }
 
-/* 임시 저장 */
-.post-button.save {
-  background-color: black;
-  color: white;
-}
-
-/* 올리기 / 수정하기 */
-.post-button.submit {
-  background-color: black;
-  color: white;
-}
-
-/* 상태 변경 */
-.post-button.status {
-  background-color: black;
-  color: white;
-}
-
-/* 삭제 */
-.post-button.delete {
-  background-color: black;
-  color: white;
-}
-
-/* hover 효과 */
 .post-button:hover {
-  opacity: 0.65;
+    opacity: 0.7;
 }
 
-
-.post-action-wrapper {
-  position: relative;
+.post-button.save {
+    background-color: #555;
+    color: white;
 }
+
+.post-button.submit {
+    background-color: #111;
+    color: white;
+}
+
+.post-button.status {
+    background-color: #555;
+    color: white;
+}
+
+.post-button.delete {
+    background-color: #e84118;
+    color: white;
+}
+
+/* =========================
+   STATUS POPUP
+========================= */
 
 .status-popup-box {
-  position: absolute;
+    position: absolute;
+    top: -130px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 260px;
+    background-color: white;
+    border: 1px solid #e9e9e9;
+    border-radius: 20px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+}
 
-  top: -100px;
-  left: 50%;
-  transform: translateX(-50%);
+/* 유효성 에러 */
+.field-error {
+    color: #e84118;
+    font-size: 12px;
+    margin-top: 6px;
+    margin-bottom: 0;
+}
 
-  width: 250px;
-  height: 200px;
-
-  background-color: #666;
-  border-radius: 20px;
-
-  z-index: 100;
-
-  display: flex;
-  flex-direction: column;
-
-  justify-content: center;
-  align-items: center;
-
-  gap: 16px;
+.input-error {
+    border-color: #e84118 !important;
 }

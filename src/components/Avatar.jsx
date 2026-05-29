@@ -1,7 +1,7 @@
-function Avatar({ name, size = "sm" }) {
+function Avatar({ name = "", isHost = false }) {
     return (
-        <div className={`avatar ${size === "lg" ? "host" : ""}`}>
-            {name}
+        <div className={`avatar ${isHost ? "host" : ""}`}>
+            {name?.[0] ?? "?"}
         </div>
     );
 }

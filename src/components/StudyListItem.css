@@ -1,99 +1,37 @@
 .study-item {
     display: flex;
     align-items: center;
-
     padding: 5px 10px;
-
     background: transparent;
     border-bottom: 1px solid #ddd;
     cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.study-item:hover {
+    background: #f9f9f9;
+}
+
+.study-item:last-child {
+    border-bottom: none;
 }
 
 /* 제목 */
 .list-study-title {
     width: 220px;
-
     font-size: 13px;
     font-weight: bold;
-
     text-align: left;
     flex-shrink: 0;
 }
 
-/* 호스트 */
-.host-box {
-    width: 140px;
-
-    display: flex;
-    align-items: center;
-    gap: 6px;
-
-    flex-shrink: 0;
-}
-
-.host-info {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 2px;
-}
-
-.host-name {
-    font-size: 10px;
-    font-weight: bold;
-    line-height: 1;
-}
-
-.tag {
-    font-size: 10px;
-    line-height: 1;
-    color: #666;
-}
-
-/* 참여자 */
-.avatar-group {
+/* 아바타 오른쪽 끝으로 밀기 */
+.study-item .avatar-group {
     margin-left: auto;
-
-    display: flex;
-    align-items: center;
-}
-
-.avatar {
-    width: 22px;
-    height: 22px;
-
-    margin-left: -6px;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    font-size: 10px;
-
-    background: #ddd;
-    border: 2px solid white;
-    border-radius: 50%;
-}
-
-.avatar.host {
-    width: 30px;
-    height: 30px;
-
-    margin-left: 0;
-
-    font-size: 12px;
-}
-
-.more {
-    margin-left: 6px;
-
-    font-size: 10px;
-    color: #666;
 }
 
 /* 반응형 */
 @media (max-width: 768px) {
-
     .study-item {
         gap: 10px;
     }
@@ -102,9 +40,4 @@
         width: 120px;
         font-size: 12px;
     }
-
-    .host-box {
-        width: 100px;
-    }
-
 }

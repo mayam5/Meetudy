@@ -1,7 +1,7 @@
 .interest-section {
     padding: 20px;
     text-align: center;
-    background: #bababa;
+    background: #f0f0f0;
     border-radius: 20px;
     box-sizing: border-box;
 }
@@ -26,7 +26,7 @@
 }
 
 /* 열림 */
-.study-list.open {
+.interest-list.open {
     max-height: 400px;
     opacity: 1;
     transform: translateY(0);

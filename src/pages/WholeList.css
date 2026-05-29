@@ -1,190 +1,320 @@
 .whole-page {
-  height: 100vh;
-  width: 100%;
-  overflow: hidden;
-  background: white;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    background: white;
 }
 
 .whole-layout {
-  width: 100%;
-  display: flex;
-  
-  height: calc(100vh - 70px);
-  padding-top: 70px;
-  box-sizing: border-box;
-  background: white;
+    width: 100%;
+    display: flex;
+    height: calc(100vh - 70px);
+    padding-top: 70px;
+    box-sizing: border-box;
+    background: white;
 }
 
+/* =========================
+   SIDEBAR
+========================= */
+
 .whole-sidebar {
-  width: 230px;
-  flex-shrink: 0;
-  padding: 20px;
-  background: #f3f3f3;
-  color: black;
-  min-height: 100vh;
+    width: 200px;
+    flex-shrink: 0;
+    padding: 16px;
+    background: #f3f3f3;
+    color: black;
+    overflow-y: auto;
 }
 
 .whole-sidebar h4 {
-  padding: 20px;
-  padding-left: 0;
-  font-size: 16px;
-  font-weight: 900;
-  margin-left: 0;
-  margin-bottom: 5px;
-  text-align: left;
-  color: black;
-  
+    padding: 16px 0;
+    font-size: 15px;
+    font-weight: 900;
+    margin-bottom: 5px;
+    text-align: left;
+    color: black;
 }
 
 .whole-tab {
-  width: 100%;
-  padding: 8px 10px;
-  border: none;
-  background: transparent;
-  text-align: left;
-  border-radius: 8px;
-  font-size: 13px;
-  cursor: pointer;
-  color: black;
+    width: 100%;
+    padding: 8px 10px;
+    border: none;
+    background: transparent;
+    text-align: left;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    color: black;
+    transition: background 0.15s ease;
+}
+
+.whole-tab:hover {
+    background: #e8e8e8;
 }
 
 .whole-tab.active {
-  background: white;
-  font-weight: 750;
-  color: black;
+    background: white;
+    font-weight: 700;
+    color: black;
 }
 
+/* =========================
+   MAIN
+========================= */
+
 .whole-main {
-  flex: 1;
-  padding: 45px 50px 20px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  background: white;
-  /*min-height: calc(100vh - 70px);*/
+    flex: 1;
+    padding: 32px 40px 20px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    background: white;
+    min-width: 0;
 }
 
 .whole-main-header {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  margin-bottom: 25px;
-}
-
-.whole-main-header h2 {
-  font-size: 20px;
-  margin: 0;
-  margin-bottom: 6px;
-  text-align: left;
-}
-
-.whole-main-header p {
-  font-size: 13px;
-  color: #555;
-  margin-top: 4px;
-  margin-left: 0;
-  text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
 }
 
 .whole-main-header > div:first-child {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
+.whole-main-header h2 {
+    font-size: 20px;
+    margin: 0 0 6px;
+}
+
+.whole-main-header p {
+    font-size: 13px;
+    color: #555;
+    margin: 0;
+}
+
+/* =========================
+   FILTERS
+========================= */
+
 .whole-filters {
-  display: flex;
-  gap: 10px;
+    display: flex;
+    gap: 10px;
+    flex-shrink: 0;
 }
 
 .whole-filters .dropbox {
-  width: 100px;
+    width: 100px;
 }
 
 .whole-filters .dropbox-button {
-  padding: 7px 10px;
-  border-radius: 20px;
-  border: 2px solid #eee;
-  font-size: 12px;
+    padding: 7px 10px;
+    border-radius: 20px;
+    border: 2px solid #eee;
+    font-size: 12px;
 }
 
-.whole-filters .dropbox-list {
-  top: 36px;
-}
+/* =========================
+   SCROLL AREA
+========================= */
 
 .whole-scroll-area {
-  width: 100%;
-  flex: 1;
-  min-height: 0;
-  
-  overflow-y: auto;
-  padding-right: 10px;
-  display: flex;
-  flex-direction: column;
+    width: 100%;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding-right: 6px;
+    display: flex;
+    flex-direction: column;
 }
 
 .whole-scroll-area::-webkit-scrollbar {
-  width: 6px;
+    width: 6px;
 }
 
 .whole-scroll-area::-webkit-scrollbar-track {
-  background: transparent;
+    background: transparent;
 }
 
 .whole-scroll-area::-webkit-scrollbar-thumb {
-  background: #d0d0d0;
-  border-radius: 999px;
+    background: #d0d0d0;
+    border-radius: 999px;
 }
 
 .whole-scroll-area::-webkit-scrollbar-thumb:hover {
-  background: #b5b5b5;
+    background: #b5b5b5;
 }
 
 /*
 .whole-footer {
-  width: 100%;
-  height: 100px;
-  background: white;
-  border-top: 1px solid #eee;
-  padding: 20px 40px;
-  font-size: 12px;
+    width: 100%;
+    height: 100px;
+    background: white;
+    border-top: 1px solid #eee;
+    padding: 20px 40px;
+    font-size: 12px;
 }
 */
 
-.whole-pagination {
-  display: flex;
-  justify-content: center;
+/* =========================
+   PAGINATION
+========================= */
 
-  margin-top: 10px;
-  padding-bottom: 1px;
+.whole-pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    padding-bottom: 1px;
 }
 
 .whole-pagination .pagination {
-  gap: 6px;
+    gap: 4px;
 }
 
 .whole-pagination .page-link {
-  border: none;
-  color: #222;
-  background: transparent;
-  font-size: 13px;
-  border-radius: 8px;
-  padding: 6px 10px;
+    border: none;
+    color: #222;
+    background: transparent;
+    font-size: 13px;
+    border-radius: 8px;
+    padding: 6px 10px;
 }
 
 .whole-pagination .page-link:hover {
-  background: #f3f3f3;
-  color: #222;
+    background: #f3f3f3;
+    color: #222;
 }
 
 .whole-pagination .page-item.active .page-link {
-  background: #222;
-  color: white;
-  font-weight: 700;
+    background: #222;
+    color: white;
+    font-weight: 700;
 }
 
 .whole-pagination .page-item.disabled .page-link {
-  color: #bbb;
-  background: transparent;
+    color: #bbb;
+    background: transparent;
 }
 
+
+/* 검색 키워드 표시 */
+.search-keyword {
+    font-size: 12px;
+    color: #007bff;
+    margin-top: 4px;
+}
+
+/* 로딩 / 에러 / 빈 상태 */
+.whole-status {
+    padding: 60px 0;
+    text-align: center;
+    font-size: 14px;
+    color: #aaa;
+}
+
+.whole-status.error {
+    color: #e84118;
+}
+
+/* =========================
+   반응형
+========================= */
+
+/* 태블릿 */
+@media (max-width: 1024px) {
+    .whole-sidebar {
+        width: 160px;
+        padding: 12px;
+    }
+
+    .whole-main {
+        padding: 24px 24px 16px;
+    }
+
+    .whole-filters .dropbox {
+        width: 90px;
+    }
+}
+
+/* 모바일 */
+@media (max-width: 768px) {
+    .whole-page {
+        height: auto;
+        overflow: visible;
+    }
+
+    .whole-layout {
+        height: auto;
+        flex-direction: column;
+    }
+
+    /* 사이드바 → 가로 스크롤 탭 */
+    .whole-sidebar {
+        width: 100%;
+        padding: 12px 16px 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .whole-sidebar h4 {
+        display: none;
+    }
+
+    .whole-sidebar {
+        flex-direction: row;
+        align-items: center;
+        overflow-x: auto;
+        gap: 6px;
+        padding: 10px 16px;
+        white-space: nowrap;
+    }
+
+    .whole-tab {
+        width: auto;
+        flex-shrink: 0;
+        padding: 6px 14px;
+        font-size: 13px;
+        border-radius: 20px;
+        background: #ebebeb;
+    }
+
+    .whole-tab.active {
+        background: #222;
+        color: white;
+    }
+
+    .whole-main {
+        padding: 16px;
+        overflow: visible;
+    }
+
+    .whole-main-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .whole-filters {
+        width: 100%;
+    }
+
+    .whole-filters .dropbox {
+        flex: 1;
+    }
+
+    .whole-scroll-area {
+        overflow-y: visible;
+        padding-right: 0;
+    }
+
+    .whole-pagination {
+        margin-top: 16px;
+    }
+}

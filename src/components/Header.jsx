@@ -110,7 +110,7 @@ function Header() {
     }, []);
 
     useEffect(() => {
-        fetch("http://localhost:8080/categories")
+        fetch("/api/categories")
             .then((res) => res.json())
             .then((result) => {
                 setCategoryOptions(result.data || []);
@@ -121,7 +121,7 @@ function Header() {
     }, []);
 
     useEffect(() => {
-        fetch("http://localhost:8080/regions/cities")
+        fetch("/api/regions/cities")
             .then((res) => res.json())
             .then((result) => {
                 setRegionOptions(result);

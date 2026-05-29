@@ -1,3 +1,24 @@
+/*
+ * PostWrite.jsx
+ * ─────────────────────────────────────────────
+ * [디자인 변경]
+ *   - 전체 디자인 시스템 홈 페이지(블랙/화이트/블루 포인트)에 맞게 리디자인
+ *   - 페이지 상단 헤더(라벨 + h1 + 서브타이틀) 추가
+ *   - 각 form-section 에 이모지 아이콘 헤더 추가
+ *   - tag-item 의 # 을 CSS ::before 로 처리 (JSX 에서 제거)
+ *   - selected-place 에 selected-place-dot div 추가
+ *   - tag-list / time-list 빈 상태일 때 조건부 렌더링 처리
+ *
+ * [백엔드 연결 필요]
+ *   - DUMMY_PLACES → 실제 장소 검색 API 로 교체
+ *   - fetchStudyById 응답 필드명 확인 (title, field, description, maxMembers, tags, meetingTimes, place, cost, status)
+ *   - buildPayload 의 meetingTime / endTime 현재 하드코딩 → 실제 값으로 교체 필요 (포맷 협의)
+ *   - tags(해시태그) / cost(참가비) payload 포함 여부 확인
+ *   - categoryId 고정값(1~8) 여부 또는 API 목록 조회 여부 확인
+ *   - 상태 변경: 별도 API 엔드포인트 여부 확인 (recruiting / completed / paused)
+ *   - 임시저장 API 필요 여부 확인
+ * ─────────────────────────────────────────────
+ */
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "./PostWrite.css";
@@ -34,6 +55,8 @@ const CATEGORY_OPTIONS = [
     { value: "8", label: "기타" },
 ];
 
+// TODO [백엔드]: 실제 장소 검색 API로 교체 필요
+// 현재는 더미 데이터 사용 중 (id, placeName, address 필드 구조 유지해주세요)
 const DUMMY_PLACES = [
     { id: 1, placeName: "투썸플레이스 강남역점",  address: "서울 강남구 강남대로 438" },
     { id: 2, placeName: "투썸플레이스 강남대로점", address: "서울 강남구 강남대로 422" },
@@ -64,6 +87,8 @@ function PostWrite({ isEditMode = false }) {
     const [loading,          setLoading]          = useState(false);
     const [errors,           setErrors]           = useState({});
 
+    // TODO [백엔드]: fetchStudyById(id) 응답 필드명 확인 필요
+    // 현재 프론트가 기대하는 필드: title, field, description, maxMembers, tags, meetingTimes, place, cost, status
     useEffect(() => {
         if (isEditMode && id) {
             const load = async () => {
@@ -131,16 +156,25 @@ function PostWrite({ isEditMode = false }) {
 
     const filteredPlaces = DUMMY_PLACES.filter((p) => p.placeName.includes(placeInput));
 
+    // TODO [백엔드]: 아래 payload 필드 구조 및 타입 최종 확인 필요
+    // - meetingTime / endTime: 현재 하드코딩됨. 모임 시간 드롭다운(요일+시간대) 값을
+    //   실제 datetime 포맷으로 변환하는 로직이 필요합니다. 백엔드에서 기대하는 포맷 알려주세요.
+    // - categoryId: number 타입 (1~8), CATEGORY_OPTIONS의 value 기준
+    // - placeId: 장소 선택 시 number, 미선택 시 null
+    // - tags(hashtags) / meetingTimes: 현재 payload에서 빠져 있음. 포함 여부 확인 필요
+    // - cost(참가비): 현재 payload에서 빠져 있음. 포함 여부 확인 필요
     const buildPayload = () => ({
         postTitle:   title,
         postContent: description,
-        meetingTime: "2026-05-30T14:00:00",
-        endTime:     "2026-05-30T16:00:00",
+        meetingTime: "2026-05-30T14:00:00", // TODO: 하드코딩 → 실제 값으로 교체
+        endTime:     "2026-05-30T16:00:00", // TODO: 하드코딩 → 실제 값으로 교체
         maxMembers:  Number(number),
         categoryId:  Number(selectedCategory),
         placeId:     selectedPlace?.id ?? null,
     });
 
+    // TODO [백엔드]: createStudy / updateStudy API 엔드포인트 및 응답 형식 확인 필요
+    // 성공 시 /whole-list로 이동, 실패 시 현재 console.error만 처리 중 (에러 UI 추가 여부 논의)
     const handleSubmit = async () => {
         setLoading(true);
         try {
@@ -155,6 +189,7 @@ function PostWrite({ isEditMode = false }) {
         }
     };
 
+    // TODO [백엔드]: deleteStudy(id) 성공/실패 응답 형식 확인 필요
     const handleDelete = async () => {
         setLoading(true);
         try {
@@ -193,6 +228,7 @@ function PostWrite({ isEditMode = false }) {
                     </div>
 
                     {/* ── 1. 카테고리 ── */}
+                    {/* TODO [백엔드]: categoryId 1~8 고정값인지, API로 목록 받아오는지 확인 필요 */}
                     <div className="form-section">
                         <div className="form-section-header">
                             <div className="form-section-icon">📚</div>
@@ -264,6 +300,7 @@ function PostWrite({ isEditMode = false }) {
                     </div>
 
                     {/* ── 4. 모임 최대 인원 ── */}
+                    {/* TODO [백엔드]: maxMembers 허용 범위 확인 (현재 2~10명으로 제한 중) */}
                     <div className="form-section">
                         <div className="form-section-header">
                             <div className="form-section-icon">👥</div>
@@ -288,6 +325,7 @@ function PostWrite({ isEditMode = false }) {
                     </div>
 
                     {/* ── 5. 해시태그 ── */}
+                    {/* TODO [백엔드]: tags 필드를 payload에 포함할지 확인 필요. 포함 시 string[] 형태로 전송 예정 */}
                     <div className="form-section">
                         <div className="form-section-header">
                             <div className="form-section-icon">#</div>
@@ -312,7 +350,6 @@ function PostWrite({ isEditMode = false }) {
                                 <div className="tag-list">
                                     {hashtags.map((tag) => (
                                         <div className="tag-item" key={tag}>
-                                            {/* # 은 CSS ::before 로 처리 — 여기서는 텍스트만 */}
                                             {tag}
                                             <button className="tag-delete" onClick={() => removeTag(tag)}>×</button>
                                         </div>
@@ -323,6 +360,9 @@ function PostWrite({ isEditMode = false }) {
                     </div>
 
                     {/* ── 6. 모임 시간 ── */}
+                    {/* TODO [백엔드]: meetingTime / endTime 포맷 확인 필요
+                        현재 요일(mon~sun) + 시간대(dawn/morning/afternoon/night) 선택 방식.
+                        실제 datetime(ISO 8601)으로 변환 필요한지, 아니면 별도 포맷으로 보낼지 논의 필요 */}
                     <div className="form-section">
                         <div className="form-section-header">
                             <div className="form-section-icon">🕐</div>
@@ -347,6 +387,8 @@ function PostWrite({ isEditMode = false }) {
                     </div>
 
                     {/* ── 7. 모임 장소 ── */}
+                    {/* TODO [백엔드]: 장소 검색 API 연결 필요. 현재 DUMMY_PLACES 사용 중.
+                        placeId(number)를 payload로 전송하므로 장소 등록 API의 응답에 id 필드 포함 필요 */}
                     <div className="form-section">
                         <div className="form-section-header">
                             <div className="form-section-icon">📍</div>
@@ -392,6 +434,7 @@ function PostWrite({ isEditMode = false }) {
                     </div>
 
                     {/* ── 8. 장소 예약 비용 ── */}
+                    {/* TODO [백엔드]: cost 필드를 payload에 포함할지 확인 필요. 포함 시 number 타입으로 전송 예정 */}
                     <div className="form-section">
                         <div className="form-section-header">
                             <div className="form-section-icon">💰</div>
@@ -435,6 +478,9 @@ function PostWrite({ isEditMode = false }) {
                                     </button>
                                 </div>
 
+                                {/* TODO [백엔드]: 상태 변경 전용 API 엔드포인트가 따로 있는지,
+                                    아니면 updateStudy에 status 필드를 포함해서 보내는지 확인 필요
+                                    가능한 status 값: "recruiting" | "completed" | "paused" */}
                                 {isStatusPopupOpen && (
                                     <div className="status-popup-box" onClick={(e) => e.stopPropagation()}>
                                         <Dropbox
@@ -464,6 +510,7 @@ function PostWrite({ isEditMode = false }) {
                             </>
                         ) : (
                             <div className="post-button-group">
+                                {/* TODO [백엔드]: 임시저장 API 필요 여부 확인. 현재 console.log만 처리 중 */}
                                 <button
                                     className="post-button save"
                                     onClick={() => openPopup("임시 저장하시겠습니까?", async () => {

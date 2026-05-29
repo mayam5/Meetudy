@@ -70,6 +70,8 @@ const handleFormSubmit = async (values) => {
             localStorage.setItem("accessToken", result.data.accessToken);
             localStorage.setItem("userEmail", values.email);
 
+            login(values.email);
+
             if (typeof onLoginSuccess === "function") {
                 onLoginSuccess();
             }

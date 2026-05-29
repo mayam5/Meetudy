@@ -23,7 +23,16 @@ const TIME_OPTIONS = [
     { value: "night", label: "저녁 18:00 - 24:00" },
 ];
 
-const CATEGORY_OPTIONS = ["취업", "어학", "고시/공무원", "자격증"];
+const CATEGORY_OPTIONS = [
+    { value: "1", label: "코딩/프로그래밍" },
+    { value: "2", label: "영어/외국어" },
+    { value: "3", label: "자격증/취업" },
+    { value: "4", label: "토익/토플" },
+    { value: "5", label: "수학/과학" },
+    { value: "6", label: "독서/글쓰기" },
+    { value: "7", label: "디자인" },
+    { value: "8", label: "기타" },
+];
 
 const DUMMY_PLACES = [
     { id: 1, placeName: "투썸플레이스 강남역점", address: "서울 강남구 강남대로 438" },
@@ -135,6 +144,7 @@ function PostWrite({ isEditMode = false }) {
         place.placeName.includes(placeInput)
     );
 
+    /*
     const buildPayload = () => ({
         title,
         field: selectedCategory,
@@ -146,6 +156,17 @@ function PostWrite({ isEditMode = false }) {
         cost: Number(cost) || 0,
         status: postStatus || "recruiting",
     });
+    */
+
+const buildPayload = () => ({
+    postTitle: title,
+    postContent: description,
+    meetingTime: "2026-05-30T14:00:00",
+    endTime: "2026-05-30T16:00:00",
+    maxMembers: Number(number),
+    categoryId: Number(selectedCategory),
+    placeId: selectedPlace?.id ?? null,
+});
 
     const handleSubmit = async () => {
         setLoading(true);
@@ -206,14 +227,14 @@ function PostWrite({ isEditMode = false }) {
                         <div className="category-buttons">
                             {CATEGORY_OPTIONS.map((cat) => (
                                 <button
-                                    key={cat}
-                                    className={`category-button ${selectedCategory === cat ? "selected" : ""}`}
+                                    key={cat.value}
+                                    className={`category-button ${selectedCategory === cat.value ? "selected" : ""}`}
                                     onClick={() => {
-                                        setSelectedCategory(cat);
+                                        setSelectedCategory(cat.value);
                                         setErrors((prev) => ({ ...prev, category: undefined }));
                                     }}
                                 >
-                                    {cat}
+                                    {cat.label}
                                 </button>
                             ))}
                         </div>

@@ -48,9 +48,24 @@ export const fetchStudyById = async (id) => {
 };
 
 export const createStudy = async (payload) => {
-    // TODO: return await axios.post("/api/studies", payload);
-    console.log("createStudy:", payload);
-    return { success: true };
+    const token = localStorage.getItem("accessToken");
+
+    const response = await fetch("http://localhost:8080/posts", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
+        throw new Error(result.message || "게시글 작성 실패");
+    }
+
+    return result.data;
 };
 
 export const updateStudy = async (id, payload) => {

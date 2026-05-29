@@ -20,9 +20,13 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
+// import java.net.URLEncoder;
+
 
 @Service
 @RequiredArgsConstructor
@@ -34,8 +38,11 @@ public class PlaceService {
     @Value("${kakao.api.key}")
     private String kakaoApiKey;
 
+
+
     private static final String KAKAO_SEARCH_URL =
             "https://dapi.kakao.com/v2/local/search/keyword.json";
+            
 
     /** 카카오 Local API로 장소 검색 (DB 저장 없음) */
     public List<PlaceSearchResponse> searchPlaces(String query) {
@@ -66,8 +73,9 @@ public class PlaceService {
                     .collect(Collectors.toList());
 
         } catch (RestClientException e) {
-            throw new CustomException(ErrorCode.KAKAO_API_ERROR);
-        }
+    System.out.println("카카오 API 호출 실패 원인: " + e.getMessage());
+    throw new CustomException(ErrorCode.KAKAO_API_ERROR);
+}
     }
 
     /** 선택한 장소를 DB에 저장 */

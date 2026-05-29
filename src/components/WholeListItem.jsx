@@ -10,6 +10,7 @@ import "./WholeListItem.css";
 function WholeListItem({
 
   title,
+  tags = [],
   host,
   hostId,
   users = [],
@@ -71,10 +72,12 @@ function WholeListItem({
                 style={{ cursor: "pointer" }}
             >
                 <strong className="list-title">{title}</strong>
-                <span className="list-tags">
-                    {tags.length > 0 ? tags.map((t) => `#${t}`).join(" ") : ""}
-                </span>
-            </div>
+<span className="list-tags">
+  {Array.isArray(tags)
+    ? tags.map((t) => `#${t}`).join(" ")
+    : ""}
+</span>
+</div>
 
             <div className="list-host" onClick={handleHostClick}>
                 {profileImage ? (

@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
@@ -5,6 +6,9 @@ import WholeListItem from "../components/WholeListItem";
 import Dropbox from "../components/Dropbox";
 import Pagination from "react-bootstrap/Pagination";
 import "./WholeList.css";
+
+
+
 
 import {
   fetchAllStudies,
@@ -76,6 +80,9 @@ function WholeList() {
   const totalPages = Math.ceil(totalCount / STUDIES_PER_PAGE);
   const showFilters = FILTER_TABS.includes(activeTab);
 
+ const [regionOptions, setRegionOptions] = useState([]);
+const [categoryOptions, setCategoryOptions] = useState([]);
+
   const loadStudies = async () => {
     setLoading(true);
     setError(null);
@@ -103,6 +110,27 @@ function WholeList() {
   useEffect(() => {
     loadStudies();
   }, [activeTab, searchValue, region, category, currentPage]);
+
+useEffect(() => {
+  const loadFilterOptions = async () => {
+    try {
+      const categoryRes = await fetch("http://localhost:8080/categories");
+      const categoryResult = await categoryRes.json();
+
+      const regionRes = await fetch("http://localhost:8080/regions/cities");
+      const regionResult = await regionRes.json();
+
+      setCategoryOptions(categoryResult.data || []);
+      setRegionOptions(regionResult || []);
+    } catch (e) {
+      console.error("필터 옵션 불러오기 실패:", e);
+    }
+  };
+
+  loadFilterOptions();
+}, []);
+
+
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
@@ -161,20 +189,18 @@ function WholeList() {
 
             {showFilters && (
               <div className="whole-filters">
-                <Dropbox
-                  placeholder="지역"
-                  value={region}
-                  onChange={(v) => {
-                    setRegion(v);
-                    setCurrentPage(1);
-                  }}
-                  options={[
-                    { value: "서울", label: "서울" },
-                    { value: "부산", label: "부산" },
-                    { value: "인천", label: "인천" },
-                  ]}
-                />
-
+               <Dropbox
+  placeholder="지역"
+  value={region}
+  onChange={(v) => {
+    setRegion(v);
+    setCurrentPage(1);
+  }}
+  options={regionOptions.map((region) => ({
+    value: region,
+    label: region,
+  }))}
+/>
                 <Dropbox
                   placeholder="카테고리"
                   value={category}
@@ -182,11 +208,10 @@ function WholeList() {
                     setCategory(v);
                     setCurrentPage(1);
                   }}
-                  options={[
-                    { value: "개발", label: "개발" },
-                    { value: "디자인", label: "디자인" },
-                    { value: "언어", label: "언어" },
-                  ]}
+options={categoryOptions.map((category) => ({
+  value: category.categoryName,
+  label: category.categoryName,
+}))}
                 />
               </div>
             )}

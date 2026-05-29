@@ -69,7 +69,7 @@ function App() {
 
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/wholelist" element={<WholeList />} />
+        <Route path="/wholelist" element={< />} />
         <Route path="/postwrite" element={<PostWrite />} />
       </Routes>
 

@@ -15,6 +15,7 @@ import { useAuth } from "../context/AuthContext";
 import Login from "../components/Login";
 import { fetchNotifications, markNotificationRead } from "../api/notification";
 
+/*
 const REGIONS = [
     "서울",
     "경기",
@@ -22,6 +23,7 @@ const REGIONS = [
     "부산",
     "대구",
 ];
+*/
 
 function Header() {
     const { isLoggedIn, logout } = useAuth();
@@ -43,6 +45,8 @@ function Header() {
 
     const unreadCount = notifications.filter((n) => !n.read).length;
 
+    const [regionOptions, setRegionOptions] = useState([]);
+
     useEffect(() => {
         fetch("http://localhost:8080/categories")
             .then((res) => res.json())
@@ -53,6 +57,17 @@ function Header() {
                 console.error("헤더 카테고리 불러오기 실패:", error);
             });
     }, []);
+
+    useEffect(() => {
+        fetch("http://localhost:8080/regions/cities")
+            .then((res) => res.json())
+            .then((result) => {
+            setRegionOptions(result);
+            })
+            .catch((error) => {
+            console.error("헤더 지역 불러오기 실패:", error);
+            });
+        }, []);
 
     useEffect(() => {
         if (!isLoggedIn) {
@@ -240,43 +255,47 @@ function Header() {
                                     <FiSearch />
                                 </Button>
 
-                                <Dropdown>
-                                    <Dropdown.Toggle variant="light" size="sm">
-                                        {selectedRegion}
-                                    </Dropdown.Toggle>
-                                    <Dropdown.Menu>
-                                        <Dropdown.Item onClick={() => setSelectedRegion("지역")}>
-                                            전체
-                                        </Dropdown.Item>
-                                        {REGIONS.map((region) => (
-                                            <Dropdown.Item
-                                                key={region}
-                                                onClick={() => setSelectedRegion(region)}
-                                            >
-                                                {region}
-                                            </Dropdown.Item>
-                                        ))}
-                                    </Dropdown.Menu>
-                                </Dropdown>
+<Dropdown>
+  <Dropdown.Toggle variant="light" size="sm">
+    {selectedRegion}
+  </Dropdown.Toggle>
 
-                                <Dropdown>
-                                    <Dropdown.Toggle variant="light" size="sm">
-                                        {selectedField}
-                                    </Dropdown.Toggle>
-                                    <Dropdown.Menu>
-                                        <Dropdown.Item onClick={() => setSelectedField("분야")}>
-                                            전체
-                                        </Dropdown.Item>
-                                        {categoryOptions.map((category) => (
-                                            <Dropdown.Item
-                                                key={category.categoryId}
-                                                onClick={() => setSelectedField(category.categoryName)}
-                                            >
-                                                {category.categoryName}
-                                            </Dropdown.Item>
-                                        ))}
-                                    </Dropdown.Menu>
-                                </Dropdown>
+  <Dropdown.Menu>
+    <Dropdown.Item onClick={() => setSelectedRegion("지역")}>
+      전체
+    </Dropdown.Item>
+
+    {regionOptions.map((region) => (
+      <Dropdown.Item
+        key={region}
+        onClick={() => setSelectedRegion(region)}
+      >
+        {region}
+      </Dropdown.Item>
+    ))}
+  </Dropdown.Menu>
+</Dropdown>
+
+<Dropdown>
+  <Dropdown.Toggle variant="light" size="sm">
+    {selectedField}
+  </Dropdown.Toggle>
+
+  <Dropdown.Menu>
+    <Dropdown.Item onClick={() => setSelectedField("분야")}>
+      전체
+    </Dropdown.Item>
+
+    {categoryOptions.map((category) => (
+      <Dropdown.Item
+        key={category.categoryId}
+        onClick={() => setSelectedField(category.categoryName)}
+      >
+        {category.categoryName}
+      </Dropdown.Item>
+    ))}
+  </Dropdown.Menu>
+</Dropdown>
                             </div>
                         </div>
 

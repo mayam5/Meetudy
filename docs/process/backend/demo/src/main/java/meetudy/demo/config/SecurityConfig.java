@@ -45,6 +45,7 @@ public class SecurityConfig {
                         .requestMatchers("/posts/{postId}").permitAll()
                         .requestMatchers("/ws/**").permitAll()
                         .requestMatchers("/places/**").permitAll()
+                        .requestMatchers("/regions/**").permitAll()
 
                         // 나머지는 인증 필요
                         .anyRequest().authenticated()

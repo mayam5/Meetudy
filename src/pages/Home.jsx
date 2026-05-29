@@ -25,6 +25,8 @@ function Home() {
     const [posts, setPosts] = useState([]);
     const [categories, setCategories] = useState([]);
 
+    const navigate = useNavigate();
+
 
 
     /* 

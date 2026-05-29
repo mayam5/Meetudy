@@ -17,10 +17,10 @@ const DAY_OPTIONS = [
 
 const TIME_OPTIONS = [
     { value: "notDecided", label: "선택하지 않음" },
-    { value: "dawn", label: "새벽 00:00 - 06:00" },
-    { value: "morning", label: "아침 06:00 - 12:00" },
-    { value: "afternoon", label: "점심 12:00 - 18:00" },
-    { value: "night", label: "저녁 18:00 - 24:00" },
+    { value: "dawn",       label: "새벽 00:00 - 06:00" },
+    { value: "morning",    label: "아침 06:00 - 12:00" },
+    { value: "afternoon",  label: "점심 12:00 - 18:00" },
+    { value: "night",      label: "저녁 18:00 - 24:00" },
 ];
 
 const CATEGORY_OPTIONS = [
@@ -35,9 +35,9 @@ const CATEGORY_OPTIONS = [
 ];
 
 const DUMMY_PLACES = [
-    { id: 1, placeName: "투썸플레이스 강남역점", address: "서울 강남구 강남대로 438" },
+    { id: 1, placeName: "투썸플레이스 강남역점",  address: "서울 강남구 강남대로 438" },
     { id: 2, placeName: "투썸플레이스 강남대로점", address: "서울 강남구 강남대로 422" },
-    { id: 3, placeName: "스타벅스 강남역점", address: "서울 강남구 테헤란로 101" },
+    { id: 3, placeName: "스타벅스 강남역점",       address: "서울 강남구 테헤란로 101" },
 ];
 
 function PostWrite({ isEditMode = false }) {
@@ -45,28 +45,25 @@ function PostWrite({ isEditMode = false }) {
     const navigate = useNavigate();
 
     const [selectedCategory, setSelectedCategory] = useState("");
-    const [title, setTitle] = useState("");
-    const [description, setDescription] = useState("");
-    const [number, setNumber] = useState("");
-    const [day, setDay] = useState("");
-    const [time, setTime] = useState("");
-    const [meetingTimes, setMeetingTimes] = useState([]);
-    const [hashtags, setHashtags] = useState([]);
-    const [tagInput, setTagInput] = useState("");
-    const [isTagFocused, setIsTagFocused] = useState(false);
-    const [placeInput, setPlaceInput] = useState("");
-    const [selectedPlace, setSelectedPlace] = useState(null);
-    const [cost, setCost] = useState("");
-    const [isCostFocused, setIsCostFocused] = useState(false);
-    const [isStatusPopupOpen, setIsStatusPopupOpen] = useState(false);
-    const [postStatus, setPostStatus] = useState("");
-    const [popup, setPopup] = useState({ open: false, message: "", onConfirm: null });
-    const [loading, setLoading] = useState(false);
+    const [title,            setTitle]            = useState("");
+    const [description,      setDescription]      = useState("");
+    const [number,           setNumber]           = useState("");
+    const [day,              setDay]              = useState("");
+    const [time,             setTime]             = useState("");
+    const [meetingTimes,     setMeetingTimes]     = useState([]);
+    const [hashtags,         setHashtags]         = useState([]);
+    const [tagInput,         setTagInput]         = useState("");
+    const [isTagFocused,     setIsTagFocused]     = useState(false);
+    const [placeInput,       setPlaceInput]       = useState("");
+    const [selectedPlace,    setSelectedPlace]    = useState(null);
+    const [cost,             setCost]             = useState("");
+    const [isCostFocused,    setIsCostFocused]    = useState(false);
+    const [isStatusPopupOpen,setIsStatusPopupOpen]= useState(false);
+    const [postStatus,       setPostStatus]       = useState("");
+    const [popup,            setPopup]            = useState({ open: false, message: "", onConfirm: null });
+    const [loading,          setLoading]          = useState(false);
+    const [errors,           setErrors]           = useState({});
 
-    // 유효성 검사 에러
-    const [errors, setErrors] = useState({});
-
-    // 수정 모드 - 기존 데이터 불러오기
     useEffect(() => {
         if (isEditMode && id) {
             const load = async () => {
@@ -94,16 +91,15 @@ function PostWrite({ isEditMode = false }) {
         }
     }, [isEditMode, id]);
 
-    const openPopup = (message, onConfirm) => setPopup({ open: true, message, onConfirm });
+    const openPopup  = (message, onConfirm) => setPopup({ open: true, message, onConfirm });
     const closePopup = () => setPopup({ open: false, message: "", onConfirm: null });
 
-    // 유효성 검사
     const validate = () => {
         const newErrors = {};
-        if (!selectedCategory) newErrors.category = "카테고리를 선택해주세요.";
-        if (!title.trim()) newErrors.title = "제목을 입력해주세요.";
-        if (!description.trim()) newErrors.description = "모임 설명을 입력해주세요.";
-        if (!number) newErrors.number = "최대 인원을 선택해주세요.";
+        if (!selectedCategory)    newErrors.category    = "카테고리를 선택해주세요.";
+        if (!title.trim())        newErrors.title       = "제목을 입력해주세요.";
+        if (!description.trim())  newErrors.description = "모임 설명을 입력해주세요.";
+        if (!number)              newErrors.number      = "최대 인원을 선택해주세요.";
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -118,64 +114,38 @@ function PostWrite({ isEditMode = false }) {
         }
     };
 
-    const removeTag = (tagToRemove) => {
+    const removeTag = (tagToRemove) =>
         setHashtags(hashtags.filter((tag) => tag !== tagToRemove));
-    };
 
     const handleAddMeetingTime = () => {
         if (day === "" || meetingTimes.length >= 3) return;
-        const dayLabel = DAY_OPTIONS.find((o) => o.value === day)?.label;
+        const dayLabel  = DAY_OPTIONS.find((o) => o.value === day)?.label;
         const timeLabel = TIME_OPTIONS.find((o) => o.value === time)?.label;
-        const meetingTimeText = !time || time === "notDecided"
-            ? dayLabel
-            : `${dayLabel} ${timeLabel}`;
-        if (!meetingTimes.includes(meetingTimeText)) {
-            setMeetingTimes([...meetingTimes, meetingTimeText]);
-        }
-        setDay("");
-        setTime("");
+        const text = (!time || time === "notDecided") ? dayLabel : `${dayLabel} ${timeLabel}`;
+        if (!meetingTimes.includes(text)) setMeetingTimes([...meetingTimes, text]);
+        setDay(""); setTime("");
     };
 
-    const removeMeetingTime = (timeToRemove) => {
-        setMeetingTimes(meetingTimes.filter((t) => t !== timeToRemove));
-    };
+    const removeMeetingTime = (t) =>
+        setMeetingTimes(meetingTimes.filter((x) => x !== t));
 
-    const filteredPlaces = DUMMY_PLACES.filter((place) =>
-        place.placeName.includes(placeInput)
-    );
+    const filteredPlaces = DUMMY_PLACES.filter((p) => p.placeName.includes(placeInput));
 
-    /*
     const buildPayload = () => ({
-        title,
-        field: selectedCategory,
-        description,
-        maxMembers: Number(number),
-        tags: hashtags,
-        meetingTimes,
-        place: selectedPlace?.placeName ?? placeInput,
-        cost: Number(cost) || 0,
-        status: postStatus || "recruiting",
+        postTitle:   title,
+        postContent: description,
+        meetingTime: "2026-05-30T14:00:00",
+        endTime:     "2026-05-30T16:00:00",
+        maxMembers:  Number(number),
+        categoryId:  Number(selectedCategory),
+        placeId:     selectedPlace?.id ?? null,
     });
-    */
-
-const buildPayload = () => ({
-    postTitle: title,
-    postContent: description,
-    meetingTime: "2026-05-30T14:00:00",
-    endTime: "2026-05-30T16:00:00",
-    maxMembers: Number(number),
-    categoryId: Number(selectedCategory),
-    placeId: selectedPlace?.id ?? null,
-});
 
     const handleSubmit = async () => {
         setLoading(true);
         try {
-            if (isEditMode && id) {
-                await updateStudy(id, buildPayload());
-            } else {
-                await createStudy(buildPayload());
-            }
+            if (isEditMode && id) await updateStudy(id, buildPayload());
+            else                  await createStudy(buildPayload());
             navigate("/whole-list");
         } catch (e) {
             console.error("저장 실패:", e);
@@ -200,14 +170,11 @@ const buildPayload = () => ({
 
     const handleSubmitClick = () => {
         if (!validate()) return;
-        openPopup(
-            isEditMode ? "수정하시겠습니까?" : "게시글을 올리시겠습니까?",
-            handleSubmit
-        );
+        openPopup(isEditMode ? "수정하시겠습니까?" : "게시글을 올리시겠습니까?", handleSubmit);
     };
 
     if (loading && isEditMode && !title) {
-        return <div style={{ textAlign: "center", marginTop: "200px" }}>불러오는 중...</div>;
+        return <div className="post-write-loading">불러오는 중...</div>;
     }
 
     return (
@@ -218,11 +185,19 @@ const buildPayload = () => ({
             >
                 <div className="post-write-container">
 
-                    <h1>게시글 {isEditMode ? "수정하기" : "작성하기"}</h1>
+                    {/* ── 페이지 헤더 ── */}
+                    <div className="post-write-header">
+                        <div className="post-write-header-label">Study Platform</div>
+                        <h1>게시글 <span>{isEditMode ? "수정하기" : "작성하기"}</span></h1>
+                        <p className="post-write-subtitle">함께 성장할 팀원을 찾아보세요</p>
+                    </div>
 
-                    {/* 1. 카테고리 */}
+                    {/* ── 1. 카테고리 ── */}
                     <div className="form-section">
-                        <h4>* 1. 카테고리</h4>
+                        <div className="form-section-header">
+                            <div className="form-section-icon">📚</div>
+                            <h4>* 1. 카테고리</h4>
+                        </div>
                         <p>필수 입력 사항입니다</p>
                         <div className="category-buttons">
                             {CATEGORY_OPTIONS.map((cat) => (
@@ -241,9 +216,12 @@ const buildPayload = () => ({
                         {errors.category && <p className="field-error">{errors.category}</p>}
                     </div>
 
-                    {/* 2. 제목 */}
+                    {/* ── 2. 제목 ── */}
                     <div className="form-section">
-                        <h4>* 2. 제목</h4>
+                        <div className="form-section-header">
+                            <div className="form-section-icon">✏️</div>
+                            <h4>* 2. 제목</h4>
+                        </div>
                         <p>필수 입력 사항입니다</p>
                         <div className="input-count-wrapper">
                             <input
@@ -262,9 +240,12 @@ const buildPayload = () => ({
                         {errors.title && <p className="field-error">{errors.title}</p>}
                     </div>
 
-                    {/* 3. 모임 설명 */}
+                    {/* ── 3. 모임 설명 ── */}
                     <div className="form-section">
-                        <h4>* 3. 모임 설명</h4>
+                        <div className="form-section-header">
+                            <div className="form-section-icon">📝</div>
+                            <h4>* 3. 모임 설명</h4>
+                        </div>
                         <p>필수 입력 사항입니다</p>
                         <div className="input-count-wrapper">
                             <textarea
@@ -282,9 +263,12 @@ const buildPayload = () => ({
                         {errors.description && <p className="field-error">{errors.description}</p>}
                     </div>
 
-                    {/* 4. 모임 최대 인원 */}
+                    {/* ── 4. 모임 최대 인원 ── */}
                     <div className="form-section">
-                        <h4>* 4. 모임 최대 인원</h4>
+                        <div className="form-section-header">
+                            <div className="form-section-icon">👥</div>
+                            <h4>* 4. 모임 최대 인원</h4>
+                        </div>
                         <p>필수 입력 사항입니다</p>
                         <div className="dropdown-row">
                             <Dropbox
@@ -303,9 +287,13 @@ const buildPayload = () => ({
                         {errors.number && <p className="field-error">{errors.number}</p>}
                     </div>
 
-                    {/* 5. 해시태그 */}
+                    {/* ── 5. 해시태그 ── */}
                     <div className="form-section">
-                        <h4>5. 해시태그</h4>
+                        <div className="form-section-header">
+                            <div className="form-section-icon">#</div>
+                            <h4>5. 해시태그</h4>
+                        </div>
+                        <p>관련 키워드를 추가해 검색 노출을 높이세요 (최대 3개)</p>
                         <div className="hashtag-container">
                             <div className="tag-input-wrapper">
                                 {isTagFocused && <span className="tag-prefix">#</span>}
@@ -320,38 +308,51 @@ const buildPayload = () => ({
                                     onBlur={() => { if (tagInput === "") setIsTagFocused(false); }}
                                 />
                             </div>
-                            <div className="tag-list">
-                                {hashtags.map((tag) => (
-                                    <div className="tag-item" key={tag}>
-                                        #{tag}
-                                        <button className="tag-delete" onClick={() => removeTag(tag)}>×</button>
-                                    </div>
-                                ))}
-                            </div>
+                            {hashtags.length > 0 && (
+                                <div className="tag-list">
+                                    {hashtags.map((tag) => (
+                                        <div className="tag-item" key={tag}>
+                                            {/* # 은 CSS ::before 로 처리 — 여기서는 텍스트만 */}
+                                            {tag}
+                                            <button className="tag-delete" onClick={() => removeTag(tag)}>×</button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     </div>
 
-                    {/* 6. 모임 시간 */}
+                    {/* ── 6. 모임 시간 ── */}
                     <div className="form-section">
-                        <h4>6. 모임 시간</h4>
+                        <div className="form-section-header">
+                            <div className="form-section-icon">🕐</div>
+                            <h4>6. 모임 시간</h4>
+                        </div>
+                        <p>요일과 시간대를 선택해 추가하세요 (최대 3개)</p>
                         <div className="dropdown-row">
-                            <Dropbox placeholder="요일 선택" value={day} onChange={setDay} options={DAY_OPTIONS} />
+                            <Dropbox placeholder="요일 선택"   value={day}  onChange={setDay}  options={DAY_OPTIONS}  />
                             <Dropbox placeholder="시간대 선택" value={time} onChange={setTime} options={TIME_OPTIONS} />
                             <button className="time-add-button" onClick={handleAddMeetingTime}>추가</button>
                         </div>
-                        <div className="time-list">
-                            {meetingTimes.map((meetingTime) => (
-                                <div className="time-item" key={meetingTime}>
-                                    {meetingTime}
-                                    <button className="time-delete" onClick={() => removeMeetingTime(meetingTime)}>×</button>
-                                </div>
-                            ))}
-                        </div>
+                        {meetingTimes.length > 0 && (
+                            <div className="time-list">
+                                {meetingTimes.map((t) => (
+                                    <div className="time-item" key={t}>
+                                        {t}
+                                        <button className="time-delete" onClick={() => removeMeetingTime(t)}>×</button>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
 
-                    {/* 7. 모임 장소 */}
+                    {/* ── 7. 모임 장소 ── */}
                     <div className="form-section">
-                        <h4>7. 모임 장소</h4>
+                        <div className="form-section-header">
+                            <div className="form-section-icon">📍</div>
+                            <h4>7. 모임 장소</h4>
+                        </div>
+                        <p>오프라인 모임 장소를 설정하세요</p>
                         <div className="place-search-container">
                             <input
                                 className="input"
@@ -380,16 +381,23 @@ const buildPayload = () => ({
                             )}
                             {selectedPlace && (
                                 <div className="selected-place">
-                                    <strong>{selectedPlace.placeName}</strong>
-                                    <p>{selectedPlace.address}</p>
+                                    <div className="selected-place-dot" />
+                                    <div>
+                                        <strong>{selectedPlace.placeName}</strong>
+                                        <p>{selectedPlace.address}</p>
+                                    </div>
                                 </div>
                             )}
                         </div>
                     </div>
 
-                    {/* 8. 장소 예약 비용 */}
+                    {/* ── 8. 장소 예약 비용 ── */}
                     <div className="form-section">
-                        <h4>8. 장소 예약 비용</h4>
+                        <div className="form-section-header">
+                            <div className="form-section-icon">💰</div>
+                            <h4>8. 장소 예약 비용</h4>
+                        </div>
+                        <p>별도 참가비가 있다면 입력해주세요</p>
                         <div className="cost-input-wrapper">
                             {isCostFocused && <span className="cost-prefix">₩</span>}
                             <input
@@ -405,7 +413,7 @@ const buildPayload = () => ({
                         </div>
                     </div>
 
-                    {/* 하단 버튼 */}
+                    {/* ── 하단 버튼 ── */}
                     <div className="post-action-wrapper">
                         {isEditMode ? (
                             <>
@@ -422,27 +430,21 @@ const buildPayload = () => ({
                                     >
                                         상태 변경하기
                                     </button>
-                                    <button
-                                        className="post-button submit"
-                                        onClick={handleSubmitClick}
-                                    >
+                                    <button className="post-button submit" onClick={handleSubmitClick}>
                                         수정하기
                                     </button>
                                 </div>
 
                                 {isStatusPopupOpen && (
-                                    <div
-                                        className="status-popup-box"
-                                        onClick={(e) => e.stopPropagation()}
-                                    >
+                                    <div className="status-popup-box" onClick={(e) => e.stopPropagation()}>
                                         <Dropbox
                                             placeholder="상태 선택"
                                             value={postStatus}
                                             onChange={setPostStatus}
                                             options={[
                                                 { value: "recruiting", label: "모집 중" },
-                                                { value: "completed", label: "모집 완료" },
-                                                { value: "paused", label: "모집 일시 중단" },
+                                                { value: "completed",  label: "모집 완료" },
+                                                { value: "paused",     label: "모집 일시 중단" },
                                             ]}
                                         />
                                         <button
@@ -471,10 +473,7 @@ const buildPayload = () => ({
                                 >
                                     임시 저장
                                 </button>
-                                <button
-                                    className="post-button submit"
-                                    onClick={handleSubmitClick}
-                                >
+                                <button className="post-button submit" onClick={handleSubmitClick}>
                                     올리기
                                 </button>
                             </div>

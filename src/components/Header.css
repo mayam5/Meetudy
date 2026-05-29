@@ -21,6 +21,7 @@
 
     position: relative;
     overflow: visible;
+    z-index: 1000;
 }
 
 /* 은은한 상단 라인 */
@@ -191,6 +192,7 @@
     gap: 5px;
 
     padding-right: 6px;
+    z-index: 2000;
 }
 
 /* =========================
@@ -259,6 +261,10 @@
 /* =========================
    DROPDOWN
 ========================= */
+.search-inner .dropdown {
+    position: relative;
+    z-index: 3000;
+}
 
 .search-inner .dropdown-toggle {
     font-size: 12px !important;
@@ -324,6 +330,8 @@
     padding: 8px;
 
     min-width: 110px;
+    position: absolute;
+    z-index: 4000 !important;
 }
 
 .search-inner .dropdown-item {
@@ -621,4 +629,34 @@
     .search-input {
         padding-right: 72px !important;
     }
+}
+
+/* =========================
+   DROPDOWN ANIMATION
+========================= */
+
+/* 지역/분야 드롭다운 - 부드럽게 열리고 닫히기 */
+.search-inner .dropdown-menu,
+.header-menu .dropdown-menu {
+    display: block !important;
+
+    /* 닫힌 상태 (기본) */
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+    pointer-events: none;
+    visibility: hidden;
+
+    transition:
+        opacity 0.2s ease,
+        transform 0.2s ease,
+        visibility 0.2s ease;
+}
+
+/* 열린 상태 */
+.search-inner .dropdown-menu.show,
+.header-menu .dropdown-menu.show {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+    visibility: visible;
 }

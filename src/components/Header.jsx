@@ -3,10 +3,11 @@ import {
 } from "react-bootstrap";
 
 import "./Header.css";
+
 import logo from "../assets/logo.png";
 import Chat from "../components/Chat";
 import ChatList from "../components/ChatList";
-import NotificationList from "../components/NotificationList";
+import NotificationList from "../components/NotificationList.jsx";
 
 import { FiSearch, FiBell, FiUser, FiX } from "react-icons/fi";
 import { useEffect, useState } from "react";

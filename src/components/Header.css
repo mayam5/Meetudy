@@ -1,47 +1,171 @@
 /* =========================
-   헤더 전체 레이아웃
+   HEADER
 ========================= */
 
 .header {
     width: 100%;
-    padding: 8px 0;
+    padding: 10px 0;
+
+    background: rgba(255, 255, 255, 0.82) !important;
+
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    border-bottom: 1px solid rgba(255,255,255,0.7) !important;
+
+    box-shadow:
+            0 1px 0 rgba(255,255,255,0.9) inset,
+            0 8px 30px rgba(15, 23, 42, 0.04) !important;
+
+    transition: all 0.2s ease;
+
+    position: relative;
+    overflow: visible;
 }
+
+/* 은은한 상단 라인 */
+.header::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+
+    width: 100%;
+    height: 2px;
+
+    background:
+            linear-gradient(
+                    90deg,
+                    transparent 0%,
+                    rgba(37,99,235,0.7) 20%,
+                    rgba(96,165,250,0.9) 50%,
+                    rgba(37,99,235,0.7) 80%,
+                    transparent 100%
+            );
+
+    opacity: 0.9;
+}
+
+/* 아주 연한 배경 빛 */
+.header::after {
+    content: "";
+    position: absolute;
+
+    top: -120px;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    width: 480px;
+    height: 240px;
+
+    background:
+            radial-gradient(
+                    circle,
+                    rgba(37,99,235,0.08) 0%,
+                    rgba(37,99,235,0.03) 45%,
+                    transparent 75%
+            );
+
+    pointer-events: none;
+}
+
+/* =========================
+   LOGO
+========================= */
 
 .header-logo {
     width: 120px;
+    position: relative;
+    z-index: 2;
+
+    transition:
+            transform 0.18s ease,
+            opacity 0.18s ease;
+}
+
+.header-logo:hover {
+    transform: translateY(-1px) scale(1.02);
+    opacity: 0.95;
 }
 
 .header .navbar-collapse {
     justify-content: flex-end;
     gap: 20px;
+    position: relative;
+    z-index: 2;
 }
 
 /* =========================
-   검색창 영역
+   SEARCH
 ========================= */
 
 .search-wrap {
     width: 100%;
     max-width: 600px;
     min-width: 300px;
+
     position: relative;
     margin: 0;
 }
 
 .search-input {
-    height: 36px;
+    height: 42px;
+
     padding-right: 220px !important;
-    padding-left: 14px !important;
-    font-size: 14px !important;
+    padding-left: 18px !important;
+
+    font-size: 13.5px !important;
+    font-weight: 500;
+
     border-radius: 999px !important;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+    border: 1px solid rgba(0,0,0,0.06) !important;
+
+    background:
+            linear-gradient(
+                    180deg,
+                    rgba(255,255,255,0.96) 0%,
+                    rgba(248,250,252,0.96) 100%
+            ) !important;
+
+    color: #111827 !important;
+
+    box-shadow:
+            0 1px 2px rgba(15,23,42,0.03),
+            0 6px 20px rgba(15,23,42,0.04);
+
+    transition:
+            border-color 0.2s ease,
+            box-shadow 0.2s ease,
+            transform 0.15s ease !important;
+}
+
+.search-input:hover {
+    border-color: rgba(37,99,235,0.16) !important;
+}
+
+.search-input:focus {
+    background: #fff !important;
+
+    border-color: rgba(37,99,235,0.45) !important;
+
+    box-shadow:
+            0 0 0 4px rgba(37,99,235,0.08),
+            0 10px 28px rgba(37,99,235,0.08) !important;
+
+    outline: none !important;
+
+    transform: translateY(-1px);
 }
 
 .search-input::placeholder {
-    font-size: 14px;
+    font-size: 13px;
+    color: #9ca3af;
 }
 
 /* 검색어 없을 때 흔들기 */
+
 .search-error {
     border-color: #ff4d4f !important;
     animation: shake 0.4s ease;
@@ -59,53 +183,210 @@
     position: absolute;
     top: 50%;
     right: 0;
+
     transform: translateY(-50%);
+
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding-right: 10px;
+    gap: 5px;
+
+    padding-right: 6px;
 }
 
 /* =========================
-   버튼 / 아이콘
+   ICON BUTTON
 ========================= */
 
 .icon-button {
     background: transparent !important;
+
     border: none !important;
+
     box-shadow: none !important;
+
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 6px;
-    border-radius: 8px;
-    transition: all 0.2s ease;
+
+    padding: 7px !important;
+
+    border-radius: 10px !important;
+
+    transition:
+            background 0.15s ease,
+            transform 0.15s ease,
+            color 0.15s ease !important;
+
+    color: #666 !important;
 }
 
 .icon-button:hover {
-    background: rgba(0, 0, 0, 0.05) !important;
-    color: #007bff;
+    background: rgba(37,99,235,0.08) !important;
+    color: #2563eb !important;
+
+    transform: translateY(-1px);
 }
 
 .icon-button svg {
-    transition: 0.2s;
+    transition: 0.15s ease;
 }
 
 .icon-button:hover svg {
-    color: #007bff;
+    color: #2563eb;
 }
 
-/* 프로필 - 로그인 상태 */
+/* 로그인 상태 */
+
 .icon-button.logged-in {
-    color: #007bff !important;
+    color: #2563eb !important;
+
+    background:
+            linear-gradient(
+                    180deg,
+                    rgba(239,246,255,1) 0%,
+                    rgba(219,234,254,0.85) 100%
+            ) !important;
+
+    box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.9),
+            0 2px 8px rgba(37,99,235,0.08);
 }
 
 .icon-button.logged-in svg {
-    color: #007bff;
+    color: #2563eb;
 }
 
 /* =========================
-   알림 배지
+   DROPDOWN
+========================= */
+
+.search-inner .dropdown-toggle {
+    font-size: 12px !important;
+    font-weight: 700 !important;
+
+    color: #555 !important;
+
+    background:
+            linear-gradient(
+                    180deg,
+                    rgba(255,255,255,1) 0%,
+                    rgba(248,250,252,1) 100%
+            ) !important;
+
+    border: 1px solid rgba(0,0,0,0.06) !important;
+
+    border-radius: 10px !important;
+
+    padding: 4px 11px !important;
+
+    box-shadow:
+            0 1px 2px rgba(0,0,0,0.03);
+
+    transition: all 0.15s ease !important;
+
+    white-space: nowrap;
+}
+
+.search-inner .dropdown-toggle:hover,
+.search-inner .dropdown-toggle:focus {
+    border-color: rgba(37,99,235,0.28) !important;
+
+    color: #2563eb !important;
+
+    background: #eff6ff !important;
+
+    transform: translateY(-1px);
+
+    box-shadow:
+            0 4px 14px rgba(37,99,235,0.08) !important;
+}
+
+.search-inner .dropdown-toggle::after {
+    margin-left: 5px;
+    vertical-align: 2px;
+    border-top-color: currentColor;
+}
+
+.search-inner .dropdown-menu {
+    font-size: 13px;
+
+    border-radius: 16px;
+
+    border: 1px solid rgba(0,0,0,0.05);
+
+    background: rgba(255,255,255,0.95);
+
+    backdrop-filter: blur(14px);
+
+    box-shadow:
+            0 14px 34px rgba(15,23,42,0.08);
+
+    padding: 8px;
+
+    min-width: 110px;
+}
+
+.search-inner .dropdown-item {
+    border-radius: 10px;
+
+    padding: 8px 10px;
+
+    font-size: 13px;
+
+    color: #333;
+
+    transition: all 0.12s ease;
+}
+
+.search-inner .dropdown-item:hover {
+    background: #eff6ff;
+    color: #2563eb;
+
+    transform: translateX(2px);
+}
+
+/* =========================
+   SEARCH BUTTON
+========================= */
+
+.search-inner .btn-light:not(.icon-button):not(.dropdown-toggle) {
+    background:
+            linear-gradient(
+                    180deg,
+                    #3b82f6 0%,
+                    #2563eb 100%
+            ) !important;
+
+    color: #fff !important;
+
+    border: none !important;
+
+    border-radius: 999px !important;
+
+    font-size: 12px !important;
+    font-weight: 700 !important;
+
+    padding: 5px 15px !important;
+
+    box-shadow:
+            0 6px 16px rgba(37,99,235,0.2);
+
+    transition:
+            transform 0.15s ease,
+            box-shadow 0.15s ease !important;
+}
+
+.search-inner .btn-light:not(.icon-button):not(.dropdown-toggle):hover {
+    transform: translateY(-1px);
+
+    box-shadow:
+            0 10px 20px rgba(37,99,235,0.24);
+
+    background: #1d4ed8 !important;
+}
+
+/* =========================
+   NOTIFICATION
 ========================= */
 
 .noti-bell-wrap {
@@ -116,41 +397,128 @@
 
 .noti-badge {
     position: absolute;
+
     top: -2px;
     right: -2px;
-    min-width: 16px;
-    height: 16px;
-    background: #ff4d4f;
+
+    min-width: 17px;
+    height: 17px;
+
+    background:
+            linear-gradient(
+                    180deg,
+                    #ff6b6b 0%,
+                    #ff4d4f 100%
+            );
+
     color: white;
+
     font-size: 10px;
     font-weight: 700;
+
     border-radius: 999px;
+
     display: flex;
     align-items: center;
     justify-content: center;
+
     padding: 0 3px;
+
     pointer-events: none;
+
+    border: 2px solid #fff;
+
+    box-shadow:
+            0 4px 10px rgba(255,77,79,0.28);
 }
 
 /* =========================
-   로그아웃 버튼
+   MENU
+========================= */
+
+.header-menu {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+/* 메뉴 버튼 */
+
+.header-menu > .btn-light:not(.icon-button):not(.logout-btn) {
+    font-size: 13px !important;
+    font-weight: 700 !important;
+
+    color: #333 !important;
+
+    background:
+            linear-gradient(
+                    180deg,
+                    rgba(255,255,255,0.96) 0%,
+                    rgba(248,250,252,0.96) 100%
+            ) !important;
+
+    border: 1px solid rgba(0,0,0,0.06) !important;
+
+    border-radius: 10px !important;
+
+    padding: 6px 15px !important;
+
+    box-shadow:
+            0 1px 2px rgba(0,0,0,0.03);
+
+    transition:
+            all 0.15s ease !important;
+}
+
+.header-menu > .btn-light:not(.icon-button):not(.logout-btn):hover {
+    background: #111827 !important;
+
+    border-color: #111827 !important;
+
+    color: white !important;
+
+    transform: translateY(-1px);
+
+    box-shadow:
+            0 8px 18px rgba(17,24,39,0.12);
+}
+
+/* =========================
+   LOGOUT
 ========================= */
 
 .logout-btn {
-    font-size: 12px;
-    color: #888 !important;
-    background: transparent !important;
-    border: 1px solid #ddd !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+
+    color: #999 !important;
+
+    background: rgba(255,255,255,0.92) !important;
+
+    border: 1px solid #ececec !important;
+
+    border-radius: 10px !important;
+
+    padding: 6px 12px !important;
+
+    transition: all 0.15s ease !important;
 }
 
 .logout-btn:hover {
     color: #e84118 !important;
-    border-color: #e84118 !important;
-    background: transparent !important;
+
+    border-color: rgba(232,65,24,0.25) !important;
+
+    background: #fff5f5 !important;
+
+    transform: translateY(-1px);
 }
 
 /* =========================
-   채팅 UI
+   CHAT UI
 ========================= */
 
 .chat-overlay {
@@ -162,36 +530,36 @@
 
 .chat-wrapper {
     position: absolute;
-    top: 100%;
+
+    top: calc(100% + 12px);
     right: 20px;
+
     z-index: 9999;
+
     display: flex;
     flex-direction: row;
+
+    filter:
+            drop-shadow(0 24px 40px rgba(0,0,0,0.12));
 }
 
 .chat-wrapper-fixed {
     position: fixed;
+
     bottom: 20px;
     right: 20px;
+
     z-index: 9999;
+
     display: flex;
     flex-direction: row;
+
+    filter:
+            drop-shadow(0 24px 40px rgba(0,0,0,0.14));
 }
 
 /* =========================
-   헤더 메뉴 영역
-========================= */
-
-.header-menu {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-}
-
-/* =========================
-   반응형 (모바일)
+   MOBILE
 ========================= */
 
 @media (max-width: 991px) {
@@ -210,35 +578,39 @@
     }
 
     .search-input {
-        height: 32px;
+        height: 38px;
+
         padding-right: 180px !important;
+
         font-size: 13px !important;
     }
 
     .header-menu {
         margin-top: 8px;
+
         padding-bottom: 6px;
-        gap: 8px;
+
+        gap: 6px;
     }
 
     .header-menu.navbar-nav {
         flex-direction: row !important;
     }
 
-    .header-menu .btn {
-        font-size: 12px;
-        padding: 4px 10px;
+    .header-menu > .btn-light:not(.icon-button):not(.logout-btn) {
+        font-size: 12px !important;
+        padding: 4px 10px !important;
     }
 
     .icon-button {
-        padding: 4px;
+        padding: 4px !important;
     }
 }
 
 @media (max-width: 576px) {
 
     .search-inner {
-        gap: 4px;
+        gap: 3px;
         padding-right: 6px;
     }
 
@@ -247,6 +619,6 @@
     }
 
     .search-input {
-        padding-right: 80px !important;
+        padding-right: 72px !important;
     }
 }

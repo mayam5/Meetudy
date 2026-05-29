@@ -25,6 +25,11 @@
     flex-shrink: 0;
 }
 
+/* 아바타 오른쪽 끝으로 밀기 */
+.study-item .avatar-group {
+    margin-left: auto;
+}
+
 /* 반응형 */
 @media (max-width: 768px) {
     .study-item {

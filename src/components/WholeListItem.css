@@ -1,11 +1,11 @@
 .list-item {
     display: grid;
-    grid-template-columns: 0.2fr 2fr 1.6fr 1.6fr 1fr;
-    column-gap: 28px;
+    grid-template-columns: 40px 1fr 180px 120px 180px;
+    column-gap: 20px;
     align-items: center;
     min-height: 82px;
     padding-left: 10px;
-    padding-right: 28px;
+    padding-right: 20px;
     background: white;
     border-bottom: 1px solid #ddd;
     cursor: pointer;
@@ -17,11 +17,11 @@
 }
 
 .list-bookmark {
-    font-size: 22px;
+    font-size: 20px;
     color: #222;
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
     background: none;
     border: none;
     padding: 0;
@@ -36,14 +36,18 @@
 .list-title-box {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 4px;
     text-align: left;
+    min-width: 0;
 }
 
 .list-title {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 700;
     color: #111;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .list-tags {
@@ -54,9 +58,9 @@
 .list-host {
     display: flex;
     align-items: center;
-    gap: 12px;
-    justify-self: start;
+    gap: 10px;
     cursor: pointer;
+    min-width: 0;
 }
 
 .list-host:hover .list-host-name {
@@ -65,11 +69,14 @@
 
 .list-host-name {
     font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .list-host-profile {
-    width: 36px;
-    height: 36px;
+    width: 34px;
+    height: 34px;
     border-radius: 50%;
     background: #e0e0e0;
     display: flex;
@@ -81,42 +88,41 @@
     flex-shrink: 0;
 }
 
+.list-item .avatar-group {
+    display: flex;
+    align-items: center;
+    justify-self: center;
+    margin-left: 0;
+}
+
 .list-item .avatar {
-    width: 32px;
-    height: 32px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     background: #e0e0e0;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 13px;
+    font-size: 12px;
 }
 
 .list-item .more {
-    font-size: 15px !important;
+    font-size: 13px;
     font-weight: 600;
-    margin-left: 8px;
-    line-height: 1;
+    margin-left: 6px;
     display: flex;
     align-items: center;
-}
-
-.list-item .avatar-group {
-    display: flex;
-    align-items: center;
-    justify-self: start;
-    margin-left: 0;
 }
 
 .list-actions {
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
 }
 
 .list-actions button {
-    padding: 7px 10px;
+    padding: 6px 10px;
     border: none;
     border-radius: 6px;
     background: #222;
@@ -124,6 +130,7 @@
     font-size: 12px;
     cursor: pointer;
     transition: opacity 0.15s ease;
+    white-space: nowrap;
 }
 
 .list-actions button:hover {
@@ -134,11 +141,11 @@
     background: white;
     color: #222;
     border: 1px solid #bbb;
-    min-width: 78px;
+    min-width: 72px;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: 5px;
 }
 
 .cancel-btn {
@@ -150,24 +157,69 @@
     color: #4cd137;
     font-size: 13px;
     font-weight: 700;
+    white-space: nowrap;
 }
 
 .rejected-text {
     color: #e84118;
     font-size: 13px;
     font-weight: 700;
+    white-space: nowrap;
 }
 
-/* 반응형 */
+/* =========================
+   반응형
+========================= */
+
+/* 태블릿 */
+@media (max-width: 1024px) {
+    .list-item {
+        grid-template-columns: 36px 1fr 150px 100px 150px;
+        column-gap: 12px;
+        padding-right: 12px;
+    }
+}
+
+/* 모바일 */
 @media (max-width: 768px) {
     .list-item {
-        grid-template-columns: 28px 1fr;
-        gap: 8px;
+        grid-template-columns: 32px 1fr auto;
+        grid-template-rows: auto auto;
+        column-gap: 10px;
+        row-gap: 6px;
+        padding: 12px;
+        min-height: auto;
     }
 
-    .list-item .list-host,
-    .list-item .avatar-group,
-    .list-actions {
+    /* 북마크 - 1행 1열, 2행까지 */
+    .list-bookmark {
+        grid-column: 1;
+        grid-row: 1 / 3;
+        align-self: center;
+    }
+
+    /* 제목 - 1행 2열 */
+    .list-title-box {
         grid-column: 2;
+        grid-row: 1;
+    }
+
+    /* 액션 - 1행 3열 */
+    .list-actions {
+        grid-column: 3;
+        grid-row: 1;
+        align-self: center;
+    }
+
+    /* 호스트 + 아바타 - 2행에 나란히 */
+    .list-host {
+        grid-column: 2;
+        grid-row: 2;
+    }
+
+    .list-item .avatar-group {
+        grid-column: 3;
+        grid-row: 2;
+        justify-self: end;
     }
 }

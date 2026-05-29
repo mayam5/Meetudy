@@ -19,16 +19,17 @@
 ========================= */
 
 .whole-sidebar {
-    width: 230px;
+    width: 200px;
     flex-shrink: 0;
-    padding: 20px;
+    padding: 16px;
     background: #f3f3f3;
     color: black;
+    overflow-y: auto;
 }
 
 .whole-sidebar h4 {
-    padding: 20px 0;
-    font-size: 16px;
+    padding: 16px 0;
+    font-size: 15px;
     font-weight: 900;
     margin-bottom: 5px;
     text-align: left;
@@ -54,7 +55,7 @@
 
 .whole-tab.active {
     background: white;
-    font-weight: 750;
+    font-weight: 700;
     color: black;
 }
 
@@ -64,11 +65,12 @@
 
 .whole-main {
     flex: 1;
-    padding: 45px 50px 20px;
+    padding: 32px 40px 20px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
     background: white;
+    min-width: 0;
 }
 
 .whole-main-header {
@@ -76,7 +78,8 @@
     justify-content: space-between;
     align-items: flex-start;
     gap: 16px;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
 }
 
 .whole-main-header > div:first-child {
@@ -88,14 +91,12 @@
 .whole-main-header h2 {
     font-size: 20px;
     margin: 0 0 6px;
-    text-align: left;
 }
 
 .whole-main-header p {
     font-size: 13px;
     color: #555;
-    margin: 4px 0 0;
-    text-align: left;
+    margin: 0;
 }
 
 /* =========================
@@ -105,6 +106,7 @@
 .whole-filters {
     display: flex;
     gap: 10px;
+    flex-shrink: 0;
 }
 
 .whole-filters .dropbox {
@@ -127,7 +129,7 @@
     flex: 1;
     min-height: 0;
     overflow-y: auto;
-    padding-right: 10px;
+    padding-right: 6px;
     display: flex;
     flex-direction: column;
 }
@@ -172,7 +174,7 @@
 }
 
 .whole-pagination .pagination {
-    gap: 6px;
+    gap: 4px;
 }
 
 .whole-pagination .page-link {
@@ -198,4 +200,101 @@
 .whole-pagination .page-item.disabled .page-link {
     color: #bbb;
     background: transparent;
+}
+
+/* =========================
+   반응형
+========================= */
+
+/* 태블릿 */
+@media (max-width: 1024px) {
+    .whole-sidebar {
+        width: 160px;
+        padding: 12px;
+    }
+
+    .whole-main {
+        padding: 24px 24px 16px;
+    }
+
+    .whole-filters .dropbox {
+        width: 90px;
+    }
+}
+
+/* 모바일 */
+@media (max-width: 768px) {
+    .whole-page {
+        height: auto;
+        overflow: visible;
+    }
+
+    .whole-layout {
+        height: auto;
+        flex-direction: column;
+    }
+
+    /* 사이드바 → 가로 스크롤 탭 */
+    .whole-sidebar {
+        width: 100%;
+        padding: 12px 16px 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .whole-sidebar h4 {
+        display: none;
+    }
+
+    .whole-sidebar {
+        flex-direction: row;
+        align-items: center;
+        overflow-x: auto;
+        gap: 6px;
+        padding: 10px 16px;
+        white-space: nowrap;
+    }
+
+    .whole-tab {
+        width: auto;
+        flex-shrink: 0;
+        padding: 6px 14px;
+        font-size: 13px;
+        border-radius: 20px;
+        background: #ebebeb;
+    }
+
+    .whole-tab.active {
+        background: #222;
+        color: white;
+    }
+
+    .whole-main {
+        padding: 16px;
+        overflow: visible;
+    }
+
+    .whole-main-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .whole-filters {
+        width: 100%;
+    }
+
+    .whole-filters .dropbox {
+        flex: 1;
+    }
+
+    .whole-scroll-area {
+        overflow-y: visible;
+        padding-right: 0;
+    }
+
+    .whole-pagination {
+        margin-top: 16px;
+    }
 }

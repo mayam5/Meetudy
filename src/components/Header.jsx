@@ -34,8 +34,11 @@ function Header() {
     const [searchError, setSearchError] = useState(false);
     const [selectedRegion, setSelectedRegion] = useState("지역");
     const [selectedField, setSelectedField] = useState("분야");
+    const [navExpanded, setNavExpanded] = useState(false);
 
     const navigate = useNavigate();
+
+    const closeNav = () => setNavExpanded(false);
 
     const handleSearch = () => {
         if (!searchValue.trim()) {
@@ -43,9 +46,11 @@ function Header() {
             setTimeout(() => setSearchError(false), 600);
             return;
         }
+        closeNav();
         navigate(`/whole-list?search=${searchValue}&region=${selectedRegion}&field=${selectedField}`);
     };
 
+    // 알림 - closeNav 없음 (드롭다운 예정)
     const handleNotificationClick = () => {
         alert("알림 기능 준비 중");
     };
@@ -63,10 +68,12 @@ function Header() {
         setIsLoggedIn(true);
         localStorage.setItem("isLoggedIn", "true");
         setIsLoginOpen(false);
+        closeNav();
         navigate("/mypage");
     };
 
     const handleProfileClick = () => {
+        closeNav();
         if (isLoggedIn) {
             navigate("/mypage");
         } else {
@@ -74,10 +81,13 @@ function Header() {
         }
     };
 
+    // 내 모임 - closeNav 없음 (채팅리스트 드롭다운)
+    // 단, 비로그인 시에는 닫기
     const handleMyGroupClick = () => {
         if (!isLoggedIn) {
             alert("로그인이 필요한 서비스입니다.");
             setIsLoginOpen(true);
+            closeNav();
             return;
         }
         setIsListOpen(!isListOpen);
@@ -93,13 +103,18 @@ function Header() {
                 expand="lg"
                 fixed="top"
                 className="header shadow-sm"
+                expanded={navExpanded}
+                onToggle={(expanded) => setNavExpanded(expanded)}
             >
                 <Container fluid>
 
                     {/* 로고 */}
                     <Navbar.Brand
                         style={{ cursor: "pointer" }}
-                        onClick={() => navigate("/")}
+                        onClick={() => {
+                            closeNav();
+                            navigate("/");
+                        }}
                     >
                         <img
                             src={logo}
@@ -194,7 +209,10 @@ function Header() {
                             <Button
                                 variant="light"
                                 size="sm"
-                                onClick={() => navigate("/post-write")}
+                                onClick={() => {
+                                    closeNav();
+                                    navigate("/post-write");
+                                }}
                             >
                                 글 작성하기
                             </Button>

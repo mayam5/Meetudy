@@ -3,10 +3,11 @@
 ========================= */
 
 .study-detail-page {
-    padding-top: 90px;
+    padding-top: 0;
     padding-bottom: 80px;
     min-height: 100vh;
-    background: #f5f5f0;
+    /* 상단 다크 히어로 / 하단 크림 배경 — JSX 수정 없이 구현 */
+    background: linear-gradient(to bottom, #0a0a0a 420px, #f5f5f0 420px);
 }
 
 .study-detail-container {
@@ -14,6 +15,10 @@
     margin: 0 auto;
     padding: 0 24px;
 }
+
+/* =========================
+   상태 메시지
+========================= */
 
 .study-detail-status {
     text-align: center;
@@ -35,8 +40,20 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 16px;
-    padding-top: 24px;
+    padding-top: 110px;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+/* 히어로 파란 상단선 */
+.study-detail-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #2563eb;
 }
 
 .study-detail-tags {
@@ -46,63 +63,120 @@
 }
 
 .study-detail-tag {
-    background: #0a0a0a;
+    background: rgba(255, 255, 255, 0.07);
     color: #a3a3a3;
     font-size: 11px;
     font-weight: 700;
     padding: 5px 14px;
     border-radius: 999px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    letter-spacing: 0.5px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    letter-spacing: 0.8px;
     text-transform: uppercase;
+    transition: all 0.2s;
+}
+
+.study-detail-tag:hover {
+    background: rgba(37, 99, 235, 0.2);
+    border-color: rgba(37, 99, 235, 0.4);
+    color: #60a5fa;
 }
 
 .study-detail-bookmark {
-    background: none;
-    border: 1.5px solid #e5e5e5;
-    border-radius: 10px;
-    padding: 8px 10px;
-    font-size: 18px;
-    cursor: pointer;
-    color: #a3a3a3;
-    transition: all 0.2s;
-    flex-shrink: 0;
     display: flex;
     align-items: center;
-    justify-content: center;
+    gap: 7px;
+    padding: 10px 18px;
+    background: #fff;
+    border: none;
+    border-radius: 999px;
+    font-size: 16px;
+    cursor: pointer;
+    color: #0a0a0a;
+    transition: all 0.25s;
+    flex-shrink: 0;
+    font-weight: 800;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+    letter-spacing: -0.2px;
+    white-space: nowrap;
 }
 
+/* 북마크 된 상태 — BsBookmarkFill (fill="currentColor") */
+.study-detail-bookmark:has(svg[fill="currentColor"]) {
+    background: #2563eb;
+    color: #fff;
+    box-shadow: 0 4px 18px rgba(37, 99, 235, 0.45);
+}
+
+/* hover */
 .study-detail-bookmark:hover {
-    border-color: #2563eb;
-    color: #2563eb;
-    background: rgba(37, 99, 235, 0.05);
+    background: #2563eb;
+    color: #fff;
+    box-shadow: 0 4px 18px rgba(37, 99, 235, 0.4);
+    transform: translateY(-1px);
 }
 
+.study-detail-bookmark:has(svg[fill="currentColor"]):hover {
+    background: #1d4ed8;
+    box-shadow: 0 6px 22px rgba(37, 99, 235, 0.55);
+}
 /* =========================
    TITLE
 ========================= */
 
 .study-detail-title {
-    font-size: 32px;
+    font-size: 36px;
     font-weight: 900;
-    color: #0a0a0a;
+    color: #fff;
     letter-spacing: -1.5px;
     line-height: 1.15;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
+}
+
+/* 히어로 워터마크 */
+.study-detail-container {
+    position: relative;
+}
+
+.study-detail-container::before {
+    content: 'STUDY';
+    position: absolute;
+    right: 24px;
+    top: 90px;
+    font-size: 120px;
+    color: rgba(255, 255, 255, 0.025);
+    font-weight: 900;
+    letter-spacing: -6px;
+    pointer-events: none;
+    user-select: none;
+    line-height: 1;
 }
 
 /* =========================
-   HOST ROW
+   HOST ROW — 다크 배경 위
 ========================= */
 
 .study-detail-host-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 16px 0;
-    border-top: 1px solid #e5e5e5;
-    border-bottom: 1px solid #e5e5e5;
-    margin-bottom: 24px;
+    padding: 20px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    margin-bottom: 32px;
+}
+
+/* HostInfo 컴포넌트 — 다크 히어로 위 색상 오버라이드 */
+.study-detail-host-row .host-name {
+    color: #fff;
+}
+
+.study-detail-host-row .host-name:hover,
+.study-detail-host-row .host-box:hover .host-name {
+    color: #60a5fa;
+}
+
+.study-detail-host-row .tag {
+    color: #525252;
 }
 
 /* =========================
@@ -115,7 +189,21 @@
     padding: 28px 32px;
     margin-bottom: 16px;
     border: 1px solid #e5e5e5;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.05);
+    position: relative;
+    overflow: hidden;
+}
+
+/* 왼쪽 파란 세로 강조선 */
+.study-detail-section::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 20px;
+    bottom: 20px;
+    width: 3px;
+    background: #2563eb;
+    border-radius: 0 4px 4px 0;
 }
 
 .study-detail-section h4 {
@@ -143,7 +231,7 @@
 .study-detail-section p {
     font-size: 15px;
     color: #525252;
-    line-height: 1.8;
+    line-height: 1.85;
 }
 
 /* =========================
@@ -157,7 +245,7 @@
     margin-bottom: 24px;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 24px;
+    gap: 0;
     border-top: 2px solid #2563eb;
     position: relative;
     overflow: hidden;
@@ -183,10 +271,22 @@
     gap: 6px;
     position: relative;
     z-index: 1;
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* 우측 컬럼 구분선 */
+.study-detail-info-item:nth-child(odd) {
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* 마지막 행 구분선 제거 */
+.study-detail-info-item:nth-last-child(-n+2) {
+    border-bottom: none;
 }
 
 .info-label {
-    font-size: 11px;
+    font-size: 10px;
     color: #525252;
     font-weight: 700;
     text-transform: uppercase;
@@ -196,12 +296,35 @@
 .info-value {
     font-size: 15px;
     color: #fff;
-    font-weight: 600;
+    font-weight: 700;
+    letter-spacing: -0.2px;
 }
 
-.info-value.status.recruiting { color: #4ade80; }
-.info-value.status.completed  { color: #525252; }
-.info-value.status.paused     { color: #fbbf24; }
+.info-value.status.recruiting {
+    color: #4ade80;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.info-value.status.recruiting::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #4ade80;
+    box-shadow: 0 0 8px #4ade80;
+    flex-shrink: 0;
+    animation: pulse-green 2s infinite;
+}
+
+@keyframes pulse-green {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
+
+.info-value.status.completed { color: #525252; }
+.info-value.status.paused    { color: #fbbf24; }
 
 /* =========================
    ACTIONS
@@ -213,10 +336,15 @@
     align-items: center;
     flex-wrap: wrap;
     gap: 12px;
+    background: #fff;
+    border-radius: 16px;
+    padding: 20px 24px;
+    border: 1px solid #e5e5e5;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
 }
 
 .detail-back-btn {
-    background: #fff;
+    background: transparent;
     border: 1.5px solid #e5e5e5;
     border-radius: 10px;
     padding: 11px 22px;
@@ -238,29 +366,51 @@
     color: #fff;
     border: none;
     border-radius: 10px;
-    padding: 12px 32px;
+    padding: 12px 36px;
     font-size: 14px;
     font-weight: 800;
     cursor: pointer;
-    transition: opacity 0.2s;
+    transition: all 0.2s;
     letter-spacing: -0.2px;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
 }
 
 .detail-apply-btn:hover {
     opacity: 0.85;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.45);
 }
+
+/* =========================
+   STATUS BADGE
+========================= */
 
 .detail-status-text {
-    font-size: 13px;
-    font-weight: 700;
-    padding: 9px 18px;
+    font-size: 12px;
+    font-weight: 800;
+    padding: 8px 16px;
     border-radius: 999px;
-    letter-spacing: 0.2px;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
 }
 
-.detail-status-text.pending  { background: rgba(251, 191, 36, 0.12); color: #b45309; border: 1px solid rgba(251, 191, 36, 0.3); }
-.detail-status-text.accepted { background: rgba(74, 222, 128, 0.12); color: #166534; border: 1px solid rgba(74, 222, 128, 0.3); }
-.detail-status-text.rejected { background: rgba(232, 65, 24, 0.08);  color: #e84118; border: 1px solid rgba(232, 65, 24, 0.2);  }
+.detail-status-text.pending  {
+    background: rgba(251, 191, 36, 0.1);
+    color: #b45309;
+    border: 1px solid rgba(251, 191, 36, 0.3);
+}
+
+.detail-status-text.accepted {
+    background: rgba(74, 222, 128, 0.1);
+    color: #166534;
+    border: 1px solid rgba(74, 222, 128, 0.3);
+}
+
+.detail-status-text.rejected {
+    background: rgba(232, 65, 24, 0.07);
+    color: #e84118;
+    border: 1px solid rgba(232, 65, 24, 0.2);
+}
 
 /* =========================
    ACTION GROUP
@@ -274,7 +424,7 @@
 }
 
 .detail-cancel-btn {
-    background: #fff;
+    background: transparent;
     color: #a3a3a3;
     border: 1.5px solid #e5e5e5;
     border-radius: 10px;
@@ -283,6 +433,7 @@
     font-weight: 700;
     cursor: pointer;
     transition: all 0.2s;
+    letter-spacing: -0.2px;
 }
 
 .detail-cancel-btn:hover {
@@ -299,11 +450,14 @@
     font-size: 14px;
     font-weight: 800;
     cursor: pointer;
-    transition: opacity 0.2s;
+    transition: all 0.2s;
+    letter-spacing: -0.2px;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
 }
 
 .detail-chat-btn:hover {
     opacity: 0.85;
+    transform: translateY(-1px);
 }
 
 .detail-edit-btn {
@@ -316,6 +470,7 @@
     font-weight: 800;
     cursor: pointer;
     transition: opacity 0.2s;
+    letter-spacing: -0.2px;
 }
 
 .detail-edit-btn:hover {
@@ -323,7 +478,7 @@
 }
 
 .detail-delete-btn {
-    background: #fff;
+    background: transparent;
     color: #e84118;
     border: 1.5px solid rgba(232, 65, 24, 0.3);
     border-radius: 10px;
@@ -332,6 +487,7 @@
     font-weight: 800;
     cursor: pointer;
     transition: all 0.2s;
+    letter-spacing: -0.2px;
 }
 
 .detail-delete-btn:hover {
@@ -345,32 +501,54 @@
 ========================= */
 
 @media (max-width: 768px) {
+    .study-detail-page {
+        background: linear-gradient(to bottom, #0a0a0a 360px, #f5f5f0 360px);
+    }
+
     .study-detail-container {
-        padding: 0 20px;
+        padding: 0 16px;
+    }
+
+    .study-detail-container::before {
+        display: none;
+    }
+
+    .study-detail-header {
+        padding-top: 100px;
     }
 
     .study-detail-title {
-        font-size: 24px;
+        font-size: 26px;
         letter-spacing: -1px;
     }
 
     .study-detail-info-grid {
         grid-template-columns: 1fr;
-        padding: 24px;
-        gap: 20px;
+        padding: 0;
     }
 
-    .study-detail-info-grid::after {
-        display: none;
+    .study-detail-info-item {
+        border-right: none !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+    }
+
+    .study-detail-info-item:last-child {
+        border-bottom: none !important;
     }
 
     .study-detail-section {
         padding: 22px 20px;
     }
 
+    .study-detail-section::before {
+        top: 14px;
+        bottom: 14px;
+    }
+
     .study-detail-actions {
         flex-direction: column;
         align-items: stretch;
+        padding: 16px;
     }
 
     .detail-back-btn,

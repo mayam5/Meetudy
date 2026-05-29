@@ -1,17 +1,20 @@
+/* =========================
+   WHOLE PAGE
+========================= */
+
 .whole-page {
-    height: 100vh;
+    min-height: 100vh;
     width: 100%;
-    overflow: hidden;
-    background: white;
+    background: #f5f5f0;
 }
 
 .whole-layout {
     width: 100%;
     display: flex;
-    height: calc(100vh - 70px);
+    min-height: calc(100vh - 70px);
     padding-top: 70px;
     box-sizing: border-box;
-    background: white;
+    background: #f5f5f0;
 }
 
 /* =========================
@@ -19,44 +22,82 @@
 ========================= */
 
 .whole-sidebar {
-    width: 200px;
+    width: 210px;
     flex-shrink: 0;
-    padding: 16px;
-    background: #f3f3f3;
-    color: black;
+    padding: 20px 16px;
+    background: #0a0a0a;
+    color: #fff;
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+    position: sticky;
+    top: 70px;
+    height: calc(100vh - 70px);
     overflow-y: auto;
+
+    /* 상단 파란 강조선 */
+    border-top: 2px solid #2563eb;
 }
 
 .whole-sidebar h4 {
-    padding: 16px 0;
-    font-size: 15px;
-    font-weight: 900;
-    margin-bottom: 5px;
-    text-align: left;
-    color: black;
+    font-size: 11px;
+    font-weight: 800;
+    color: #525252;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    padding: 16px 4px 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.whole-sidebar h4::before {
+    content: '';
+    display: inline-block;
+    width: 16px;
+    height: 2px;
+    background: #2563eb;
+    border-radius: 999px;
+    flex-shrink: 0;
 }
 
 .whole-tab {
     width: 100%;
-    padding: 8px 10px;
+    padding: 9px 12px;
     border: none;
     background: transparent;
     text-align: left;
-    border-radius: 8px;
+    border-radius: 10px;
     font-size: 13px;
+    font-weight: 600;
     cursor: pointer;
-    color: black;
-    transition: background 0.15s ease;
+    color: #525252;
+    transition: all 0.2s;
+    letter-spacing: -0.2px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .whole-tab:hover {
-    background: #e8e8e8;
+    background: rgba(255, 255, 255, 0.06);
+    color: #a3a3a3;
 }
 
 .whole-tab.active {
-    background: white;
-    font-weight: 700;
-    color: black;
+    background: #2563eb;
+    color: #fff;
+    font-weight: 800;
+}
+
+/* 활성 탭 왼쪽 dot */
+.whole-tab.active::before {
+    content: '';
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #fff;
+    flex-shrink: 0;
 }
 
 /* =========================
@@ -65,38 +106,69 @@
 
 .whole-main {
     flex: 1;
-    padding: 32px 40px 20px;
-    overflow: hidden;
+    padding: 32px 40px 48px;
     display: flex;
     flex-direction: column;
-    background: white;
+    background: #f5f5f0;
     min-width: 0;
 }
+
+/* =========================
+   HEADER — 다크 카드 스타일
+========================= */
 
 .whole-main-header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
     gap: 16px;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
     flex-wrap: wrap;
+
+    background: #0a0a0a;
+    border-radius: 20px;
+    padding: 28px 32px;
+    border-top: 2px solid #2563eb;
+    position: relative;
+    overflow: hidden;
+}
+
+/* 워터마크 텍스트 */
+.whole-main-header::after {
+    content: 'LIST';
+    position: absolute;
+    right: -8px;
+    bottom: -12px;
+    font-size: 96px;
+    color: rgba(255, 255, 255, 0.03);
+    font-weight: 900;
+    letter-spacing: -4px;
+    pointer-events: none;
+    user-select: none;
+    line-height: 1;
 }
 
 .whole-main-header > div:first-child {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    position: relative;
+    z-index: 1;
 }
 
 .whole-main-header h2 {
-    font-size: 20px;
-    margin: 0 0 6px;
+    font-size: 22px;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: -1px;
+    margin: 0 0 4px;
 }
 
 .whole-main-header p {
     font-size: 13px;
-    color: #555;
+    color: #525252;
     margin: 0;
+    font-weight: 500;
 }
 
 /* =========================
@@ -107,17 +179,28 @@
     display: flex;
     gap: 10px;
     flex-shrink: 0;
+    position: relative;
+    z-index: 1;
 }
 
 .whole-filters .dropbox {
-    width: 100px;
+    width: 110px;
 }
 
 .whole-filters .dropbox-button {
-    padding: 7px 10px;
-    border-radius: 20px;
-    border: 2px solid #eee;
-    font-size: 12px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 1.5px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.06);
+    font-size: 13px;
+    font-weight: 600;
+    color: #a3a3a3;
+    transition: all 0.2s;
+}
+
+.whole-filters .dropbox-button:hover {
+    border-color: rgba(255, 255, 255, 0.25);
+    color: #fff;
 }
 
 /* =========================
@@ -126,41 +209,14 @@
 
 .whole-scroll-area {
     width: 100%;
-    flex: 1;
-    min-height: 0;
-    overflow-y: auto;
-    padding-right: 6px;
     display: flex;
     flex-direction: column;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid #e5e5e5;
+    background: #fff;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
 }
-
-.whole-scroll-area::-webkit-scrollbar {
-    width: 6px;
-}
-
-.whole-scroll-area::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.whole-scroll-area::-webkit-scrollbar-thumb {
-    background: #d0d0d0;
-    border-radius: 999px;
-}
-
-.whole-scroll-area::-webkit-scrollbar-thumb:hover {
-    background: #b5b5b5;
-}
-
-/*
-.whole-footer {
-    width: 100%;
-    height: 100px;
-    background: white;
-    border-top: 1px solid #eee;
-    padding: 20px 40px;
-    font-size: 12px;
-}
-*/
 
 /* =========================
    PAGINATION
@@ -169,8 +225,7 @@
 .whole-pagination {
     display: flex;
     justify-content: center;
-    margin-top: 10px;
-    padding-bottom: 1px;
+    margin-top: 24px;
 }
 
 .whole-pagination .pagination {
@@ -179,126 +234,173 @@
 
 .whole-pagination .page-link {
     border: none;
-    color: #222;
+    color: #525252;
     background: transparent;
     font-size: 13px;
-    border-radius: 8px;
-    padding: 6px 10px;
+    font-weight: 600;
+    border-radius: 10px;
+    padding: 7px 12px;
+    transition: all 0.2s;
 }
 
 .whole-pagination .page-link:hover {
-    background: #f3f3f3;
-    color: #222;
+    background: #fff;
+    color: #0a0a0a;
+    border: 1.5px solid #e5e5e5;
 }
 
 .whole-pagination .page-item.active .page-link {
-    background: #222;
-    color: white;
-    font-weight: 700;
+    background: #0a0a0a;
+    color: #fff;
+    font-weight: 800;
+    border: none;
 }
 
 .whole-pagination .page-item.disabled .page-link {
-    color: #bbb;
+    color: #e5e5e5;
     background: transparent;
 }
 
+/* =========================
+   검색 키워드
+========================= */
 
-/* 검색 키워드 표시 */
 .search-keyword {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     font-size: 12px;
-    color: #007bff;
-    margin-top: 4px;
+    font-weight: 700;
+    color: #60a5fa;
+    margin-top: 6px;
+    background: rgba(37, 99, 235, 0.15);
+    border: 1px solid rgba(96, 165, 250, 0.25);
+    padding: 3px 10px;
+    border-radius: 999px;
+    letter-spacing: -0.2px;
 }
 
-/* 로딩 / 에러 / 빈 상태 */
+/* =========================
+   상태 메시지
+========================= */
+
 .whole-status {
-    padding: 60px 0;
+    padding: 80px 0;
     text-align: center;
     font-size: 14px;
-    color: #aaa;
+    font-weight: 600;
+    color: #a3a3a3;
 }
 
 .whole-status.error {
     color: #e84118;
 }
 
+.retry-btn {
+    margin-top: 14px;
+    padding: 9px 24px;
+    background: #0a0a0a;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    letter-spacing: -0.2px;
+}
+
+.retry-btn:hover {
+    opacity: 0.75;
+}
+
 /* =========================
    반응형
 ========================= */
 
-/* 태블릿 */
 @media (max-width: 1024px) {
     .whole-sidebar {
-        width: 160px;
-        padding: 12px;
+        width: 170px;
+        padding: 16px 12px;
     }
 
     .whole-main {
-        padding: 24px 24px 16px;
+        padding: 24px 24px 40px;
     }
 
     .whole-filters .dropbox {
-        width: 90px;
+        width: 95px;
     }
 }
 
-/* 모바일 */
 @media (max-width: 768px) {
-    .whole-page {
-        height: auto;
-        overflow: visible;
-    }
-
     .whole-layout {
-        height: auto;
         flex-direction: column;
+        min-height: auto;
     }
 
-    /* 사이드바 → 가로 스크롤 탭 */
     .whole-sidebar {
         width: 100%;
-        padding: 12px 16px 8px;
         display: flex;
-        flex-direction: column;
-        gap: 0;
+        flex-direction: row;
+        align-items: center;
+        overflow-x: auto;
+        overflow-y: visible;
+        gap: 6px;
+        padding: 12px 16px;
+        white-space: nowrap;
+        border-right: none;
+        border-top: 2px solid #2563eb;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        position: sticky;
+        top: 70px;
+        height: auto;
+        z-index: 10;
     }
 
     .whole-sidebar h4 {
         display: none;
     }
 
-    .whole-sidebar {
-        flex-direction: row;
-        align-items: center;
-        overflow-x: auto;
-        gap: 6px;
-        padding: 10px 16px;
-        white-space: nowrap;
-    }
-
     .whole-tab {
         width: auto;
         flex-shrink: 0;
-        padding: 6px 14px;
-        font-size: 13px;
-        border-radius: 20px;
-        background: #ebebeb;
+        padding: 7px 16px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.06);
+        color: #a3a3a3;
     }
 
     .whole-tab.active {
-        background: #222;
-        color: white;
+        background: #2563eb;
+        color: #fff;
+        border-radius: 999px;
+    }
+
+    .whole-tab.active::before {
+        display: none;
     }
 
     .whole-main {
-        padding: 16px;
-        overflow: visible;
+        padding: 16px 16px 40px;
+    }
+
+    .whole-main-header {
+        padding: 20px 20px;
+        border-radius: 16px;
+    }
+
+    .whole-main-header::after {
+        display: none;
+    }
+
+    .whole-main-header h2 {
+        font-size: 18px;
     }
 
     .whole-main-header {
         flex-direction: column;
         align-items: flex-start;
-        gap: 10px;
     }
 
     .whole-filters {
@@ -310,11 +412,10 @@
     }
 
     .whole-scroll-area {
-        overflow-y: visible;
-        padding-right: 0;
+        border-radius: 12px;
     }
 
     .whole-pagination {
-        margin-top: 16px;
+        margin-top: 20px;
     }
 }

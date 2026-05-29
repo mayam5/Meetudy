@@ -99,7 +99,7 @@ function Home() {
                 <div className="hero-blue-line" />
                 <div className="hero-tag">
                     <span className="hero-tag-dot" />
-                    STUDY PLATFORM 2025
+                    STUDY PLATFORM
                 </div>
                 <h1 className="main-title">
                     공부는 혼자보다<br />

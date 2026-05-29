@@ -1,5 +1,5 @@
 /* =========================
-   CSS VARIABLES (홈/PostWrite 통일)
+   CSS VARIABLES
 ========================= */
 
 :root {
@@ -33,7 +33,19 @@
 }
 
 /* =========================
-   MYPAGE LAYOUT
+   로딩
+========================= */
+
+.mypage-loading {
+    text-align: center;
+    margin-top: 200px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+/* =========================
+   LAYOUT
 ========================= */
 
 .mypage {
@@ -44,10 +56,6 @@
     background: var(--bg-base);
     box-sizing: border-box;
 }
-
-/* =========================
-   LEFT / RIGHT SECTION
-========================= */
 
 .mypage .left-section {
     width: 280px;
@@ -72,7 +80,7 @@
 }
 
 /* =========================
-   CARD (COMMON)
+   CARD (공통)
 ========================= */
 
 .mypage .card {
@@ -112,29 +120,50 @@
 }
 
 /* =========================
-   PROFILE CARD
+   PROFILE CARD — 다크 히어로
 ========================= */
 
 .mypage .profile-card {
+    background: var(--bg-dark);
+    border-top-color: var(--blue);
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+/* 워터마크 */
+.mypage .profile-card::after {
+    content: 'ME';
+    position: absolute;
+    right: -6px;
+    bottom: -10px;
+    font-size: 88px;
+    color: rgba(255, 255, 255, 0.03);
+    font-weight: 900;
+    letter-spacing: -4px;
+    pointer-events: none;
+    user-select: none;
+    line-height: 1;
 }
 
 .mypage .nickname {
     font-size: 22px;
     font-weight: 900;
-    color: var(--text-primary);
+    color: var(--text-white);
     letter-spacing: -1px;
     margin: 0 0 16px;
+    position: relative;
+    z-index: 1;
 }
 
 .mypage .profile-image {
     width: 88px;
     height: 88px;
     border-radius: 50%;
-    background: var(--bg-dark);
+    background: #1a1a1a;
     margin-bottom: 20px;
     overflow: hidden;
     display: flex;
@@ -142,8 +171,9 @@
     align-items: center;
     justify-content: center;
     position: relative;
+    z-index: 1;
     border: 2.5px solid var(--blue);
-    box-shadow: 0 0 0 4px var(--blue-soft);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2), 0 0 20px rgba(37, 99, 235, 0.15);
     flex-shrink: 0;
 }
 
@@ -157,6 +187,27 @@
     margin-top: 8px;
     font-size: 11px;
     padding: 5px 12px;
+    position: relative;
+    z-index: 1;
+}
+
+/* info-box — 다크 카드 위 */
+.mypage .profile-card .info-box {
+    width: 100%;
+    position: relative;
+    z-index: 1;
+}
+
+.mypage .profile-card .info-row {
+    border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+.mypage .profile-card .label {
+    color: var(--text-subtle);
+}
+
+.mypage .profile-card .value {
+    color: var(--text-white);
 }
 
 /* =========================
@@ -206,26 +257,28 @@
     justify-content: center;
     color: var(--text-subtle);
     font-size: 13px;
-    line-height: 1.8;
-    padding: 28px 20px;
+    line-height: 1.85;
+    padding: 32px 24px;
     text-align: center;
-    border-top-color: var(--bg-dark); /* bio 카드는 다크 포인트 */
+    border-top-color: var(--bg-dark);
+    font-style: italic;
 }
 
 .mypage .quote {
     position: absolute;
-    font-size: 36px;
+    font-size: 52px;
     color: var(--border);
     left: 14px;
-    top: 6px;
+    top: 2px;
     font-family: Georgia, serif;
     line-height: 1;
+    font-style: normal;
 }
 
 .mypage .quote.right {
     right: 14px;
     left: auto;
-    bottom: 6px;
+    bottom: 2px;
     top: auto;
 }
 
@@ -420,14 +473,14 @@
 }
 
 .mypage .schedule-cell {
-    padding: 7px 2px;
+    padding: 8px 2px;
     border-radius: 8px;
     cursor: default;
     transition: all var(--transition);
     color: var(--text-muted);
     background: var(--bg-muted);
     border: 1.5px solid transparent;
-    font-weight: 500;
+    font-weight: 600;
     user-select: none;
     font-size: 10px;
 }
@@ -437,6 +490,7 @@
     color: var(--text-white);
     font-weight: 700;
     border-color: var(--blue);
+    box-shadow: 0 0 8px rgba(37, 99, 235, 0.2);
 }
 
 .mypage .schedule-card.editing .schedule-cell {
@@ -455,6 +509,7 @@
     color: var(--text-white);
     border-color: var(--blue);
     border-style: solid;
+    box-shadow: 0 2px 10px rgba(37, 99, 235, 0.35);
 }
 
 /* =========================
@@ -477,7 +532,7 @@
 
 .mypage .meeting-tabs {
     display: flex;
-    gap: 6px;
+    gap: 5px;
     flex-wrap: nowrap;
     overflow-x: auto;
     scrollbar-width: none;
@@ -545,30 +600,63 @@
     text-align: center;
     color: var(--text-muted);
     font-size: 13px;
+    font-weight: 600;
 }
 
 /* =========================
-   STUDY LOG
+   STUDY LOG — 다크 카드
 ========================= */
+
+.mypage .study-card {
+    background: var(--bg-dark);
+    border-top-color: var(--blue);
+    position: relative;
+    overflow: hidden;
+}
+
+.mypage .study-card h3 {
+    color: var(--text-white);
+}
+
+.mypage .study-card h3::before {
+    background: var(--blue);
+}
 
 .mypage .sub-text {
     font-size: 11px;
-    color: var(--text-muted);
+    color: var(--text-subtle);
     margin-top: 2px;
     font-weight: 500;
+}
+
+/* 워터마크 */
+.mypage .study-card::after {
+    content: 'LOG';
+    position: absolute;
+    right: -4px;
+    bottom: -8px;
+    font-size: 72px;
+    color: rgba(255, 255, 255, 0.03);
+    font-weight: 900;
+    letter-spacing: -3px;
+    pointer-events: none;
+    user-select: none;
+    line-height: 1;
 }
 
 .mypage .time-text {
     font-size: 52px;
     font-weight: 900;
-    color: var(--text-primary);
+    color: var(--text-white);
     line-height: 1;
     margin-top: 14px;
     letter-spacing: -3px;
+    position: relative;
+    z-index: 1;
 }
 
 .mypage .time-text span {
-    color: var(--blue);
+    color: var(--blue-light);
 }
 
 /* =========================
@@ -593,7 +681,7 @@
     font-size: 11px;
     font-weight: 700;
     border-radius: var(--radius-pill);
-    background: var(--bg-muted);
+    background: transparent;
     color: var(--text-subtle);
     border: 1.5px solid var(--border);
     cursor: pointer;
@@ -650,6 +738,19 @@
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
 }
 
+/* 다크 카드 안 인풋 — 프로필 편집 모드 */
+.mypage .profile-card .edit-input {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(255, 255, 255, 0.12);
+    color: var(--text-white);
+}
+
+.mypage .profile-card .edit-input:focus {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
 .mypage .nickname-input {
     text-align: center;
     font-size: 20px;
@@ -688,6 +789,18 @@
     white-space: nowrap;
 }
 
+/* 다크 카드 위 select */
+.mypage .profile-card select {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(255, 255, 255, 0.12);
+    color: var(--text-white);
+}
+
+.mypage .profile-card select option {
+    background: var(--bg-dark);
+    color: var(--text-white);
+}
+
 /* =========================
    BOOKMARK
 ========================= */
@@ -706,6 +819,7 @@
     gap: 2px;
     max-height: 280px;
     overflow-y: auto;
+    scrollbar-gutter: stable;
 }
 
 .mypage .bookmark-list::-webkit-scrollbar {
@@ -749,7 +863,7 @@
     background: var(--blue-soft);
 }
 
-.mypage .bookmark-icon svg[fill] {
+.mypage .bookmark-icon:has(svg[fill="currentColor"]) {
     color: var(--blue);
 }
 

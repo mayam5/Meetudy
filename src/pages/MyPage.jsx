@@ -16,10 +16,11 @@ import {
 } from "../api/user";
 import {
   fetchJoinedStudies,
-  fetchPendingStudies,
   fetchAppliedStudies,
   fetchMyStudies,
 } from "../api/study";
+
+const API_BASE = "/api";
 
 const REGION_DATA = {
   "서울특별시": {
@@ -60,15 +61,12 @@ const REGION_DATA = {
   },
 };
 
-const CATEGORY_OPTIONS = ['분야1', '분야2', '분야3', '분야4', '분야5'];
 const DAYS = ['월', '화', '수', '목', '금', '토', '일'];
 const TIMES = ['새벽', '오전', '오후', '저녁'];
-const MEETING_TABS = ['참여 중인 모임', '참여 승인 대기', '신청한 모임', '작성한 모임'];
+const MEETING_TABS = ['참여 중인 모임', '신청한 모임', '작성한 모임'];
 
-// 탭별 API 매핑
 const MEETING_TAB_FETCHER = {
   "참여 중인 모임": fetchJoinedStudies,
-  "참여 승인 대기": fetchPendingStudies,
   "신청한 모임": fetchAppliedStudies,
   "작성한 모임": fetchMyStudies,
 };
@@ -93,21 +91,24 @@ function MyPage() {
     gender: "F", bio: "", categories: [], agePublic: false,
   });
 
+  const [categoryOptions, setCategoryOptions] = useState([]);
   const [bookmarkData, setBookmarkData] = useState([]);
   const [bookmarkedIds, setBookmarkedIds] = useState([]);
   const [blockedUsers, setBlockedUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // 프로필/북마크/차단 초기 로드
+  // 프로필 / 북마크 / 차단 / 카테고리 초기 로드
   useEffect(() => {
     const load = async () => {
       setLoading(true);
       try {
-        const [profile, bookmarks, blocked] = await Promise.all([
+        const [profile, bookmarks, blocked, categoryRes] = await Promise.all([
           fetchMyProfile(),
           fetchBookmarks(),
           fetchBlockedUsers(),
+          fetch(`${API_BASE}/categories`).then((r) => r.json()),
         ]);
+
         setUserInfo({
           email: profile.email ?? "",
           nickname: profile.nickname ?? "",
@@ -117,9 +118,11 @@ function MyPage() {
           categories: profile.categories ?? [],
           agePublic: profile.agePublic ?? false,
         });
+
         setBookmarkData(bookmarks);
         setBookmarkedIds(bookmarks.map((b) => b.id));
         setBlockedUsers(blocked);
+        setCategoryOptions((categoryRes.data ?? []).map((c) => c.categoryName));
       } catch (e) {
         console.error("마이페이지 데이터 로드 실패:", e);
       } finally {
@@ -136,7 +139,7 @@ function MyPage() {
       try {
         const fetcher = MEETING_TAB_FETCHER[activeMeetingTab];
         const result = await fetcher({ page: 1, limit: 20 });
-        setMeetingStudies(result.data);
+        setMeetingStudies(result.data ?? []);
       } catch (e) {
         console.error("모임 데이터 로드 실패:", e);
       } finally {
@@ -212,10 +215,8 @@ function MyPage() {
   const handleToggleBlock = async (userId, currentBlocked) => {
     try {
       await toggleBlockUser(userId, !currentBlocked);
-      setBlockedUsers(
-        blockedUsers.map((u) =>
-          u.id === userId ? { ...u, blocked: !u.blocked } : u
-        )
+      setBlockedUsers((prev) =>
+        prev.map((u) => u.id === userId ? { ...u, blocked: !u.blocked } : u)
       );
     } catch (e) {
       console.error("차단 토글 실패:", e);
@@ -223,19 +224,16 @@ function MyPage() {
   };
 
   if (loading) {
-    return (
-      <div style={{ textAlign: "center", marginTop: "200px", color: "#888" }}>
-        불러오는 중...
-      </div>
-    );
+    return <div className="mypage-loading">불러오는 중...</div>;
   }
 
   return (
     <div className={isEdit ? "mypage editing" : "mypage"}>
 
-      {/* 왼쪽 */}
+      {/* ===== 왼쪽 ===== */}
       <div className="left-section">
 
+        {/* 프로필 카드 */}
         <div className="card profile-card">
           {isEdit ? (
             <input
@@ -248,21 +246,25 @@ function MyPage() {
           )}
 
           <div className="profile-image">
-            {profileImage && <img src={profileImage} alt="profile" />}
-            {isEdit && (
-              <label className="small-btn profile-upload-btn">
-                사진 변경
-                <input
-                  type="file" accept="image/*" hidden
-                  onChange={(e) => {
-                    const file = e.target.files[0];
-                    if (!file) return;
-                    setProfileImage(URL.createObjectURL(file));
-                  }}
-                />
-              </label>
-            )}
+            {profileImage
+              ? <img src={profileImage} alt="profile" />
+              : <span className="profile-placeholder">{userInfo.nickname?.[0] ?? "?"}</span>
+            }
           </div>
+
+          {isEdit && (
+            <label className="small-btn profile-upload-btn">
+              사진 변경
+              <input
+                type="file" accept="image/*" hidden
+                onChange={(e) => {
+                  const file = e.target.files[0];
+                  if (!file) return;
+                  setProfileImage(URL.createObjectURL(file));
+                }}
+              />
+            </label>
+          )}
 
           <div className="info-box">
             <div className="info-row">
@@ -270,13 +272,15 @@ function MyPage() {
               {isEdit ? (
                 <div className="inline-edit">
                   <input
-                    type="date" className="edit-input small"
+                    type="date"
+                    className="edit-input small"
                     value={userInfo.birth}
                     onChange={(e) => setUserInfo({ ...userInfo, birth: e.target.value })}
                   />
                   <label className="toggle-label">
                     <input
-                      type="checkbox" checked={userInfo.agePublic}
+                      type="checkbox"
+                      checked={userInfo.agePublic}
                       onChange={(e) => setUserInfo({ ...userInfo, agePublic: e.target.checked })}
                     />
                     공개
@@ -293,7 +297,8 @@ function MyPage() {
               <span className="label">GENDER</span>
               {isEdit ? (
                 <select
-                  className="edit-input" value={userInfo.gender}
+                  className="edit-input"
+                  value={userInfo.gender}
                   onChange={(e) => setUserInfo({ ...userInfo, gender: e.target.value })}
                 >
                   <option value="F">F</option>
@@ -309,7 +314,8 @@ function MyPage() {
               {isEdit ? (
                 <div className="region-select-group">
                   <select
-                    className="edit-input" value={region.sido}
+                    className="edit-input"
+                    value={region.sido}
                     onChange={(e) => setRegion({ sido: e.target.value, sigungu: "", dong: "" })}
                   >
                     <option value="">시/도</option>
@@ -318,7 +324,8 @@ function MyPage() {
                     ))}
                   </select>
                   <select
-                    className="edit-input" value={region.sigungu}
+                    className="edit-input"
+                    value={region.sigungu}
                     onChange={(e) => setRegion({ ...region, sigungu: e.target.value, dong: "" })}
                     disabled={!region.sido}
                   >
@@ -328,7 +335,8 @@ function MyPage() {
                     ))}
                   </select>
                   <select
-                    className="edit-input" value={region.dong}
+                    className="edit-input"
+                    value={region.dong}
                     onChange={(e) => setRegion({ ...region, dong: e.target.value })}
                     disabled={!region.sigungu}
                   >
@@ -350,23 +358,27 @@ function MyPage() {
           </div>
         </div>
 
+        {/* 한 줄 소개 */}
         <div className="card bio-card">
           <div className="quote">"</div>
           {isEdit ? (
             <textarea
-              className="bio-textarea" value={userInfo.bio}
+              className="bio-textarea"
+              value={userInfo.bio}
               onChange={(e) => setUserInfo({ ...userInfo, bio: e.target.value })}
+              placeholder="한 줄 소개를 입력하세요"
             />
           ) : (
-            <p>{userInfo.bio}</p>
+            <p>{userInfo.bio || "소개가 없습니다."}</p>
           )}
           <div className="quote right">"</div>
         </div>
 
+        {/* 카테고리 */}
         <div className="card category-card">
           <h3>Category</h3>
           <div className="tag-wrapper">
-            {CATEGORY_OPTIONS.map((item) => (
+            {categoryOptions.map((item) => (
               <div
                 key={item}
                 className={userInfo.categories.includes(item) ? 'tag active-tag' : 'tag'}
@@ -382,17 +394,18 @@ function MyPage() {
           className="edit-btn"
           onClick={() => isEdit ? handleSave() : setIsEdit(true)}
         >
-          {isEdit ? '저장' : '내 정보 수정'}
+          {isEdit ? '저장하기' : '내 정보 수정'}
         </button>
       </div>
 
-      {/* 오른쪽 */}
+      {/* ===== 오른쪽 ===== */}
       <div className="right-section">
 
+        {/* 계정 보안 — 편집 모드에서만 표시 */}
         {isEdit && (
           <div className="card password-card">
             <h3>계정 보안</h3>
-            <input className="edit-input" value={userInfo.email} readOnly />
+            <input className="edit-input" value={userInfo.email} readOnly placeholder="이메일" />
             <input
               type="password" placeholder="현재 비밀번호"
               value={password.current} className="edit-input"
@@ -412,7 +425,10 @@ function MyPage() {
           </div>
         )}
 
+        {/* 스케줄 + 북마크 */}
         <div className="top-row">
+
+          {/* 스케줄 */}
           <div className={scheduleEdit ? 'card schedule-card editing' : 'card schedule-card'}>
             <div className="card-header">
               <h3>Schedule</h3>
@@ -420,7 +436,6 @@ function MyPage() {
                 className={scheduleEdit ? 'small-btn active-edit-btn' : 'small-btn'}
                 onClick={async () => {
                   if (scheduleEdit) {
-                    // 저장 시 API 호출
                     try {
                       await updateSchedule(activeSchedule);
                     } catch (e) {
@@ -455,36 +470,41 @@ function MyPage() {
             </div>
           </div>
 
+          {/* 북마크 */}
           <div className="card bookmark-card">
             <h3>Bookmark</h3>
             <div className="bookmark-list">
-              {bookmarkData.map((item) => (
-                <div className="bookmark-item" key={item.id}>
-                  <div
-                    className="bookmark-icon"
-                    onClick={() => handleToggleBookmark(item.id)}
-                  >
-                    {bookmarkedIds.includes(item.id) ? <BsBookmarkFill /> : <BsBookmark />}
+              {bookmarkData.length === 0 ? (
+                <div className="meeting-empty">북마크한 모임이 없어요</div>
+              ) : (
+                bookmarkData.map((item) => (
+                  <div className="bookmark-item" key={item.id}>
+                    <div
+                      className="bookmark-icon"
+                      onClick={() => handleToggleBookmark(item.id)}
+                    >
+                      {bookmarkedIds.includes(item.id)
+                        ? <BsBookmarkFill />
+                        : <BsBookmark />}
+                    </div>
+                    <div className="bookmark-content">
+                      <StudyListItem
+                        id={item.id}
+                        title={item.title}
+                        host={item.host}
+                        field={item.field}
+                        users={item.users ?? []}
+                      />
+                    </div>
                   </div>
-                  <div className="bookmark-content">
-                    <StudyListItem
-                      id={item.id}
-                      title={item.title}
-                      host={item.host}
-                      field={item.field}
-                      users={["A", "B"]}
-                    />
-                  </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </div>
         </div>
 
         {/* 모임 관리 */}
         <div className="card meeting-card">
-
-          {/* 제목 + 탭 가로 배치 */}
           <div className="meeting-card-header">
             <h3>모임 관리</h3>
             <div className="meeting-tabs">
@@ -500,7 +520,6 @@ function MyPage() {
             </div>
           </div>
 
-          {/* 목록 */}
           <div className="meeting-list">
             {meetingLoading ? (
               <div className="meeting-loading">불러오는 중...</div>
@@ -514,15 +533,17 @@ function MyPage() {
                   title={study.title}
                   host={study.host}
                   field={study.field}
-                  users={study.users}
+                  users={study.users ?? []}
                 />
               ))
             )}
           </div>
-
         </div>
 
+        {/* Study Log + 사용자 관리 */}
         <div className="bottom-row">
+
+          {/* Study Log */}
           <div className="card study-card">
             <div className="card-header">
               <div>
@@ -536,24 +557,30 @@ function MyPage() {
             <div className="time-text">13H<br />06M</div>
           </div>
 
+          {/* 사용자 관리 */}
           <div className="card user-card">
             <h3>사용자 관리</h3>
-            {blockedUsers.map((user) => (
-              <div className="user-item" key={user.id}>
-                <HostInfo host={user.host} field={user.field} />
-                <button
-                  className={user.blocked
-                    ? "small-btn user-action-btn blocked"
-                    : "small-btn user-action-btn"
-                  }
-                  onClick={() => handleToggleBlock(user.id, user.blocked)}
-                >
-                  {user.blocked ? "차단 해제" : "차단하기"}
-                </button>
-              </div>
-            ))}
+            {blockedUsers.length === 0 ? (
+              <div className="meeting-empty">차단한 사용자가 없어요</div>
+            ) : (
+              blockedUsers.map((user) => (
+                <div className="user-item" key={user.id}>
+                  <HostInfo host={user.host} field={user.field} />
+                  <button
+                    className={user.blocked
+                      ? "small-btn user-action-btn blocked"
+                      : "small-btn user-action-btn"
+                    }
+                    onClick={() => handleToggleBlock(user.id, user.blocked)}
+                  >
+                    {user.blocked ? "차단 해제" : "차단하기"}
+                  </button>
+                </div>
+              ))
+            )}
           </div>
         </div>
+
       </div>
     </div>
   );

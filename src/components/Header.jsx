@@ -12,11 +12,9 @@ import NotificationList from "../components/NotificationList";
 
 import { FiSearch, FiBell, FiUser, FiX } from "react-icons/fi";
 
-<<<<<<< HEAD
+
 import { useEffect, useState } from "react";
-=======
-import { useState, useEffect } from "react";
->>>>>>> origin/frontendBin
+
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import Login from "../components/Login";
@@ -28,7 +26,7 @@ function Header() {
     const [isListOpen, setIsListOpen] = useState(false);
     const [isNotiOpen, setIsNotiOpen] = useState(false);
     const [activeRoom, setActiveRoom] = useState(null);
-<<<<<<< HEAD
+
 
     // 채팅방 선택 시 실행
     const handleSelectRoom = (room) => {
@@ -52,14 +50,14 @@ function Header() {
         setIsListOpen(false);
         setActiveRoom(null);
     };
-=======
+/*
     const [searchValue, setSearchValue] = useState("");
     const [searchError, setSearchError] = useState(false);
     const [selectedRegion, setSelectedRegion] = useState("지역");
     const [selectedField, setSelectedField] = useState("분야");
     const [navExpanded, setNavExpanded] = useState(false);
     const [notifications, setNotifications] = useState([]);
->>>>>>> origin/frontendBin
+*/
 
     const navigate = useNavigate();
     const unreadCount = notifications.filter((n) => !n.read).length;

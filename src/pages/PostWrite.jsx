@@ -58,18 +58,6 @@ const CATEGORY_OPTIONS = [
 ];
 
 
-/*
-
-// TODO [백엔드]: 실제 장소 검색 API로 교체 필요
-// 현재는 더미 데이터 사용 중 (id, placeName, address 필드 구조 유지해주세요)
->>>>>>> 46aa906cc0afd7b2d960f027b01d003c83745bce
-const DUMMY_PLACES = [
-    { id: 1, placeName: "투썸플레이스 강남역점",  address: "서울 강남구 강남대로 438" },
-    { id: 2, placeName: "투썸플레이스 강남대로점", address: "서울 강남구 강남대로 422" },
-    { id: 3, placeName: "스타벅스 강남역점",       address: "서울 강남구 테헤란로 101" },
-];
-*/
-
 function PostWrite({ isEditMode = false }) {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -145,6 +133,7 @@ function PostWrite({ isEditMode = false }) {
             console.error("장소 검색 실패", error);
         }
     };
+
 /*
     const handleSelectPlace = async (place) => {
   
@@ -238,17 +227,6 @@ const handleSelectPlace = async (place) => {
 
     const removeTag = (tagToRemove) =>
         setHashtags(hashtags.filter((tag) => tag !== tagToRemove));
-
-    /*
-    const handleAddMeetingTime = () => {
-        if (day === "" || meetingTimes.length >= 3) return;
-        const dayLabel  = DAY_OPTIONS.find((o) => o.value === day)?.label;
-        const timeLabel = TIME_OPTIONS.find((o) => o.value === time)?.label;
-        const text = (!time || time === "notDecided") ? dayLabel : `${dayLabel} ${timeLabel}`;
-        if (!meetingTimes.includes(text)) setMeetingTimes([...meetingTimes, text]);
-        setDay(""); setTime("");
-    };
-    */
 
     const handleAddMeetingTime = () => {
         if (!day || !time) return;
@@ -560,7 +538,7 @@ const handleSelectPlace = async (place) => {
                             <div className="form-section-icon">🕐</div>
                             <h4>6. 모임 시간</h4>
                         </div>
-                        <p>요일과 시간대를 선택해 추가하세요 (최대 3개)</p>
+                        <p>필수 입력 사항입니다. 요일과 시간대를 선택해 추가하세요 (최대 1개)</p>
                         <div className="dropdown-row">
                             <Dropbox placeholder="요일 선택"   value={day}  onChange={setDay}  options={DAY_OPTIONS}  />
                             <Dropbox placeholder="시간대 선택" value={time} onChange={setTime} options={TIME_OPTIONS} />
@@ -628,14 +606,10 @@ const handleSelectPlace = async (place) => {
                                             key={place.kakaoPlaceId ?? place.id}
                                             onClick={() => handleSelectPlace(place)}
                                                 style={{
-    
-        color: "black"
-       
-    }}
-                                        >
-<strong>{place.name}</strong>
-<p>{place.roadAddress || place.address}</p>
-                                      
+                                                color: "black"
+                                            }}>                                     
+                                        <strong>{place.name}</strong>
+                                        <p>{place.roadAddress || place.address}</p>
                                         </div>
                                     ))}
                                 </div>

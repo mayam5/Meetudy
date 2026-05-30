@@ -10,42 +10,111 @@ const mapPost = (p) => ({
     id: p.postId,
     title: p.postTitle,
     host: p.nickname ?? "",
+    hostId: p.userId,
     field: p.categoryName ?? "",
+    categoryId: p.categoryId,
     description: p.postContent ?? "",
     maxMembers: p.maxMembers ?? 0,
     currentMembers: p.currentMembers ?? 0,
     place: p.placeName ?? "",
+    dayOfWeek: p.dayOfWeek ?? "",
+    timeSlotId: p.timeSlotId,
+    timeSlotName: p.timeSlotName ?? "",
     status: p.postStatus ?? "OPEN",
     users: [],
     tags: p.categoryName ? [p.categoryName] : [],
+    isBookmarked: Boolean(p.bookmarked ?? p.isBookmarked),
 });
 
-/** POST-15: 전체 게시글 목록 GET /posts */
-export const fetchAllStudies = async ({ search, field, page = 1, limit = 10, signal } = {}) => {
-    const params = new URLSearchParams();
-    if (search) params.set("keyword", search);
-
-    const res = await fetch(`${BASE_URL}/posts?${params}`, {
-        headers: authHeader(),
-        signal,
-    });
-    const json = await res.json();
-    if (!res.ok || !json.success) throw new Error(json.message);
-
-    let mapped = (json.data ?? []).map(mapPost);
-    if (field) mapped = mapped.filter((p) => p.field === field);
-
-    const start = (page - 1) * limit;
-    return { data: mapped.slice(start, start + limit), total: mapped.length };
+const paginate = (items, page = 1, limit = 10) => {
+  const start = (page - 1) * limit;
+  return {
+    data: items.slice(start, start + limit),
+    total: items.length,
+  };
 };
+
+
+/** POST-15: 전체 게시글 목록 GET /posts */
+export const fetchAllStudies = async ({
+  search,
+  field,
+  region,
+  page = 1,
+  limit = 10,
+  signal,
+} = {}) => {
+  const params = new URLSearchParams();
+  if (search) params.set("keyword", search);
+
+  const res = await fetch(`${BASE_URL}/posts?${params}`, {
+    headers: authHeader(),
+    signal,
+  });
+
+  const json = await res.json();
+  if (!res.ok || !json.success) throw new Error(json.message);
+
+  let mapped = (json.data ?? []).map(mapPost);
+
+  if (field) mapped = mapped.filter((p) => p.field === field);
+  if (region) mapped = mapped.filter((p) => p.region === region);
+
+  const start = (page - 1) * limit;
+
+  return {
+    data: mapped.slice(start, start + limit),
+    total: mapped.length,
+  };
+};
+
 
 /** POST-17: 내 게시글 목록 GET /posts/me */
-export const fetchMyStudies = async () => {
-    const res = await fetch(`${BASE_URL}/posts/me`, { headers: authHeader() });
-    const json = await res.json();
-    if (!res.ok || !json.success) throw new Error(json.message);
-    return { data: (json.data ?? []).map(mapPost) };
+export const fetchMyStudies = async ({
+  search,
+  field,
+  region,
+  page = 1,
+  limit = 10,
+  signal,
+} = {}) => {
+  const res = await fetch(`${BASE_URL}/posts/me`, {
+    headers: authHeader(),
+    signal,
+  });
+
+  const json = await res.json();
+  console.log("posts/me 응답:", json);
+
+  if (!res.ok || !json.success) {
+    throw new Error(json.message || "내 게시글 목록 조회 실패");
+  }
+
+  let mapped = (json.data ?? []).map(mapPost);
+
+
+  if (search) {
+    mapped = mapped.filter((p) =>
+      p.title?.toLowerCase().includes(search.toLowerCase())
+    );
+  }
+
+  if (field) {
+    mapped = mapped.filter((p) => p.field === field);
+  }
+
+  if (region) {
+    mapped = mapped.filter((p) => p.region === region);
+  }
+
+  const start = (page - 1) * limit;
+
+  return {
+    data: mapped.slice(start, start + limit),
+    total: mapped.length,
+  };
 };
+
 
 /** 참여 중인 스터디 그룹 GET /study-groups/me */
 // StudyGroupResponse 필드: studyGroupId, postId, groupName, createdAt
@@ -165,6 +234,54 @@ export const cancelApplication = async (postId) => {
     const json = await res.json();
     if (!res.ok || !json.success) throw new Error(json.message);
     return json.data;
+};
+
+/** 신청자 목록 조회 */
+export const fetchPostApplications = async (postId, signal) => {
+  const res = await fetch(`${BASE_URL}/posts/${postId}/applications`, {
+    headers: authHeader(),
+    signal,
+  });
+
+  const json = await res.json();
+
+  if (!res.ok || !json.success) {
+    throw new Error(json.message || "신청자 목록 조회 실패");
+  }
+
+  return json.data ?? [];
+};
+
+/** 신청자 수락 */
+export const acceptApplication = async (applicationId) => {
+  const res = await fetch(`${BASE_URL}/applications/${applicationId}/accept`, {
+    method: "PATCH",
+    headers: authHeader(),
+  });
+
+  const json = await res.json();
+
+  if (!res.ok || !json.success) {
+    throw new Error(json.message || "신청 수락 실패");
+  }
+
+  return json.data;
+};
+
+/** 신청자 거절 */
+export const rejectApplication = async (applicationId) => {
+  const res = await fetch(`${BASE_URL}/applications/${applicationId}/reject`, {
+    method: "PATCH",
+    headers: authHeader(),
+  });
+
+  const json = await res.json();
+
+  if (!res.ok || !json.success) {
+    throw new Error(json.message || "신청 거절 실패");
+  }
+
+  return json.data;
 };
 
 /** 내 스터디 관계 조회: owned | pending | accepted | rejected | joined | none */

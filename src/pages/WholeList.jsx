@@ -53,6 +53,8 @@ import {
   fetchBookmarkedStudies,
   deleteStudy,
   cancelApplication,
+acceptApplication,
+rejectApplication,
 } from "../api/study";
 
 const TABS = [
@@ -73,7 +75,7 @@ const TAB_DESCRIPTIONS = {
 
 const getItemType = (tab) => {
   const map = {
-    "내가 작성한 모임": "written",
+    "내가 작성한 모임": "n",
     "전체 모임": "all",
     "참여 중인 모임": "joined",
     "신청한 모임": "applied",
@@ -135,8 +137,17 @@ function WholeList() {
     setLoading(true);
     setError(null);
 
+
     try {
+
+console.log("activeTab:", activeTab);
+
+
+
+
+
       const fetcher = getTabFetcher(activeTab);
+console.log("선택된 fetcher:", fetcher.name);
       const result = await fetcher({
         search: searchValue,
         region,
@@ -145,8 +156,13 @@ function WholeList() {
         limit: STUDIES_PER_PAGE,
         signal: controller.signal,
       });
-      setStudies(result.data);
-      setTotalCount(result.total);
+ console.log("목록 결과:", result);
+
+const nextData = result.data ?? [];
+setStudies(nextData);
+setTotalCount(result.total ?? nextData.length);
+
+
     } catch (e) {
       if (e.name === "AbortError") return; // 취소된 요청은 무시
       setError("데이터를 불러오는 데 실패했습니다.");
@@ -219,6 +235,24 @@ function WholeList() {
       console.error("취소 실패:", e);
     }
   };
+
+const handleAccept = async (applicationId) => {
+  try {
+    await acceptApplication(applicationId);
+    loadStudies();
+  } catch (e) {
+    console.error("수락 실패:", e);
+  }
+};
+
+const handleReject = async (applicationId) => {
+  try {
+    await rejectApplication(applicationId);
+    loadStudies();
+  } catch (e) {
+    console.error("거절 실패:", e);
+  }
+};
 
   return (
     <div className="whole-page">
@@ -304,6 +338,9 @@ function WholeList() {
                   onDelete={() => handleDelete(study.id)}
                   onCancel={() => handleCancel(study.id)}
                   onLeave={() => handleCancel(study.id)}
+                    onAccept={handleAccept}
+  onReject={handleReject}
+
                 />
               ))}
           </div>

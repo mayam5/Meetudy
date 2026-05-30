@@ -58,9 +58,6 @@ function Login({ onClose, onLoginSuccess }) {
     const { login } = useAuth();
 
 
-    const [categoryOptions, setCategoryOptions] = useState([]);
-    const [regionOptions, setRegionOptions] = useState([]);
-    const [region, setRegion] = useState("");
 
 
     const handleClose = () => {

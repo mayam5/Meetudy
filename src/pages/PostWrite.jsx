@@ -583,22 +583,11 @@ const handleSelectPlace = async (place) => {
 
                         {errors.meetingTimes && (
                             <p className="field-error">{errors.meetingTimes}</p>
-/*
-                        {meetingTimes.length > 0 && (
-                            <div className="time-list">
-                                {meetingTimes.map((t) => (
-                                    <div className="time-item" key={t}>
-                                        {t}
-                                        <button className="time-delete" onClick={() => removeMeetingTime(t)}>×</button>
-                                    </div>
-                                ))}
-                            </div>
 
                         )}
-                    </div>
-*/
-                        )}
-                        </>
+                        </div>
+                        
+                        
 
                     {/* ── 7. 모임 장소 ── */}
                     {/* TODO [백엔드]: 장소 검색 API 연결 필요. 현재 DUMMY_PLACES 사용 중.

@@ -183,7 +183,7 @@ function StudyDetail() {
                         ))}
                     </div>
                     <button
-                        className="study-detail-bookmark"
+                        className={`study-detail-bookmark ${isBookmarked ? "bookmarked" : ""}`}
                         onClick={() => setIsBookmarked(!isBookmarked)}
                     >
                         {isBookmarked ? <BsBookmarkFill /> : <FiBookmark />}
@@ -226,7 +226,7 @@ function StudyDetail() {
                         <span className={`info-value status ${study.status ?? "recruiting"}`}>
                             {study.status === "completed" ? "모집 완료"
                                 : study.status === "paused" ? "모집 일시 중단"
-                                : "모집 중"}
+                                    : "모집 중"}
                         </span>
                     </div>
                     <div className="study-detail-info-item">

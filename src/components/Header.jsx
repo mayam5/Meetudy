@@ -3,27 +3,18 @@ import {
 } from "react-bootstrap";
 
 import "./Header.css";
+
 import logo from "../assets/logo.png";
 import Chat from "../components/Chat";
 import ChatList from "../components/ChatList";
-import NotificationList from "../components/NotificationList";
+import NotificationList from "../components/NotificationList.jsx";
 
 import { FiSearch, FiBell, FiUser, FiX } from "react-icons/fi";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import Login from "../components/Login";
 import { fetchNotifications, markNotificationRead } from "../api/notification";
-
-/*
-const REGIONS = [
-    "서울",
-    "경기",
-    "인천",
-    "부산",
-    "대구",
-];
-*/
 
 function Header() {
     const { isLoggedIn, logout } = useAuth();
@@ -47,8 +38,79 @@ function Header() {
 
     const [regionOptions, setRegionOptions] = useState([]);
 
+    // 드롭다운 열림 state
+    const [regionOpen, setRegionOpen] = useState(false);
+    const [fieldOpen, setFieldOpen] = useState(false);
+
+    // 닫힘 애니메이션용 — "closing" 상태
+    const [regionClosing, setRegionClosing] = useState(false);
+    const [fieldClosing, setFieldClosing] = useState(false);
+
+    const regionTimer = useRef(null);
+    const fieldTimer = useRef(null);
+
+    const handleRegionToggle = () => {
+        if (regionOpen) {
+            // 닫힐 때: closing 상태로 0.18s 후 실제로 닫기
+            setRegionClosing(true);
+            regionTimer.current = setTimeout(() => {
+                setRegionOpen(false);
+                setRegionClosing(false);
+            }, 180);
+        } else {
+            clearTimeout(regionTimer.current);
+            setRegionClosing(false);
+            setRegionOpen(true);
+        }
+        setFieldOpen(false);
+        setFieldClosing(false);
+        clearTimeout(fieldTimer.current);
+    };
+
+    const handleFieldToggle = () => {
+        if (fieldOpen) {
+            setFieldClosing(true);
+            fieldTimer.current = setTimeout(() => {
+                setFieldOpen(false);
+                setFieldClosing(false);
+            }, 180);
+        } else {
+            clearTimeout(fieldTimer.current);
+            setFieldClosing(false);
+            setFieldOpen(true);
+        }
+        setRegionOpen(false);
+        setRegionClosing(false);
+        clearTimeout(regionTimer.current);
+    };
+
+    const handleRegionSelect = (value) => {
+        setSelectedRegion(value);
+        setRegionClosing(true);
+        regionTimer.current = setTimeout(() => {
+            setRegionOpen(false);
+            setRegionClosing(false);
+        }, 180);
+    };
+
+    const handleFieldSelect = (value) => {
+        setSelectedField(value);
+        setFieldClosing(true);
+        fieldTimer.current = setTimeout(() => {
+            setFieldOpen(false);
+            setFieldClosing(false);
+        }, 180);
+    };
+
     useEffect(() => {
-        fetch("http://localhost:8080/categories")
+        return () => {
+            clearTimeout(regionTimer.current);
+            clearTimeout(fieldTimer.current);
+        };
+    }, []);
+
+    useEffect(() => {
+        fetch("/api/categories")
             .then((res) => res.json())
             .then((result) => {
                 setCategoryOptions(result.data || []);
@@ -59,22 +121,21 @@ function Header() {
     }, []);
 
     useEffect(() => {
-        fetch("http://localhost:8080/regions/cities")
+        fetch("/api/regions/cities")
             .then((res) => res.json())
             .then((result) => {
-            setRegionOptions(result);
+                setRegionOptions(result);
             })
             .catch((error) => {
-            console.error("헤더 지역 불러오기 실패:", error);
+                console.error("헤더 지역 불러오기 실패:", error);
             });
-        }, []);
+    }, []);
 
     useEffect(() => {
         if (!isLoggedIn) {
             setNotifications([]);
             return;
         }
-
         const loadNotifications = async () => {
             try {
                 const data = await fetchNotifications();
@@ -83,7 +144,6 @@ function Header() {
                 console.error("알림 로드 실패:", e);
             }
         };
-
         loadNotifications();
     }, [isLoggedIn]);
 
@@ -101,25 +161,15 @@ function Header() {
             setTimeout(() => setSearchError(false), 600);
             return;
         }
-
         const params = new URLSearchParams();
         params.set("search", searchValue.trim());
-
-        if (selectedRegion !== "지역") {
-            params.set("region", selectedRegion);
-        }
-
-        if (selectedField !== "분야") {
-            params.set("field", selectedField);
-        }
-
+        if (selectedRegion !== "지역") params.set("region", selectedRegion);
+        if (selectedField !== "분야") params.set("field", selectedField);
         closeNav();
         navigate(`/whole-list?${params.toString()}`);
     };
 
-    const handleClearSearch = () => {
-        setSearchValue("");
-    };
+    const handleClearSearch = () => setSearchValue("");
 
     const handleNotificationClick = () => {
         if (!isLoggedIn) {
@@ -128,7 +178,6 @@ function Header() {
             closeNav();
             return;
         }
-
         setIsNotiOpen((prev) => !prev);
         setIsListOpen(false);
     };
@@ -169,12 +218,8 @@ function Header() {
 
     const handleProfileClick = () => {
         closeNav();
-
-        if (isLoggedIn) {
-            navigate("/mypage");
-        } else {
-            setIsLoginOpen(true);
-        }
+        if (isLoggedIn) navigate("/mypage");
+        else setIsLoginOpen(true);
     };
 
     const handleMyGroupClick = () => {
@@ -184,7 +229,6 @@ function Header() {
             closeNav();
             return;
         }
-
         setIsListOpen((prev) => !prev);
         setIsNotiOpen(false);
     };
@@ -196,7 +240,6 @@ function Header() {
             closeNav();
             return;
         }
-
         closeNav();
         navigate("/post-write");
     };
@@ -214,10 +257,7 @@ function Header() {
                 <Container fluid>
                     <Navbar.Brand
                         style={{ cursor: "pointer" }}
-                        onClick={() => {
-                            closeNav();
-                            navigate("/");
-                        }}
+                        onClick={() => { closeNav(); navigate("/"); }}
                     >
                         <img src={logo} alt="logo" className="header-logo" />
                     </Navbar.Brand>
@@ -236,108 +276,75 @@ function Header() {
 
                             <div className="search-inner">
                                 {searchValue && (
-                                    <Button
-                                        className="icon-button"
-                                        variant="light"
-                                        size="sm"
-                                        onClick={handleClearSearch}
-                                    >
+                                    <Button className="icon-button" variant="light" size="sm" onClick={handleClearSearch}>
                                         <FiX size={14} />
                                     </Button>
                                 )}
 
-                                <Button
-                                    className="icon-button"
-                                    variant="light"
-                                    size="sm"
-                                    onClick={handleSearch}
-                                >
+                                <Button className="icon-button" variant="light" size="sm" onClick={handleSearch}>
                                     <FiSearch />
                                 </Button>
 
-<Dropdown>
-  <Dropdown.Toggle variant="light" size="sm">
-    {selectedRegion}
-  </Dropdown.Toggle>
+                                {/* 지역 드롭다운 */}
+                                <Dropdown show={regionOpen} onToggle={handleRegionToggle}>
+                                    <Dropdown.Toggle variant="light" size="sm">
+                                        {selectedRegion}
+                                    </Dropdown.Toggle>
+                                    <Dropdown.Menu
+                                        className={regionClosing ? "dropdown-closing" : ""}
+                                    >
+                                        <Dropdown.Item onClick={() => handleRegionSelect("지역")}>
+                                            전체
+                                        </Dropdown.Item>
+                                        {regionOptions.map((region) => (
+                                            <Dropdown.Item key={region} onClick={() => handleRegionSelect(region)}>
+                                                {region}
+                                            </Dropdown.Item>
+                                        ))}
+                                    </Dropdown.Menu>
+                                </Dropdown>
 
-  <Dropdown.Menu>
-    <Dropdown.Item onClick={() => setSelectedRegion("지역")}>
-      전체
-    </Dropdown.Item>
-
-    {regionOptions.map((region) => (
-      <Dropdown.Item
-        key={region}
-        onClick={() => setSelectedRegion(region)}
-      >
-        {region}
-      </Dropdown.Item>
-    ))}
-  </Dropdown.Menu>
-</Dropdown>
-
-<Dropdown>
-  <Dropdown.Toggle variant="light" size="sm">
-    {selectedField}
-  </Dropdown.Toggle>
-
-  <Dropdown.Menu>
-    <Dropdown.Item onClick={() => setSelectedField("분야")}>
-      전체
-    </Dropdown.Item>
-
-    {categoryOptions.map((category) => (
-      <Dropdown.Item
-        key={category.categoryId}
-        onClick={() => setSelectedField(category.categoryName)}
-      >
-        {category.categoryName}
-      </Dropdown.Item>
-    ))}
-  </Dropdown.Menu>
-</Dropdown>
+                                {/* 분야 드롭다운 */}
+                                <Dropdown show={fieldOpen} onToggle={handleFieldToggle}>
+                                    <Dropdown.Toggle variant="light" size="sm">
+                                        {selectedField}
+                                    </Dropdown.Toggle>
+                                    <Dropdown.Menu
+                                        className={fieldClosing ? "dropdown-closing" : ""}
+                                    >
+                                        <Dropdown.Item onClick={() => handleFieldSelect("분야")}>
+                                            전체
+                                        </Dropdown.Item>
+                                        {categoryOptions.map((category) => (
+                                            <Dropdown.Item key={category.categoryId} onClick={() => handleFieldSelect(category.categoryName)}>
+                                                {category.categoryName}
+                                            </Dropdown.Item>
+                                        ))}
+                                    </Dropdown.Menu>
+                                </Dropdown>
                             </div>
                         </div>
 
                         <Nav className="header-menu position-relative">
-                            <Button variant="light" size="sm" onClick={handleMyGroupClick}>
-                                내 모임
-                            </Button>
-
-                            <Button variant="light" size="sm" onClick={handlePostWriteClick}>
-                                글 작성하기
-                            </Button>
+                            <Button variant="light" size="sm" onClick={handleMyGroupClick}>내 채팅방</Button>
+                            <Button variant="light" size="sm" onClick={handlePostWriteClick}>글 작성하기</Button>
 
                             <div className="noti-bell-wrap">
-                                <Button
-                                    className="icon-button"
-                                    variant="light"
-                                    size="sm"
-                                    onClick={handleNotificationClick}
-                                >
+                                <Button className="icon-button" variant="light" size="sm" onClick={handleNotificationClick}>
                                     <FiBell size={20} />
                                 </Button>
-                                {unreadCount > 0 && (
-                                    <span className="noti-badge">{unreadCount}</span>
-                                )}
+                                {unreadCount > 0 && <span className="noti-badge">{unreadCount}</span>}
                             </div>
 
                             <Button
                                 className={`icon-button ${isLoggedIn ? "logged-in" : ""}`}
-                                variant="light"
-                                size="sm"
-                                onClick={handleProfileClick}
+                                variant="light" size="sm" onClick={handleProfileClick}
                             >
                                 <FiUser size={20} />
                             </Button>
 
                             {isLoggedIn && (
-                                <Button
-                                    variant="light"
-                                    size="sm"
-                                    className="logout-btn"
-                                    onClick={handleLogout}
-                                >
+                                <Button variant="light" size="sm" className="logout-btn" onClick={handleLogout}>
                                     로그아웃
                                 </Button>
                             )}
@@ -346,16 +353,11 @@ function Header() {
                         {(isListOpen || activeRoom || isNotiOpen) && (
                             <div className="chat-overlay" onClick={closeAll} />
                         )}
-
                         {isListOpen && (
                             <div className="chat-wrapper">
-                                <ChatList
-                                    onSelectRoom={handleSelectRoom}
-                                    onClose={() => setIsListOpen(false)}
-                                />
+                                <ChatList onSelectRoom={handleSelectRoom} onClose={() => setIsListOpen(false)} />
                             </div>
                         )}
-
                         {isNotiOpen && (
                             <div className="chat-wrapper">
                                 <NotificationList
@@ -372,19 +374,11 @@ function Header() {
 
             {activeRoom && (
                 <div className="chat-wrapper-fixed">
-                    <Chat
-                        roomId={activeRoom.id}
-                        roomTitle={activeRoom.title}
-                        onClose={() => setActiveRoom(null)}
-                    />
+                    <Chat roomId={activeRoom.id} roomTitle={activeRoom.title} onClose={() => setActiveRoom(null)} />
                 </div>
             )}
-
             {isLoginOpen && (
-                <Login
-                    onClose={() => setIsLoginOpen(false)}
-                    onLoginSuccess={handleLoginSuccess}
-                />
+                <Login onClose={() => setIsLoginOpen(false)} onLoginSuccess={handleLoginSuccess} />
             )}
         </>
     );

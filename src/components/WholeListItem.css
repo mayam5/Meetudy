@@ -1,118 +1,157 @@
+/* =========================
+   LIST ITEM
+========================= */
+
 .list-item {
     display: grid;
-    grid-template-columns: 40px 1fr 180px 120px 180px;
-    column-gap: 20px;
+    grid-template-columns: 44px 1fr 210px 130px 210px;
+    column-gap: 24px;
     align-items: center;
-    min-height: 82px;
-    padding-left: 10px;
-    padding-right: 20px;
-    background: white;
-    border-bottom: 1px solid #ddd;
-    cursor: pointer;
-    transition: background 0.15s ease;
+    min-height: 88px;
+    padding: 0 24px 0 16px;
+    background: #fff;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: default;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+/* 왼쪽 파란 세로선 — 상하 여백 줘서 더 세련되게 */
+.list-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 16px;
+    bottom: 16px;
+    width: 0;
+    background: #2563eb;
+    transition: width 0.2s ease;
+    border-radius: 0 4px 4px 0;
+}
+
+.list-item:hover::before {
+    width: 4px;
 }
 
 .list-item:hover {
-    background: #fafafa;
+    background: #f5f8ff;   /* 파란 기운 살짝 */
+    padding-left: 20px;
 }
 
+.list-item:last-child {
+    border-bottom: none;
+}
+
+/* =========================
+   BOOKMARK
+========================= */
+
 .list-bookmark {
-    font-size: 20px;
-    color: #222;
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+    color: #a3a3a3;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: none;
+    background: #f5f5f0;
     border: none;
-    padding: 0;
+    border-radius: 10px;
     cursor: pointer;
-    transition: color 0.2s ease;
+    transition: all 0.2s;
+    flex-shrink: 0;
 }
 
 .list-bookmark:hover {
-    color: #007bff;
+    background: rgba(37, 99, 235, 0.08);
+    color: #2563eb;
 }
+
+/* =========================
+   TITLE
+========================= */
 
 .list-title-box {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 6px;
     text-align: left;
     min-width: 0;
 }
 
 .list-title {
     font-size: 15px;
-    font-weight: 700;
-    color: #111;
+    font-weight: 800;
+    color: #0a0a0a;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    letter-spacing: -0.4px;
+    transition: color 0.2s;
+}
+
+.list-title-box:hover .list-title {
+    color: #2563eb;
 }
 
 .list-tags {
-    font-size: 12px;
-    color: #777;
-}
-
-.list-host {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
-    min-width: 0;
-}
-
-.list-host:hover .list-host-name {
-    text-decoration: underline;
-}
-
-.list-host-name {
-    font-size: 13px;
+    font-size: 11px;
+    color: #a3a3a3;
+    font-weight: 600;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    letter-spacing: 0.2px;
+    background: #f5f5f0;
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    width: fit-content;
+    max-width: 100%;
 }
 
-.list-host-profile {
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    background: #e0e0e0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    color: #333;
-    object-fit: cover;
-    flex-shrink: 0;
-}
+/* =========================
+   AVATAR GROUP
+========================= */
 
 .list-item .avatar-group {
     display: flex;
     align-items: center;
     justify-self: center;
-    margin-left: 0;
 }
 
 .list-item .avatar {
     width: 30px;
     height: 30px;
     border-radius: 50%;
-    background: #e0e0e0;
+    background: #e5e5e5;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 12px;
+    font-size: 11px;
+    font-weight: 800;
+    color: #525252;
+    border: 2px solid #fff;
+    margin-left: -6px;
+}
+
+.list-item .avatar:first-child {
+    margin-left: 0;
 }
 
 .list-item .more {
-    font-size: 13px;
-    font-weight: 600;
+    font-size: 11px;
+    font-weight: 700;
     margin-left: 6px;
-    display: flex;
-    align-items: center;
+    color: #a3a3a3;
+    background: #f5f5f0;
+    padding: 2px 8px;
+    border-radius: 999px;
 }
+
+/* =========================
+   ACTIONS
+========================= */
 
 .list-actions {
     display: flex;
@@ -122,97 +161,140 @@
 }
 
 .list-actions button {
-    padding: 6px 10px;
+    padding: 7px 14px;
     border: none;
-    border-radius: 6px;
-    background: #222;
-    color: white;
+    border-radius: 8px;
+    background: #0a0a0a;
+    color: #fff;
     font-size: 12px;
+    font-weight: 700;
     cursor: pointer;
-    transition: opacity 0.15s ease;
+    transition: all 0.2s;
     white-space: nowrap;
+    letter-spacing: -0.2px;
 }
 
 .list-actions button:hover {
-    opacity: 0.8;
+    opacity: 0.75;
 }
 
 .list-actions .chat-btn {
-    background: white;
-    color: #222;
-    border: 1px solid #bbb;
-    min-width: 72px;
+    background: #2563eb;
+    color: #fff;
+    border: none;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 5px;
+    opacity: 1;
 }
 
-.cancel-btn {
-    background: #222;
-    color: white;
+.list-actions .chat-btn:hover {
+    opacity: 0.85;
 }
+
+.list-actions .cancel-btn {
+    background: transparent;
+    color: #e84118;
+    border: 1.5px solid rgba(232, 65, 24, 0.25);
+    opacity: 1;
+}
+
+.list-actions .cancel-btn:hover {
+    background: #e84118;
+    color: #fff;
+    border-color: #e84118;
+    opacity: 1;
+}
+
+.list-actions .delete-btn {
+    background: transparent;
+    color: #e84118;
+    border: 1.5px solid rgba(232, 65, 24, 0.25);
+    opacity: 1;
+}
+
+.list-actions .delete-btn:hover {
+    background: #e84118;
+    color: #fff;
+    border-color: #e84118;
+    opacity: 1;
+}
+
+/* =========================
+   STATUS BADGES
+========================= */
 
 .accepted-text {
-    color: #4cd137;
-    font-size: 13px;
-    font-weight: 700;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 5px 12px;
+    border-radius: 999px;
+    background: rgba(74, 222, 128, 0.1);
+    color: #166534;
+    border: 1px solid rgba(74, 222, 128, 0.3);
     white-space: nowrap;
+    letter-spacing: 0.2px;
+    text-transform: uppercase;
 }
 
 .rejected-text {
+    font-size: 11px;
+    font-weight: 800;
+    padding: 5px 12px;
+    border-radius: 999px;
+    background: rgba(232, 65, 24, 0.07);
     color: #e84118;
-    font-size: 13px;
-    font-weight: 700;
+    border: 1px solid rgba(232, 65, 24, 0.2);
     white-space: nowrap;
+    letter-spacing: 0.2px;
+    text-transform: uppercase;
 }
 
 /* =========================
    반응형
 ========================= */
 
-/* 태블릿 */
 @media (max-width: 1024px) {
     .list-item {
-        grid-template-columns: 36px 1fr 150px 100px 150px;
-        column-gap: 12px;
-        padding-right: 12px;
+        grid-template-columns: 40px 1fr 170px 110px 170px;
+        column-gap: 16px;
+        padding-right: 16px;
     }
 }
 
-/* 모바일 */
 @media (max-width: 768px) {
     .list-item {
-        grid-template-columns: 32px 1fr auto;
+        grid-template-columns: 40px 1fr auto;
         grid-template-rows: auto auto;
         column-gap: 10px;
-        row-gap: 6px;
-        padding: 12px;
+        row-gap: 10px;
+        padding: 16px 14px;
         min-height: auto;
     }
 
-    /* 북마크 - 1행 1열, 2행까지 */
+    .list-item:hover {
+        padding-left: 14px;
+    }
+
     .list-bookmark {
         grid-column: 1;
         grid-row: 1 / 3;
         align-self: center;
     }
 
-    /* 제목 - 1행 2열 */
     .list-title-box {
         grid-column: 2;
         grid-row: 1;
     }
 
-    /* 액션 - 1행 3열 */
     .list-actions {
         grid-column: 3;
         grid-row: 1;
         align-self: center;
     }
 
-    /* 호스트 + 아바타 - 2행에 나란히 */
-    .list-host {
+    .list-item > div:nth-child(4) {
         grid-column: 2;
         grid-row: 2;
     }

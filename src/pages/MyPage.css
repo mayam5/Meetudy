@@ -1,53 +1,97 @@
 /* =========================
-   MYPAGE LAYOUT
+   CSS VARIABLES
+========================= */
+
+:root {
+    --bg-base: #f5f5f0;
+    --bg-dark: #0a0a0a;
+    --bg-card: #ffffff;
+    --bg-muted: #f5f5f5;
+    --bg-panel: #111111;
+
+    --text-primary: #0a0a0a;
+    --text-white: #ffffff;
+    --text-muted: #a3a3a3;
+    --text-subtle: #525252;
+
+    --blue: #2563eb;
+    --blue-light: #3b82f6;
+    --blue-soft: rgba(37, 99, 235, 0.12);
+
+    --border: #e5e5e5;
+    --border-focus: #2563eb;
+
+    --radius-sm: 10px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+    --radius-pill: 999px;
+
+    --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.05);
+    --shadow-pop: 0 8px 32px rgba(0, 0, 0, 0.14);
+
+    --transition: 0.2s ease;
+}
+
+/* =========================
+   로딩
+========================= */
+
+.mypage-loading {
+    text-align: center;
+    margin-top: 200px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+/* =========================
+   LAYOUT
 ========================= */
 
 .mypage {
     display: flex;
-    gap: 24px;
-    padding: 24px;
+    gap: 20px;
+    padding: 100px 40px 60px;
     min-height: 100vh;
-    background: #f0f2f5;
-    margin-top: 90px;
+    background: var(--bg-base);
+    box-sizing: border-box;
 }
 
-/* =========================
-   LEFT / RIGHT SECTION
-========================= */
-
 .mypage .left-section {
-    width: 28%;
+    width: 280px;
+    flex-shrink: 0;
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    flex-shrink: 0;
+    gap: 14px;
 }
 
 .mypage .right-section {
     flex: 1;
+    min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    min-width: 0;
+    gap: 14px;
 }
 
 .mypage .top-row,
 .mypage .bottom-row {
     display: flex;
-    gap: 16px;
+    gap: 14px;
 }
 
 /* =========================
-   CARD (COMMON)
+   CARD (공통)
 ========================= */
 
 .mypage .card {
-    background: #ffffff;
-    border-radius: 20px;
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
     padding: 24px;
-    border: 1px solid #eaecef;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
-    transition: box-shadow 0.2s ease;
+    border: 1px solid var(--border);
+    border-top: 2.5px solid var(--blue);
+    box-shadow: var(--shadow-card);
+    transition: box-shadow var(--transition);
+    box-sizing: border-box;
 }
 
 .mypage .card:hover {
@@ -55,45 +99,82 @@
 }
 
 .mypage h3 {
-    font-weight: 800;
-    font-size: 16px;
-    color: #111;
-    margin: 0;
+    font-weight: 900;
+    font-size: 14px;
+    color: var(--text-primary);
+    margin: 0 0 16px;
     letter-spacing: -0.3px;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.mypage h3::before {
+    content: '';
+    display: inline-block;
+    width: 14px;
+    height: 2px;
+    background: var(--blue);
+    border-radius: var(--radius-pill);
+    flex-shrink: 0;
 }
 
 /* =========================
-   PROFILE CARD
+   PROFILE CARD — 다크 히어로
 ========================= */
 
 .mypage .profile-card {
+    background: var(--bg-dark);
+    border-top-color: var(--blue);
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+/* 워터마크 */
+.mypage .profile-card::after {
+    content: 'ME';
+    position: absolute;
+    right: -6px;
+    bottom: -10px;
+    font-size: 88px;
+    color: rgba(255, 255, 255, 0.03);
+    font-weight: 900;
+    letter-spacing: -4px;
+    pointer-events: none;
+    user-select: none;
+    line-height: 1;
 }
 
 .mypage .nickname {
-    margin-bottom: 16px;
-    color: #111;
-    font-size: 24px;
-    font-weight: 800;
-    letter-spacing: -0.5px;
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--text-white);
+    letter-spacing: -1px;
+    margin: 0 0 16px;
+    position: relative;
+    z-index: 1;
 }
 
 .mypage .profile-image {
-    width: 120px;
-    height: 120px;
+    width: 88px;
+    height: 88px;
     border-radius: 50%;
-    background: #1f1f1f;
-    margin-bottom: 24px;
+    background: #1a1a1a;
+    margin-bottom: 20px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     position: relative;
-    border: 3px solid #fff;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    z-index: 1;
+    border: 2.5px solid var(--blue);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2), 0 0 20px rgba(37, 99, 235, 0.15);
+    flex-shrink: 0;
 }
 
 .mypage .profile-image img {
@@ -103,16 +184,38 @@
 }
 
 .mypage .profile-upload-btn {
-    margin-top: 10px;
+    margin-top: 8px;
+    font-size: 11px;
+    padding: 5px 12px;
+    position: relative;
+    z-index: 1;
+}
+
+/* info-box — 다크 카드 위 */
+.mypage .profile-card .info-box {
+    width: 100%;
+    position: relative;
+    z-index: 1;
+}
+
+.mypage .profile-card .info-row {
+    border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+.mypage .profile-card .label {
+    color: var(--text-subtle);
+}
+
+.mypage .profile-card .value {
+    color: var(--text-white);
 }
 
 /* =========================
-   INFO SECTION
+   INFO BOX
 ========================= */
 
 .mypage .info-box {
     width: 100%;
-    align-self: stretch;
 }
 
 .mypage .info-row {
@@ -120,7 +223,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 10px 0;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid var(--bg-muted);
 }
 
 .mypage .info-row:last-child {
@@ -128,18 +231,155 @@
 }
 
 .mypage .label {
-    font-weight: 700;
-    font-size: 12px;
-    color: #888;
-    letter-spacing: 0.5px;
+    font-size: 10px;
+    font-weight: 800;
+    color: var(--text-muted);
+    letter-spacing: 1.5px;
     text-transform: uppercase;
 }
 
 .mypage .value {
-    color: #222;
-    font-weight: 500;
     font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
     text-align: right;
+}
+
+/* =========================
+   BIO CARD
+========================= */
+
+.mypage .bio-card {
+    position: relative;
+    min-height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-subtle);
+    font-size: 13px;
+    line-height: 1.85;
+    padding: 32px 24px;
+    text-align: center;
+    border-top-color: var(--bg-dark);
+    font-style: italic;
+}
+
+.mypage .quote {
+    position: absolute;
+    font-size: 52px;
+    color: var(--border);
+    left: 14px;
+    top: 2px;
+    font-family: Georgia, serif;
+    line-height: 1;
+    font-style: normal;
+}
+
+.mypage .quote.right {
+    right: 14px;
+    left: auto;
+    bottom: 2px;
+    top: auto;
+}
+
+/* =========================
+   CATEGORY CARD
+========================= */
+
+.mypage .category-card h3 {
+    margin-bottom: 12px;
+}
+
+.mypage .tag-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+}
+
+.mypage .category-card .tag {
+    background: var(--bg-muted);
+    color: var(--text-subtle);
+    padding: 7px 14px;
+    border-radius: var(--radius-pill);
+    font-size: 12px;
+    font-weight: 600;
+    transition: all var(--transition);
+    cursor: pointer;
+    border: 1.5px solid transparent;
+}
+
+.mypage .category-card .tag:hover {
+    background: var(--bg-dark);
+    color: var(--text-white);
+    transform: translateY(-1px);
+}
+
+.mypage .category-card .active-tag {
+    background: var(--bg-dark);
+    color: var(--text-white);
+    border-color: var(--blue);
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
+}
+
+.mypage.editing .category-card .active-tag {
+    background: var(--blue);
+    border-color: var(--blue);
+}
+
+/* =========================
+   EDIT BUTTON
+========================= */
+
+.mypage .edit-btn {
+    height: 46px;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: var(--bg-dark);
+    color: var(--text-white);
+    font-weight: 800;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all var(--transition);
+    border-top: 2px solid var(--blue);
+    letter-spacing: -0.2px;
+}
+
+.mypage .edit-btn:hover {
+    background: var(--blue);
+    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.3);
+}
+
+.mypage.editing .edit-btn {
+    background: var(--blue);
+    border-top-color: var(--blue-light);
+}
+
+/* =========================
+   SMALL BUTTONS
+========================= */
+
+.mypage .small-btn {
+    border: none;
+    background: var(--bg-dark);
+    color: var(--text-white);
+    padding: 7px 14px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 12px;
+    transition: all var(--transition);
+    border-top: 1.5px solid var(--blue);
+    font-family: inherit;
+}
+
+.mypage .small-btn:hover {
+    background: var(--blue);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    transform: translateY(-1px);
+}
+
+.mypage .small-btn.active-edit-btn {
+    background: var(--blue);
 }
 
 /* =========================
@@ -152,14 +392,12 @@
     gap: 10px;
 }
 
-.mypage .password-card .small-btn {
-    background: #007bff;
-    color: white;
-    align-self: flex-end;
+.mypage .password-card h3 {
+    margin-bottom: 8px;
 }
 
-.mypage .password-card .small-btn:hover {
-    background: #0056d2;
+.mypage .password-card .small-btn {
+    align-self: flex-end;
 }
 
 /* =========================
@@ -168,140 +406,19 @@
 
 .mypage .region-select-group {
     display: flex;
-    gap: 8px;
-    width: 100%;
+    gap: 6px;
     flex-wrap: wrap;
+    width: 100%;
 }
 
 .mypage .region-select-group select {
     flex: 1;
-    min-width: 100px;
+    min-width: 80px;
 }
 
 .mypage .region-select-group select:disabled {
-    background: #f2f2f2;
-    color: #aaa;
+    opacity: 0.4;
     cursor: not-allowed;
-}
-
-/* =========================
-   BIO CARD
-========================= */
-
-.mypage .bio-card {
-    position: relative;
-    min-height: 100px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #444;
-    font-size: 15px;
-    line-height: 1.7;
-    padding: 32px 24px;
-}
-
-.mypage .quote {
-    position: absolute;
-    font-size: 40px;
-    color: #e0e0e0;
-    left: 16px;
-    top: 8px;
-    font-family: Georgia, serif;
-    line-height: 1;
-}
-
-.mypage .quote.right {
-    right: 16px;
-    left: auto;
-    bottom: 8px;
-    top: auto;
-}
-
-/* =========================
-   CATEGORY
-========================= */
-
-.mypage .tag-wrapper {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 12px;
-}
-
-.mypage .category-card .tag {
-    background: #f5f5f5;
-    color: #555;
-    padding: 8px 14px;
-    border-radius: 999px;
-    font-size: 13px;
-    font-weight: 600;
-    transition: 0.2s;
-    cursor: pointer;
-    border: 1px solid transparent;
-}
-
-.mypage .category-card .tag:hover {
-    background: #eee;
-}
-
-.mypage .category-card .active-tag {
-    background: #111;
-    color: white;
-    border: 1px solid #111;
-}
-
-.mypage.editing .active-tag {
-    background: #007bff;
-    border-color: #007bff;
-}
-
-/* =========================
-   BUTTONS
-========================= */
-
-.mypage .edit-btn {
-    height: 48px;
-    border: none;
-    border-radius: 12px;
-    background: #111;
-    color: white;
-    font-weight: 700;
-    font-size: 14px;
-    cursor: pointer;
-    transition: 0.2s;
-    letter-spacing: 0.2px;
-}
-
-.mypage .edit-btn:hover {
-    background: #333;
-}
-
-.mypage.editing .edit-btn {
-    background: #007bff;
-}
-
-.mypage.editing .edit-btn:hover {
-    background: #0056d2;
-}
-
-.mypage .small-btn {
-    border: none;
-    background: #111;
-    color: white;
-    padding: 7px 14px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 13px;
-    transition: 0.2s;
-}
-
-.mypage .small-btn:hover {
-    background: #333;
-}
-
-.mypage .small-btn.active-edit-btn {
-    background: #007bff;
 }
 
 /* =========================
@@ -310,8 +427,8 @@
 
 .mypage .schedule-card { flex: 3; }
 .mypage .bookmark-card { flex: 2; }
-.mypage .study-card { flex: 1; }
-.mypage .user-card { flex: 1; }
+.mypage .study-card    { flex: 1; }
+.mypage .user-card     { flex: 1; }
 
 /* =========================
    CARD HEADER
@@ -323,13 +440,16 @@
     align-items: flex-start;
     gap: 12px;
     margin-bottom: 16px;
-    flex-wrap: wrap;
+}
+
+.mypage .card-header h3 {
+    margin-bottom: 0;
 }
 
 .mypage .card-header > div {
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    gap: 2px;
 }
 
 /* =========================
@@ -339,77 +459,80 @@
 .mypage .schedule-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 6px;
+    gap: 5px;
     text-align: center;
-    font-size: 12px;
-}
-
-.mypage .schedule-grid > div:not(.schedule-cell) {
-    font-size: 12px;
-    font-weight: 700;
-    color: #888;
-    padding: 6px 0;
-}
-
-.mypage .schedule-cell {
-    padding: 8px 4px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: 0.15s ease;
-    color: #bbb;
-    background: #fafafa;
-    border: 1px solid #f0f0f0;
-    font-weight: 500;
-    user-select: none;
     font-size: 11px;
 }
 
+.mypage .schedule-grid > div:not(.schedule-cell) {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--text-muted);
+    padding: 5px 0;
+    letter-spacing: 0.3px;
+}
+
+.mypage .schedule-cell {
+    padding: 8px 2px;
+    border-radius: 8px;
+    cursor: default;
+    transition: all var(--transition);
+    color: var(--text-muted);
+    background: var(--bg-muted);
+    border: 1.5px solid transparent;
+    font-weight: 600;
+    user-select: none;
+    font-size: 10px;
+}
+
 .mypage .schedule-cell.active {
-    background: #111;
-    color: #fff;
+    background: var(--bg-dark);
+    color: var(--text-white);
     font-weight: 700;
-    border-color: #111;
+    border-color: var(--blue);
+    box-shadow: 0 0 8px rgba(37, 99, 235, 0.2);
 }
 
 .mypage .schedule-card.editing .schedule-cell {
-    border: 1px dashed #ddd;
     cursor: pointer;
+    border: 1.5px dashed var(--border);
 }
 
 .mypage .schedule-card.editing .schedule-cell:hover {
-    border-color: #007bff;
-    background: rgba(0, 123, 255, 0.06);
-    color: #007bff;
+    border-color: var(--blue);
+    background: var(--blue-soft);
+    color: var(--blue);
 }
 
 .mypage .schedule-card.editing .schedule-cell.active {
-    background: #007bff;
-    color: #fff;
-    border-color: #007bff;
+    background: var(--blue);
+    color: var(--text-white);
+    border-color: var(--blue);
+    border-style: solid;
+    box-shadow: 0 2px 10px rgba(37, 99, 235, 0.35);
 }
 
 /* =========================
-   MEETING
+   MEETING CARD
 ========================= */
 
 .mypage .meeting-card-header {
     display: flex;
-    flex-direction: row;
     justify-content: space-between;
     align-items: center;
     flex-wrap: nowrap;
-    gap: 16px;
+    gap: 12px;
     margin-bottom: 16px;
 }
 
 .mypage .meeting-card-header h3 {
+    margin-bottom: 0;
     flex-shrink: 0;
 }
 
 .mypage .meeting-tabs {
     display: flex;
-    flex-direction: row;
-    gap: 8px;
+    gap: 5px;
     flex-wrap: nowrap;
     overflow-x: auto;
     scrollbar-width: none;
@@ -421,27 +544,31 @@
 }
 
 .mypage .meeting-tabs span {
-    padding: 7px 14px;
-    border-radius: 999px;
-    background: #f3f3f3;
+    padding: 6px 14px;
+    border-radius: var(--radius-pill);
+    background: var(--bg-muted);
     cursor: pointer;
-    color: #888;
-    font-weight: 500;
-    font-size: 13px;
-    transition: 0.2s;
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 12px;
+    transition: all var(--transition);
     white-space: nowrap;
     flex-shrink: 0;
+    border: 1.5px solid transparent;
 }
 
 .mypage .meeting-tabs span:hover {
-    background: #e8e8e8;
-    color: #333;
+    background: var(--bg-dark);
+    color: var(--text-white);
+    transform: translateY(-1px);
 }
 
 .mypage .active-tab {
-    background: #111 !important;
-    color: white !important;
+    background: var(--bg-dark) !important;
+    color: var(--text-white) !important;
     font-weight: 700 !important;
+    border-color: var(--blue) !important;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
 }
 
 .mypage .meeting-list {
@@ -450,10 +577,10 @@
 }
 
 .mypage .meeting-list .study-item {
-    padding: 14px 4px;
-    border-bottom: 1px solid #f5f5f5;
+    padding: 12px 4px;
+    border-bottom: 1px solid var(--bg-muted);
     border-radius: 0;
-    transition: all 0.15s;
+    transition: all var(--transition);
 }
 
 .mypage .meeting-list .study-item:last-child {
@@ -461,43 +588,75 @@
 }
 
 .mypage .meeting-list .study-item:hover {
-    background: #fafafa;
-    border-radius: 10px;
-    padding-left: 12px;
-    padding-right: 12px;
+    background: var(--bg-muted);
+    border-radius: var(--radius-sm);
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
-.mypage .meeting-empty {
-    padding: 40px 0;
-    text-align: center;
-    color: #bbb;
-    font-size: 14px;
-}
-
+.mypage .meeting-empty,
 .mypage .meeting-loading {
     padding: 40px 0;
     text-align: center;
-    color: #ccc;
+    color: var(--text-muted);
     font-size: 13px;
+    font-weight: 600;
 }
 
 /* =========================
-   STUDY LOG
+   STUDY LOG — 다크 카드
 ========================= */
 
+.mypage .study-card {
+    background: var(--bg-dark);
+    border-top-color: var(--blue);
+    position: relative;
+    overflow: hidden;
+}
+
+.mypage .study-card h3 {
+    color: var(--text-white);
+}
+
+.mypage .study-card h3::before {
+    background: var(--blue);
+}
+
 .mypage .sub-text {
-    font-size: 12px;
-    color: #aaa;
-    margin-top: 3px;
+    font-size: 11px;
+    color: var(--text-subtle);
+    margin-top: 2px;
+    font-weight: 500;
+}
+
+/* 워터마크 */
+.mypage .study-card::after {
+    content: 'LOG';
+    position: absolute;
+    right: -4px;
+    bottom: -8px;
+    font-size: 72px;
+    color: rgba(255, 255, 255, 0.03);
+    font-weight: 900;
+    letter-spacing: -3px;
+    pointer-events: none;
+    user-select: none;
+    line-height: 1;
 }
 
 .mypage .time-text {
-    font-size: 56px;
+    font-size: 52px;
     font-weight: 900;
-    color: #111;
+    color: var(--text-white);
     line-height: 1;
-    margin-top: 16px;
-    letter-spacing: -2px;
+    margin-top: 14px;
+    letter-spacing: -3px;
+    position: relative;
+    z-index: 1;
+}
+
+.mypage .time-text span {
+    color: var(--blue-light);
 }
 
 /* =========================
@@ -508,42 +667,46 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 8px;
-    border-radius: 12px;
-    transition: 0.15s;
+    padding: 8px 6px;
+    border-radius: var(--radius-sm);
+    transition: background var(--transition);
 }
 
 .mypage .user-item:hover {
-    background: #f7f7f7;
+    background: var(--bg-muted);
 }
 
 .mypage .user-action-btn {
     padding: 5px 12px;
     font-size: 11px;
-    font-weight: 600;
-    border-radius: 999px;
-    height: auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    font-weight: 700;
+    border-radius: var(--radius-pill);
+    background: transparent;
+    color: var(--text-subtle);
+    border: 1.5px solid var(--border);
+    cursor: pointer;
+    transition: all var(--transition);
+    white-space: nowrap;
     flex-shrink: 0;
-    background: #f0f0f0;
-    color: #333;
-    border: 1px solid #e0e0e0;
+    font-family: inherit;
 }
 
 .mypage .user-action-btn:hover {
-    background: #e0e0e0;
+    background: var(--bg-dark);
+    color: var(--text-white);
+    border-color: var(--bg-dark);
 }
 
 .mypage .user-action-btn.blocked {
-    background: #fff0ee;
-    color: #e84118;
-    border-color: #ffd0c8;
+    background: transparent;
+    color: #ef4444;
+    border-color: rgba(239, 68, 68, 0.3);
 }
 
 .mypage .user-action-btn.blocked:hover {
-    background: #ffe0d8;
+    background: #ef4444;
+    color: white;
+    border-color: #ef4444;
 }
 
 /* =========================
@@ -555,25 +718,87 @@
 .mypage select {
     width: 100%;
     padding: 10px 14px;
-    border: 1.5px solid #e8e8e8;
-    border-radius: 10px;
-    background: #fafafa;
-    font-size: 14px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--bg-muted);
+    font-size: 13px;
+    font-weight: 500;
     outline: none;
-    color: #111;
-    transition: border-color 0.15s ease;
+    color: var(--text-primary);
+    transition: all var(--transition);
+    box-sizing: border-box;
+    font-family: inherit;
 }
 
 .mypage .edit-input:focus,
-.mypage .bio-textarea:focus {
-    border-color: #111;
-    background: #fff;
+.mypage .bio-textarea:focus,
+.mypage select:focus {
+    border-color: var(--border-focus);
+    background: var(--bg-card);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+}
+
+/* 다크 카드 안 인풋 — 프로필 편집 모드 */
+.mypage .profile-card .edit-input {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(255, 255, 255, 0.12);
+    color: var(--text-white);
+}
+
+.mypage .profile-card .edit-input:focus {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
 }
 
 .mypage .nickname-input {
     text-align: center;
-    font-size: 22px;
-    font-weight: 700;
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 12px;
+}
+
+.mypage .bio-textarea {
+    resize: none;
+    min-height: 80px;
+    line-height: 1.7;
+}
+
+.mypage .inline-edit {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.mypage .inline-edit .edit-input.small {
+    width: auto;
+    min-width: 120px;
+}
+
+.mypage .toggle-label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-subtle);
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+/* 다크 카드 위 select */
+.mypage .profile-card select {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(255, 255, 255, 0.12);
+    color: var(--text-white);
+}
+
+.mypage .profile-card select option {
+    background: var(--bg-dark);
+    color: var(--text-white);
 }
 
 /* =========================
@@ -584,13 +809,17 @@
     overflow: hidden;
 }
 
+.mypage .bookmark-card h3 {
+    margin-bottom: 12px;
+}
+
 .mypage .bookmark-list {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    margin-top: 8px;
-    max-height: 300px;
+    gap: 2px;
+    max-height: 280px;
     overflow-y: auto;
+    scrollbar-gutter: stable;
 }
 
 .mypage .bookmark-list::-webkit-scrollbar {
@@ -598,8 +827,8 @@
 }
 
 .mypage .bookmark-list::-webkit-scrollbar-thumb {
-    background: #e0e0e0;
-    border-radius: 4px;
+    background: var(--border);
+    border-radius: var(--radius-pill);
 }
 
 .mypage .bookmark-item {
@@ -607,31 +836,35 @@
     align-items: center;
     gap: 8px;
     padding: 6px 4px;
-    border-radius: 10px;
-    transition: background 0.15s;
+    border-radius: var(--radius-sm);
+    transition: background var(--transition);
 }
 
 .mypage .bookmark-item:hover {
-    background: #f8f8f8;
+    background: var(--bg-muted);
 }
 
 .mypage .bookmark-icon {
-    width: 30px;
-    height: 30px;
+    width: 28px;
+    height: 28px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    color: #ccc;
-    transition: 0.15s;
+    color: var(--border);
+    transition: all var(--transition);
     border-radius: 6px;
     flex-shrink: 0;
     font-size: 14px;
 }
 
 .mypage .bookmark-icon:hover {
-    color: #111;
-    background: #f0f0f0;
+    color: var(--blue);
+    background: var(--blue-soft);
+}
+
+.mypage .bookmark-icon:has(svg[fill="currentColor"]) {
+    color: var(--blue);
 }
 
 .mypage .bookmark-content {
@@ -655,29 +888,25 @@
 
 @media (max-width: 1200px) {
     .mypage .left-section {
-        width: 30%;
+        width: 260px;
     }
 }
 
 @media (max-width: 1024px) {
     .mypage {
         flex-direction: column;
+        padding: 80px 24px 40px;
     }
 
     .mypage .left-section,
     .mypage .right-section {
         width: 100%;
     }
-
-    .mypage .meeting-card .card-header {
-        flex-direction: column;
-        align-items: flex-start;
-    }
 }
 
 @media (max-width: 768px) {
     .mypage {
-        padding: 12px;
+        padding: 70px 16px 32px;
         gap: 12px;
     }
 
@@ -687,26 +916,15 @@
     }
 
     .mypage .schedule-grid {
-        font-size: 10px;
         gap: 4px;
     }
 
     .mypage .schedule-cell {
         padding: 6px 2px;
-        font-size: 10px;
-    }
-
-    .mypage .meeting-tabs {
-        overflow-x: auto;
-        scrollbar-width: none;
-        -ms-overflow-style: none;
-    }
-
-    .mypage .meeting-tabs::-webkit-scrollbar {
-        display: none;
+        font-size: 9px;
     }
 
     .mypage .time-text {
-        font-size: 48px;
+        font-size: 44px;
     }
 }

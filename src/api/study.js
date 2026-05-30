@@ -153,6 +153,7 @@ export const fetchAppliedStudies = async () => {
     };
 };
 
+
 /** 북마크한 게시글 목록 GET /posts/bookmarks */
 export const fetchBookmarkedStudies = async ({ page = 1, limit = 10 } = {}) => {
     const res = await fetch(`${BASE_URL}/posts/bookmarks`, { headers: authHeader() });
@@ -234,6 +235,22 @@ export const cancelApplication = async (postId) => {
     const json = await res.json();
     if (!res.ok || !json.success) throw new Error(json.message);
     return json.data;
+};
+
+/** 스터디 그룹 나가기 PATCH /study-groups/:groupId/leave */
+export const leaveStudyGroup = async (groupId) => {
+  const res = await fetch(`${BASE_URL}/study-groups/${groupId}/leave`, {
+      method: "PATCH",
+      headers: authHeader(),
+  });
+
+  const json = await res.json();
+
+  if (!res.ok || !json.success) {
+      throw new Error(json.message);
+  }
+
+  return json.data;
 };
 
 /** 신청자 목록 조회 */

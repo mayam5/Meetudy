@@ -55,6 +55,7 @@ import {
   cancelApplication,
 acceptApplication,
 rejectApplication,
+leaveStudyGroup,
 } from "../api/study";
 
 const TABS = [
@@ -236,6 +237,15 @@ setTotalCount(result.total ?? nextData.length);
     }
   };
 
+  const handleLeave = async (study) => {
+    try {
+      await leaveStudyGroup(study.groupId);
+      setStudies((prev) => prev.filter((s) => s.groupId !== study.groupId));
+    } catch (e) {
+      console.error("모임 나가기 실패:", e);
+    }
+  };
+
 const handleAccept = async (applicationId) => {
   try {
     await acceptApplication(applicationId);
@@ -337,7 +347,7 @@ const handleReject = async (applicationId) => {
                   type={getItemType(activeTab)}
                   onDelete={() => handleDelete(study.id)}
                   onCancel={() => handleCancel(study.id)}
-                  onLeave={() => handleCancel(study.id)}
+                  onLeave={() => handleLeave(study)}
                     onAccept={handleAccept}
   onReject={handleReject}
 

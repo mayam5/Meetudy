@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "./StudyDetail.css";
-import { fetchStudyById, applyToStudy, cancelApplication, deleteStudy, fetchMyStudyRelation } from "../api/study";
+import { fetchStudyById, applyToStudy, cancelApplication, deleteStudy, fetchMyStudyRelation ,fetchJoinedStudies,
+    leaveStudyGroup, } from "../api/study";
 import AvatarGroup from "../components/AvatarGroup";
 import HostInfo from "../components/HostInfo";
 import ConfirmPopup from "../components/ConfirmPopup";
@@ -71,6 +72,26 @@ function StudyDetail() {
         closePopup();
     };
 
+    const handleLeave = async () => {
+        try {
+            const result = await fetchJoinedStudies();
+            const group = (result.data ?? []).find(
+                (study) => study.id === Number(id)
+            );
+    
+            if (!group?.groupId) {
+                throw new Error("참여 중인 모임을 찾을 수 없습니다.");
+            }
+    
+            await leaveStudyGroup(group.groupId);
+            setRelation("none");
+        } catch (e) {
+            alert("나가기에 실패했습니다.");
+        }
+    
+        closePopup();
+    };
+
     const handleDelete = async () => {
         try {
             await deleteStudy(id);
@@ -117,7 +138,7 @@ function StudyDetail() {
                         </button>
                         <button
                             className="detail-cancel-btn"
-                            onClick={() => openPopup("모임에서 나가시겠습니까?", handleCancel)}
+                            oonClick={() => openPopup("모임에서 나가시겠습니까?", handleLeave)}
                         >
                             나가기
                         </button>
@@ -156,7 +177,7 @@ function StudyDetail() {
                         </button>
                         <button
                             className="detail-cancel-btn"
-                            onClick={() => openPopup("모임에서 나가시겠습니까?", handleCancel)}
+                            onClick={() => openPopup("모임에서 나가시겠습니까?", handleLeave)}
                         >
                             나가기
                         </button>

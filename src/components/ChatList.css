@@ -9,12 +9,18 @@
     flex-direction: column;
     overflow: hidden;
     z-index: 1060;
-    animation: dropdownFade 0.18s ease;
+    animation: dropdownSlide 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-@keyframes dropdownFade {
-    from { opacity: 0; transform: translateY(-8px); }
-    to   { opacity: 1; transform: translateY(0); }
+@keyframes dropdownSlide {
+    from {
+        opacity: 0;
+        transform: translateY(-12px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 /* =========================
@@ -43,11 +49,12 @@
     align-items: center;
     padding: 4px;
     border-radius: 8px;
-    transition: color 0.15s;
+    transition: color 0.15s, transform 0.15s;
 }
 
 .chat-close-btn:hover {
     color: #111;
+    transform: rotate(90deg);
 }
 
 /* =========================
@@ -79,8 +86,26 @@
     padding: 12px 16px;
     cursor: pointer;
     border-bottom: 1px solid #f3f3f3;
-    transition: background 0.15s;
+    transition: background 0.15s, transform 0.15s;
+    animation: itemFadeIn 0.2s ease both;
 }
+
+@keyframes itemFadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.chat-list-item:nth-child(1) { animation-delay: 0.03s; }
+.chat-list-item:nth-child(2) { animation-delay: 0.06s; }
+.chat-list-item:nth-child(3) { animation-delay: 0.09s; }
+.chat-list-item:nth-child(4) { animation-delay: 0.12s; }
+.chat-list-item:nth-child(5) { animation-delay: 0.15s; }
 
 .chat-list-item:last-child {
     border-bottom: none;
@@ -88,6 +113,7 @@
 
 .chat-list-item:hover {
     background: #f9f9f9;
+    transform: translateX(2px);
 }
 
 .chat-list-item.unread {
@@ -96,6 +122,7 @@
 
 .chat-list-item.unread:hover {
     background: #dbeafe;
+    transform: translateX(2px);
 }
 
 /* =========================
@@ -115,6 +142,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: transform 0.15s;
+}
+
+.chat-list-item:hover .room-avatar {
+    transform: scale(1.1);
 }
 
 .chat-list-item.unread .room-avatar {
@@ -179,6 +211,12 @@
     align-items: center;
     justify-content: center;
     padding: 0 4px;
+    animation: badgePop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes badgePop {
+    from { transform: scale(0); }
+    to   { transform: scale(1); }
 }
 
 /* =========================
@@ -190,4 +228,10 @@
     text-align: center;
     font-size: 13px;
     color: #a3a3a3;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
 }

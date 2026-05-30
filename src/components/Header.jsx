@@ -1,3 +1,13 @@
+// ====================================================
+// [백엔드 연결] API 경로
+// - GET /api/categories
+//     res: { data: [{ categoryId, categoryName }, ...] }
+// - GET /api/regions/cities
+//     res: string[]
+// - GET /api/notifications
+//     res: [{ id, type, message, time, read, link }, ...]
+// ====================================================
+
 import {
     Navbar, Nav, Container, FormControl, Dropdown, Button
 } from "react-bootstrap";
@@ -16,6 +26,8 @@ import { useAuth } from "../context/AuthContext";
 import Login from "../components/Login";
 import { fetchNotifications, markNotificationRead } from "../api/notification";
 
+const API_BASE = "/api";
+
 function Header() {
     const { isLoggedIn, logout } = useAuth();
     const navigate = useNavigate();
@@ -33,16 +45,12 @@ function Header() {
 
     const [notifications, setNotifications] = useState([]);
     const [categoryOptions, setCategoryOptions] = useState([]);
+    const [regionOptions, setRegionOptions] = useState([]);
 
     const unreadCount = notifications.filter((n) => !n.read).length;
 
-    const [regionOptions, setRegionOptions] = useState([]);
-
-    // 드롭다운 열림 state
     const [regionOpen, setRegionOpen] = useState(false);
     const [fieldOpen, setFieldOpen] = useState(false);
-
-    // 닫힘 애니메이션용 — "closing" 상태
     const [regionClosing, setRegionClosing] = useState(false);
     const [fieldClosing, setFieldClosing] = useState(false);
 
@@ -51,7 +59,6 @@ function Header() {
 
     const handleRegionToggle = () => {
         if (regionOpen) {
-            // 닫힐 때: closing 상태로 0.18s 후 실제로 닫기
             setRegionClosing(true);
             regionTimer.current = setTimeout(() => {
                 setRegionOpen(false);
@@ -109,28 +116,23 @@ function Header() {
         };
     }, []);
 
+    // [백엔드 연결] 카테고리 목록 조회
     useEffect(() => {
-        fetch("http://localhost:8080/categories")
+        fetch(`${API_BASE}/categories`)
             .then((res) => res.json())
-            .then((result) => {
-                setCategoryOptions(result.data || []);
-            })
-            .catch((error) => {
-                console.error("헤더 카테고리 불러오기 실패:", error);
-            });
+            .then((result) => setCategoryOptions(result.data || []))
+            .catch((e) => console.error("헤더 카테고리 불러오기 실패:", e));
     }, []);
 
+    // [백엔드 연결] 지역 목록 조회
     useEffect(() => {
-        fetch("http://localhost:8080/regions/cities")
+        fetch(`${API_BASE}/regions/cities`)
             .then((res) => res.json())
-            .then((result) => {
-                setRegionOptions(result);
-            })
-            .catch((error) => {
-                console.error("헤더 지역 불러오기 실패:", error);
-            });
+            .then((result) => setRegionOptions(result || []))
+            .catch((e) => console.error("헤더 지역 불러오기 실패:", e));
     }, []);
 
+    // [백엔드 연결] 알림 목록 조회 (로그인 상태일 때만)
     useEffect(() => {
         if (!isLoggedIn) {
             setNotifications([]);
@@ -290,12 +292,8 @@ function Header() {
                                     <Dropdown.Toggle variant="light" size="sm">
                                         {selectedRegion}
                                     </Dropdown.Toggle>
-                                    <Dropdown.Menu
-                                        className={regionClosing ? "dropdown-closing" : ""}
-                                    >
-                                        <Dropdown.Item onClick={() => handleRegionSelect("지역")}>
-                                            전체
-                                        </Dropdown.Item>
+                                    <Dropdown.Menu className={regionClosing ? "dropdown-closing" : ""}>
+                                        <Dropdown.Item onClick={() => handleRegionSelect("지역")}>전체</Dropdown.Item>
                                         {regionOptions.map((region) => (
                                             <Dropdown.Item key={region} onClick={() => handleRegionSelect(region)}>
                                                 {region}
@@ -309,12 +307,8 @@ function Header() {
                                     <Dropdown.Toggle variant="light" size="sm">
                                         {selectedField}
                                     </Dropdown.Toggle>
-                                    <Dropdown.Menu
-                                        className={fieldClosing ? "dropdown-closing" : ""}
-                                    >
-                                        <Dropdown.Item onClick={() => handleFieldSelect("분야")}>
-                                            전체
-                                        </Dropdown.Item>
+                                    <Dropdown.Menu className={fieldClosing ? "dropdown-closing" : ""}>
+                                        <Dropdown.Item onClick={() => handleFieldSelect("분야")}>전체</Dropdown.Item>
                                         {categoryOptions.map((category) => (
                                             <Dropdown.Item key={category.categoryId} onClick={() => handleFieldSelect(category.categoryName)}>
                                                 {category.categoryName}

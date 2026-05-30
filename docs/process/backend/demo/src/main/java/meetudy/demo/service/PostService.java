@@ -88,7 +88,7 @@ public class PostService {
             place = placeRepository.findById(request.getPlaceId())
                     .orElseThrow(() -> new CustomException(ErrorCode.PLACE_NOT_FOUND));
         }
-                    */
+*/
 
         Place place = null;
 

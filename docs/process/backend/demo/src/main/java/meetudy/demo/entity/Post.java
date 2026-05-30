@@ -37,11 +37,11 @@ public class Post {
     */
 
     @Column(name = "day_of_week", nullable = false)
-private String dayOfWeek;
+    private String dayOfWeek;
 
-@ManyToOne(fetch = FetchType.LAZY)
-@JoinColumn(name = "time_slot_id", nullable = false)
-private TimeSlot timeSlot;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "time_slot_id", nullable = false)
+    private TimeSlot timeSlot;
 
     @Column(name = "max_members", nullable = false)
     private Integer maxMembers;

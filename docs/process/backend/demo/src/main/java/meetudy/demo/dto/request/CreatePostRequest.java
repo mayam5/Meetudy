@@ -24,7 +24,7 @@ public class CreatePostRequest {
     //private LocalDateTime endTime;
 
     private String dayOfWeek;
-private Long timeSlotId;
+    private Long timeSlotId;
 
     @NotNull(message = "최대 인원은 필수입니다.")
     @Min(value = 2, message = "최대 인원은 2명 이상이어야 합니다.")

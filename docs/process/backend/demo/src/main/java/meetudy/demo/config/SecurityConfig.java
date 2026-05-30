@@ -41,8 +41,8 @@ public class SecurityConfig {
                         // 인증 없이 접근 허용
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/categories").permitAll()
-.requestMatchers("/posts").authenticated()
-        .requestMatchers("/posts/{postId}").permitAll()
+                        .requestMatchers("/posts").authenticated()
+                        .requestMatchers("/posts/{postId}").permitAll()
                         .requestMatchers("/ws/**").permitAll()
                         .requestMatchers("/places/**").permitAll()
                         .requestMatchers("/regions/**").permitAll()

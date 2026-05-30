@@ -57,33 +57,7 @@ public class PostController {
         return ResponseEntity.ok(ApiResponse.ok(postService.getMyPosts(userId)));
     }
 
-
-    /** POST-18: 게시글 작성 
-    @PostMapping
-    public ResponseEntity<ApiResponse<PostResponse>> createPost(
-            @AuthenticationPrincipal UserDetails userDetails,
-            @Valid @RequestBody CreatePostRequest request) {
-        Long userId = Long.parseLong(userDetails.getUsername());
-        PostResponse response = postService.createPost(userId, request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.ok(response));
-    }
- 
-@PostMapping
-public ResponseEntity<ApiResponse<PostResponse>> createPost(
-        @AuthenticationPrincipal UserDetails userDetails,
-        @Valid @RequestBody CreatePostRequest request) {
-
-    if (userDetails == null) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(ApiResponse.fail("로그인이 필요합니다."));
-    }
-
-    Long userId = Long.parseLong(userDetails.getUsername());
-    PostResponse response = postService.createPost(userId, request);
-
-    return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.ok(response));
-}
-    */
+   
 /** POST-18: 게시글 작성 */
 @PostMapping
 public ResponseEntity<ApiResponse<PostResponse>> createPost(

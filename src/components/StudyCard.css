@@ -5,16 +5,35 @@
     background: #fff;
     border-radius: 16px;
     border: 1px solid #e5e5e5;
+    border-top: 2px solid transparent;
     border-bottom: 2px solid transparent;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2s ease;
+    animation: cardFadeIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes cardFadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
 .study-card:hover {
+    border-top-color: #2563eb;
     border-bottom-color: #2563eb;
     transform: translateY(-3px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.07);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    background: #0a0a0a;
 }
+
+.study-card:active {
+    transform: scale(0.98);
+}
+
+.study-card:hover .study-title { color: #fff; }
+.study-card:hover .host-name   { color: #fff; }
+.study-card:hover .tag         { color: #525252; }
+.study-card:hover .more        { color: #525252; }
+.study-card:hover .avatar      { border-color: #0a0a0a; }
 
 .study-top {
     display: flex;
@@ -28,6 +47,7 @@
     font-weight: 800;
     color: #0a0a0a;
     letter-spacing: -0.4px;
+    transition: color 0.2s;
 }
 
 .study-bottom {
@@ -52,6 +72,7 @@
     border: 2px solid #fff;
     border-radius: 50%;
     color: #737373;
+    transition: border-color 0.2s;
 }
 
 .avatar.host {
@@ -59,6 +80,8 @@
     height: 30px;
     margin-left: 0;
     font-size: 11px;
+    background: #0a0a0a;
+    color: #fff;
 }
 
 .more {
@@ -66,6 +89,7 @@
     font-size: 11px;
     color: #a3a3a3;
     font-weight: 600;
+    transition: color 0.2s;
 }
 
 .host-box {
@@ -85,6 +109,7 @@
     font-weight: 700;
     color: #0a0a0a;
     line-height: 1;
+    transition: color 0.2s;
 }
 
 .tag {
@@ -92,4 +117,5 @@
     color: #a3a3a3;
     font-weight: 500;
     line-height: 1;
+    transition: color 0.2s;
 }

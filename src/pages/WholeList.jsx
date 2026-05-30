@@ -96,7 +96,7 @@ const getTabFetcher = (tab) => {
 const FILTER_TABS = ["전체 모임", "북마크"];
 const AUTH_REQUIRED_TABS = ["내가 작성한 모임", "참여 중인 모임", "신청한 모임", "북마크"];
 const STUDIES_PER_PAGE = 10;
-const API_BASE = "/api";
+const API_BASE = "http://localhost:8080";
 
 function WholeList() {
   const [searchParams] = useSearchParams();

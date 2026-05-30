@@ -419,3 +419,58 @@
         margin-top: 20px;
     }
 }
+
+/* =========================
+   애니메이션
+========================= */
+
+.whole-layout {
+    animation: pageSlideIn 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes pageSlideIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.whole-sidebar {
+    animation: sidebarSlideIn 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes sidebarSlideIn {
+    from { opacity: 0; transform: translateX(-16px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+.whole-tab {
+    transition: all 0.2s ease;
+}
+
+.whole-tab:active {
+    transform: scale(0.96);
+}
+
+.whole-main-header {
+    animation: sectionFadeIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both;
+}
+
+.whole-scroll-area {
+    animation: sectionFadeIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
+}
+
+.whole-pagination {
+    animation: sectionFadeIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
+}
+
+@keyframes sectionFadeIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.retry-btn:active {
+    transform: scale(0.96);
+}
+
+.whole-pagination .page-link:active {
+    transform: scale(0.92);
+}

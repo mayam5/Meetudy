@@ -1,223 +1,237 @@
-/* =========================
-   CHAT LIST DROPDOWN (UPGRADED)
-========================= */
-
 .chat-list-dropdown {
-  width: 320px;
-  max-height: 420px;
+    width: 320px;
+    max-height: 420px;
+    background: #fff;
+    border-radius: 20px;
+    border: 1px solid #e9e9e9;
+    border-top: 2px solid #2563eb;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 1060;
+    animation: dropdownSlide 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
 
-  background: #fff;
-  border-radius: 20px;
-  border: 1px solid #e9e9e9;
-
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
-
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-
-  margin: 0 !important;
-  z-index: 1060;
-
-  animation: dropdownFade 0.18s ease;
+@keyframes dropdownSlide {
+    from {
+        opacity: 0;
+        transform: translateY(-12px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 /* =========================
-   HEADER (카톡 느낌)
+   HEADER
 ========================= */
 
 .chat-list-header {
-  padding: 14px 16px;
-
-  font-size: 14px;
-  font-weight: 800;
-  color: #111;
-
-  background: #fafafa;
-  border-bottom: 1px solid #eee;
-
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+    padding: 14px 16px;
+    font-size: 13px;
+    font-weight: 800;
+    color: #111;
+    background: #fafafa;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    letter-spacing: -0.3px;
 }
 
 .chat-close-btn {
-  border: none;
-  background: transparent;
-  cursor: pointer;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  color: #888;
-  padding: 4px;
-  border-radius: 8px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: #a3a3a3;
+    display: flex;
+    align-items: center;
+    padding: 4px;
+    border-radius: 8px;
+    transition: color 0.15s, transform 0.15s;
 }
 
 .chat-close-btn:hover {
-  color: #007bff;
+    color: #111;
+    transform: rotate(90deg);
 }
+
 /* =========================
    BODY
 ========================= */
 
 .chat-list-body {
-  overflow-y: auto;
-  flex: 1;
+    overflow-y: auto;
+    flex: 1;
 }
-
-/* =========================
-   ITEM (채팅방 카드)
-========================= */
-
-.chat-list-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-
-  padding: 12px 14px;
-
-  cursor: pointer;
-  transition: 0.2s;
-
-  border-bottom: 1px solid #f3f3f3;
-}
-
-.chat-list-item:hover {
-  background: #f7f7f7;
-}
-
-/* =========================
-   LEFT AVATAR (채팅 느낌 핵심)
-========================= */
-
-.room-avatar {
-  width: 42px;
-  height: 42px;
-
-  border-radius: 50%;
-  background: #111;
-
-  flex-shrink: 0;
-}
-
-/* =========================
-   MIDDLE CONTENT
-========================= */
-
-.room-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-
-  min-width: 0;
-}
-
-.room-title {
-  font-size: 14px;
-  font-weight: 700;
-  color: #111;
-
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.room-last-msg {
-  font-size: 12px;
-  color: #777;
-
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* =========================
-   TIME / BADGE
-========================= */
-
-.room-time {
-  font-size: 11px;
-  color: #aaa;
-}
-
-.room-badge {
-  min-width: 16px;
-  height: 16px;
-
-  background: #007bff;
-  color: white;
-
-  font-size: 10px;
-  font-weight: 700;
-
-  border-radius: 999px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* =========================
-   ACTIVE / UNREAD
-========================= */
-
-.chat-list-item.unread {
-  background: #f9fbff;
-}
-
-.chat-list-item.unread .room-title {
-  font-weight: 800;
-}
-
-/* =========================
-   SCROLLBAR
-========================= */
 
 .chat-list-body::-webkit-scrollbar {
-  width: 6px;
+    width: 4px;
 }
 
 .chat-list-body::-webkit-scrollbar-thumb {
-  background: #ddd;
-  border-radius: 10px;
+    background: #e5e5e5;
+    border-radius: 10px;
 }
 
+/* =========================
+   ITEM
+========================= */
 
-.chat-list-empty {
-    padding: 40px 0;
-    text-align: center;
-    font-size: 13px;
-    color: #aaa;
+.chat-list-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid #f3f3f3;
+    transition: background 0.15s, transform 0.15s;
+    animation: itemFadeIn 0.2s ease both;
 }
+
+@keyframes itemFadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.chat-list-item:nth-child(1) { animation-delay: 0.03s; }
+.chat-list-item:nth-child(2) { animation-delay: 0.06s; }
+.chat-list-item:nth-child(3) { animation-delay: 0.09s; }
+.chat-list-item:nth-child(4) { animation-delay: 0.12s; }
+.chat-list-item:nth-child(5) { animation-delay: 0.15s; }
+
+.chat-list-item:last-child {
+    border-bottom: none;
+}
+
+.chat-list-item:hover {
+    background: #f9f9f9;
+    transform: translateX(2px);
+}
+
+.chat-list-item.unread {
+    background: #eff6ff;
+}
+
+.chat-list-item.unread:hover {
+    background: #dbeafe;
+    transform: translateX(2px);
+}
+
+/* =========================
+   AVATAR
+========================= */
 
 .room-avatar {
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    background: #111;
-    color: white;
-    font-size: 16px;
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: #f5f5f5;
+    border: 1px solid #e9e9e9;
+    color: #555;
+    font-size: 15px;
     font-weight: 700;
     flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: transform 0.15s;
+}
+
+.chat-list-item:hover .room-avatar {
+    transform: scale(1.1);
+}
+
+.chat-list-item.unread .room-avatar {
+    background: #dbeafe;
+    border-color: #bfdbfe;
+    color: #2563eb;
 }
 
 /* =========================
-   ANIMATION
+   CONTENT
 ========================= */
 
-@keyframes dropdownFade {
-  from {
-    opacity: 0;
-    transform: translateY(-8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.room-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+
+.room-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #555;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chat-list-item.unread .room-title {
+    color: #111;
+}
+
+.room-last-msg {
+    font-size: 12px;
+    color: #a3a3a3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.room-time {
+    font-size: 11px;
+    color: #a3a3a3;
+    font-weight: 400;
+}
+
+/* =========================
+   BADGE
+========================= */
+
+.room-badge {
+    min-width: 16px;
+    height: 16px;
+    background: #eff6ff;
+    color: #2563eb;
+    font-size: 10px;
+    font-weight: 700;
+    border-radius: 999px;
+    border: 1px solid #bfdbfe;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+    animation: badgePop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes badgePop {
+    from { transform: scale(0); }
+    to   { transform: scale(1); }
+}
+
+/* =========================
+   EMPTY
+========================= */
+
+.chat-list-empty {
+    padding: 40px 0;
+    text-align: center;
+    font-size: 13px;
+    color: #a3a3a3;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
 }

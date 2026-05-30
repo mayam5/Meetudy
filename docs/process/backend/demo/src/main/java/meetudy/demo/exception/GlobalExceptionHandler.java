@@ -35,6 +35,7 @@ public class GlobalExceptionHandler {
     /** 그 외 예외 처리 */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleException(Exception e) {
+       e.printStackTrace();
         return ResponseEntity
                 .internalServerError()
                 .body(ApiResponse.fail("서버 오류가 발생했습니다."));

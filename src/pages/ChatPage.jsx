@@ -1,7 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "./ChatPage.css";
-import { fetchChatRooms, fetchChatMessages, sendMessage } from "../api/chat";
+import {
+    fetchChatRooms,
+    fetchChatMessages,
+    markAsRead,
+    createStompClient,
+    sendStompMessage,
+} from "../api/chat";
 import { FiSend, FiArrowLeft } from "react-icons/fi";
 
 function ChatPage() {
@@ -13,7 +19,10 @@ function ChatPage() {
     const [loadingRooms, setLoadingRooms] = useState(true);
     const [loadingMessages, setLoadingMessages] = useState(false);
     const [showChat, setShowChat] = useState(false);
+    const [wsConnected, setWsConnected] = useState(false);
     const bodyRef = useRef(null);
+    const stompClientRef = useRef(null);
+    const subscriptionRef = useRef(null);
 
     // 채팅방 목록 로드
     useEffect(() => {
@@ -31,6 +40,16 @@ function ChatPage() {
         load();
     }, []);
 
+    // WebSocket 연결 (마운트 시 1회)
+    useEffect(() => {
+        const client = createStompClient();
+        client.onConnect = () => setWsConnected(true);
+        client.onDisconnect = () => setWsConnected(false);
+        stompClientRef.current = client;
+        client.activate();
+        return () => client.deactivate();
+    }, []);
+
     // 채팅방 선택 시 메시지 로드
     useEffect(() => {
         if (!activeRoom) return;
@@ -39,17 +58,42 @@ function ChatPage() {
             try {
                 const data = await fetchChatMessages(activeRoom.id);
                 setMessages(data);
+                await markAsRead(activeRoom.id);
             } catch (e) {
                 console.error("메시지 로드 실패:", e);
-                setMessages([
-                    { id: 1, type: "system", text: `[${activeRoom.title}] 입장했습니다.` },
-                ]);
+                setMessages([{ id: Date.now(), type: "system", text: "메시지를 불러올 수 없습니다." }]);
             } finally {
                 setLoadingMessages(false);
             }
         };
         load();
     }, [activeRoom]);
+
+    // WebSocket 구독 (연결 완료 + 방 선택 시)
+    useEffect(() => {
+        if (!wsConnected || !activeRoom) return;
+
+        subscriptionRef.current?.unsubscribe();
+
+        const myId = Number(localStorage.getItem("userId"));
+        subscriptionRef.current = stompClientRef.current.subscribe(
+            `/user/queue/chat.${activeRoom.id}`,
+            (frame) => {
+                const msg = JSON.parse(frame.body);
+                setMessages((prev) => [
+                    ...prev,
+                    {
+                        id: msg.messageId,
+                        type: msg.senderId === myId ? "me" : "other",
+                        text: msg.messageContent,
+                        nickname: msg.senderNickname,
+                    },
+                ]);
+            }
+        );
+
+        return () => subscriptionRef.current?.unsubscribe();
+    }, [wsConnected, activeRoom]);
 
     // 새 메시지 자동 스크롤
     useEffect(() => {
@@ -63,16 +107,10 @@ function ChatPage() {
         setShowChat(true);
     };
 
-    const handleSend = async () => {
-        if (!inputValue.trim() || !activeRoom) return;
-        const newMsg = { id: Date.now(), type: "me", text: inputValue.trim() };
-        setMessages((prev) => [...prev, newMsg]);
+    const handleSend = () => {
+        if (!inputValue.trim() || !activeRoom || !stompClientRef.current?.connected) return;
+        sendStompMessage(stompClientRef.current, activeRoom.id, inputValue.trim());
         setInputValue("");
-        try {
-            await sendMessage(activeRoom.id, inputValue.trim());
-        } catch (e) {
-            console.error("메시지 전송 실패:", e);
-        }
     };
 
     return (
@@ -142,6 +180,9 @@ function ChatPage() {
                             )}
                             {!loadingMessages && messages.map((msg) => (
                                 <div key={msg.id} className={`chat-page-msg ${msg.type}`}>
+                                    {msg.type === "other" && msg.nickname && (
+                                        <span className="chat-page-msg-nickname">{msg.nickname}</span>
+                                    )}
                                     {msg.text}
                                 </div>
                             ))}

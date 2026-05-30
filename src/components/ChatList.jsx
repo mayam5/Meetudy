@@ -25,7 +25,7 @@ function ChatList({ onSelectRoom, onClose }) {
     return (
         <div className="chat-list-dropdown">
             <div className="chat-list-header">
-                <span>내 참여 모임</span>
+                <span>내 채팅방 목록</span>
                 <button className="chat-close-btn" onClick={onClose}>
                     <FiX size={18} />
                 </button>

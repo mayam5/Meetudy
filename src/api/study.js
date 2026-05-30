@@ -1,5 +1,3 @@
-import axios from "axios";
-
 const BASE_URL = "http://localhost:8080";
 
 const authHeader = () => ({
@@ -7,6 +5,7 @@ const authHeader = () => ({
     Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
 });
 
+// PostResponse → 프론트 공통 형태 변환
 const mapPost = (p) => ({
     id: p.postId,
     title: p.postTitle,
@@ -16,44 +15,48 @@ const mapPost = (p) => ({
     maxMembers: p.maxMembers ?? 0,
     currentMembers: p.currentMembers ?? 0,
     place: p.placeName ?? "",
-    status: p.postStatus ?? "recruiting",
-    meetingTimes: p.dayOfWeek && p.timeSlotName ? [`${p.dayOfWeek} ${p.timeSlotName}`] : [],
+    status: p.postStatus ?? "OPEN",
     users: [],
     tags: p.categoryName ? [p.categoryName] : [],
 });
 
-// 전체 게시글 목록
+/** POST-15: 전체 게시글 목록 GET /posts */
 export const fetchAllStudies = async ({ search, field, page = 1, limit = 10, signal } = {}) => {
     const params = new URLSearchParams();
     if (search) params.set("keyword", search);
 
-    const res = await fetch(`${BASE_URL}/posts?${params}`, { headers: authHeader(), signal });
+    const res = await fetch(`${BASE_URL}/posts?${params}`, {
+        headers: authHeader(),
+        signal,
+    });
     const json = await res.json();
     if (!res.ok || !json.success) throw new Error(json.message);
 
-    let mapped = json.data.map(mapPost);
+    let mapped = (json.data ?? []).map(mapPost);
     if (field) mapped = mapped.filter((p) => p.field === field);
 
     const start = (page - 1) * limit;
     return { data: mapped.slice(start, start + limit), total: mapped.length };
 };
 
-// 내가 작성한 게시글
+/** POST-17: 내 게시글 목록 GET /posts/me */
 export const fetchMyStudies = async () => {
     const res = await fetch(`${BASE_URL}/posts/me`, { headers: authHeader() });
     const json = await res.json();
     if (!res.ok || !json.success) throw new Error(json.message);
-    return { data: json.data.map(mapPost) };
+    return { data: (json.data ?? []).map(mapPost) };
 };
 
-// 참여 중인 스터디 그룹
+/** 참여 중인 스터디 그룹 GET /study-groups/me */
+// StudyGroupResponse 필드: studyGroupId, postId, groupName, createdAt
 export const fetchJoinedStudies = async () => {
     const res = await fetch(`${BASE_URL}/study-groups/me`, { headers: authHeader() });
     const json = await res.json();
     if (!res.ok || !json.success) throw new Error(json.message);
     return {
-        data: json.data.map((g) => ({
-            id: g.studyGroupId,
+        data: (json.data ?? []).map((g) => ({
+            id: g.postId,           // postId 기준으로 비교해야 relation 판단 가능
+            groupId: g.studyGroupId,
             title: g.groupName,
             host: "",
             field: "",
@@ -62,34 +65,36 @@ export const fetchJoinedStudies = async () => {
     };
 };
 
-// 신청한 스터디 목록
+/** 신청한 스터디 목록 GET /applications/me */
+// ApplicationResponse 필드: applicationId, postId, postTitle, applicantId, applicantNickname, status, createdAt
 export const fetchAppliedStudies = async () => {
     const res = await fetch(`${BASE_URL}/applications/me`, { headers: authHeader() });
     const json = await res.json();
     if (!res.ok || !json.success) throw new Error(json.message);
     return {
-        data: json.data.map((a) => ({
+        data: (json.data ?? []).map((a) => ({
             id: a.postId,
+            applicationId: a.applicationId,
             title: a.postTitle,
-            host: "",
+            host: a.applicantNickname ?? "",
             field: "",
             users: [],
-            applicationStatus: a.status?.toLowerCase(),
+            applicationStatus: a.status?.toLowerCase(), // "PENDING" → "pending"
         })),
     };
 };
 
-// 북마크한 게시글 목록
+/** 북마크한 게시글 목록 GET /posts/bookmarks */
 export const fetchBookmarkedStudies = async ({ page = 1, limit = 10 } = {}) => {
     const res = await fetch(`${BASE_URL}/posts/bookmarks`, { headers: authHeader() });
     const json = await res.json();
     if (!res.ok || !json.success) throw new Error(json.message);
-    const mapped = json.data.map(mapPost);
+    const mapped = (json.data ?? []).map(mapPost);
     const start = (page - 1) * limit;
     return { data: mapped.slice(start, start + limit), total: mapped.length };
 };
 
-// 게시글 단건 조회
+/** 게시글 단건 조회 GET /posts/:id */
 export const fetchStudyById = async (id) => {
     const res = await fetch(`${BASE_URL}/posts/${id}`, { headers: authHeader() });
     const json = await res.json();
@@ -97,19 +102,19 @@ export const fetchStudyById = async (id) => {
     return mapPost(json.data);
 };
 
-// 게시글 작성
+/** 게시글 작성 POST /posts */
 export const createStudy = async (payload) => {
-    const token = localStorage.getItem("accessToken");
-    const response = await axios.post(`${BASE_URL}/posts`, payload, {
-        headers: { Authorization: `Bearer ${token}` },
+    const res = await fetch(`${BASE_URL}/posts`, {
+        method: "POST",
+        headers: authHeader(),
+        body: JSON.stringify(payload),
     });
-    if (response.data.success === false) {
-        throw new Error(response.data.message || "게시글 작성 실패");
-    }
-    return response.data.data ?? response.data;
+    const json = await res.json();
+    if (!res.ok || !json.success) throw new Error(json.message || "게시글 작성 실패");
+    return json.data;
 };
 
-// 게시글 수정
+/** 게시글 수정 PATCH /posts/:id */
 export const updateStudy = async (id, payload) => {
     const res = await fetch(`${BASE_URL}/posts/${id}`, {
         method: "PATCH",
@@ -121,7 +126,7 @@ export const updateStudy = async (id, payload) => {
     return json.data;
 };
 
-// 게시글 삭제
+/** 게시글 삭제 DELETE /posts/:id */
 export const deleteStudy = async (id) => {
     const res = await fetch(`${BASE_URL}/posts/${id}`, {
         method: "DELETE",
@@ -132,7 +137,7 @@ export const deleteStudy = async (id) => {
     return json.data;
 };
 
-// 스터디 신청
+/** 스터디 신청 POST /applications */
 export const applyToStudy = async (postId) => {
     const res = await fetch(`${BASE_URL}/applications`, {
         method: "POST",
@@ -144,7 +149,7 @@ export const applyToStudy = async (postId) => {
     return json.data;
 };
 
-// 신청 취소 (postId로 applicationId 조회 후 삭제)
+/** 신청 취소 - postId로 applicationId 찾아서 DELETE /applications/:id */
 export const cancelApplication = async (postId) => {
     const listRes = await fetch(`${BASE_URL}/applications/me`, { headers: authHeader() });
     const listJson = await listRes.json();
@@ -162,7 +167,7 @@ export const cancelApplication = async (postId) => {
     return json.data;
 };
 
-// 내 관계 조회: owned | pending | accepted | rejected | joined | none
+/** 내 스터디 관계 조회: owned | pending | accepted | rejected | joined | none */
 export const fetchMyStudyRelation = async (postId) => {
     const myId = Number(localStorage.getItem("userId"));
     if (!myId) return "none";
@@ -174,40 +179,43 @@ export const fetchMyStudyRelation = async (postId) => {
         fetch(`${BASE_URL}/applications/me`, { headers: authHeader() }),
         fetch(`${BASE_URL}/study-groups/me`, { headers: authHeader() }),
     ]);
-
     const [postsJson, appsJson, groupsJson] = await Promise.all([
         postsRes.json(),
         appsRes.json(),
         groupsRes.json(),
     ]);
 
-    if (postsJson.success && postsJson.data.some((p) => p.postId === numId)) return "owned";
+    // 내가 작성한 게시글인지
+    if (postsJson.success && (postsJson.data ?? []).some((p) => p.postId === numId))
+        return "owned";
 
+    // 신청 상태 확인
     if (appsJson.success) {
-        const app = appsJson.data.find((a) => a.postId === numId);
+        const app = (appsJson.data ?? []).find((a) => a.postId === numId);
         if (app) {
             const s = app.status?.toUpperCase();
-            if (s === "PENDING") return "pending";
             if (s === "ACCEPTED") return "accepted";
             if (s === "REJECTED") return "rejected";
+            return "pending";
         }
     }
 
-    if (groupsJson.success && groupsJson.data.length > 0) return "joined";
+    // 참여 중인 그룹인지 (postId 기준 비교)
+    if (groupsJson.success && (groupsJson.data ?? []).some((g) => g.postId === numId))
+        return "joined";
 
     return "none";
 };
 
+// Home.jsx 등에서 사용
 export const fetchRecommendedStudies = async () => {
-    const res = await fetch(`${BASE_URL}/posts`, { headers: authHeader() });
-    const json = await res.json();
-    if (!res.ok || !json.success) return [];
-    return json.data.slice(0, 3).map(mapPost);
+    const result = await fetchAllStudies({ limit: 3 });
+    return result.data;
 };
 
 export const fetchStudyPreview = async () => {
-    const res = await fetch(`${BASE_URL}/posts`, { headers: authHeader() });
-    const json = await res.json();
-    if (!res.ok || !json.success) return [];
-    return json.data.slice(0, 5).map(mapPost);
+    const result = await fetchAllStudies({ limit: 5 });
+    return result.data;
 };
+
+export const fetchPendingStudies = fetchAppliedStudies;

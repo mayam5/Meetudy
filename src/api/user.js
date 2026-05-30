@@ -6,7 +6,16 @@ const authHeader = () => ({
 });
 
 const DAY_MAP = { 월: "MON", 화: "TUE", 수: "WED", 목: "THU", 금: "FRI", 토: "SAT", 일: "SUN" };
-const TIME_MAP = { 새벽: 1, 오전: 2, 오후: 3, 저녁: 4, 밤: 5 };
+const TIME_MAP = { 새벽: 1, 아침: 2, 오후: 3, 저녁: 4 };
+
+export const fetchMySchedules = async () => {
+    const res = await fetch(`${BASE_URL}/schedules/me`, { headers: authHeader() });
+    const json = await res.json();
+    if (!res.ok || !json.success) throw new Error(json.message);
+    return json.data;
+};
+
+
 
 export const fetchMyProfile = async () => {
     const res = await fetch(`${BASE_URL}/users/me`, { headers: authHeader() });

@@ -46,6 +46,7 @@ function ProfilePage() {
                     </div>
                     <h2 className="profile-nickname">{user.nickname}</h2>
                     <span className="profile-field">#{user.field}</span>
+                    <div className="profile-divider" />
                     <p className="profile-bio">{user.bio ?? "소개가 없습니다."}</p>
                 </div>
 

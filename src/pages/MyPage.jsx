@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './MyPage.css';
 import StudyListItem from '../components/StudyListItem';
 import HostInfo from "../components/HostInfo";
@@ -80,6 +80,7 @@ function MyPage() {
 
   const [isEdit, setIsEdit] = useState(false);
   const [profileImage, setProfileImage] = useState(null);
+  const profileImageRef = useRef(null);
   const [scheduleEdit, setScheduleEdit] = useState(false);
   const [activeMeetingTab, setActiveMeetingTab] = useState('참여 중인 모임');
   const [meetingStudies, setMeetingStudies] = useState([]);
@@ -88,6 +89,7 @@ function MyPage() {
   const [region, setRegion] = useState({ sido: "", sigungu: "", dong: "" });
   const [activeSchedule, setActiveSchedule] = useState([]);
   const [password, setPassword] = useState({ current: "", new: "", confirm: "" });
+  const [originalNickname, setOriginalNickname] = useState("");
   const [userInfo, setUserInfo] = useState({
     email: "", nickname: "", birth: "2000-01-01",
     gender: "F", bio: "", categories: [], agePublic: false,
@@ -103,49 +105,69 @@ function MyPage() {
   useEffect(() => {
     const load = async () => {
       setLoading(true);
-      try {
-        const [profile, bookmarks, blocked, categoryRes, schedules] = await Promise.all([
-          fetchMyProfile(),
-          fetchBookmarks(),
-          fetchBlockedUsers(),
-          fetch(`${API_BASE}/categories`).then((r) => r.json()),
-          fetchMySchedules(),
-        ]);
 
+      // 하나가 실패해도 나머지는 유지되도록 각각 독립적으로 로드
+      const [profile, bookmarks, blocked, categoryRes, schedules] = await Promise.allSettled([
+        fetchMyProfile(),
+        fetchBookmarks(),
+        fetchBlockedUsers(),
+        fetch(`${API_BASE}/categories`).then((r) => r.json()),
+        fetchMySchedules(),
+      ]);
+
+      if (profile.status === "fulfilled") {
+        const p = profile.value;
         setUserInfo({
-          email:      profile.email      ?? "",
-          nickname:   profile.nickname   ?? "",
-          birth:      profile.birth      ?? "2000-01-01",
-          gender:     profile.gender     ?? "F",
-          bio:        profile.bio        ?? "",
-          categories: profile.categories ?? [],
-          agePublic:  profile.agePublic  ?? false,
+          email:      p.email      ?? "",
+          nickname:   p.nickname   ?? "",
+          birth:      p.birth      ?? "2000-01-01",
+          gender:     p.gender     ?? "F",
+          bio:        p.bio        ?? "",
+          categories: p.categories ?? [],
+          agePublic:  p.agePublic  ?? false,
         });
-        if (profile.profileImage) setProfileImage(profile.profileImage);
+        if (p.profileImage) setProfileImage(p.profileImage);
+        setOriginalNickname(p.nickname ?? "");
+      } else {
+        console.error("프로필 로드 실패:", profile.reason);
+      }
 
-        setBookmarkData(bookmarks);
-        setBookmarkedIds(bookmarks.map((b) => b.id));
-        setBlockedUsers(blocked);
-        setCategoryOptions((categoryRes.data ?? []).map((c) => c.categoryName));
+      if (bookmarks.status === "fulfilled") {
+        setBookmarkData(bookmarks.value);
+        setBookmarkedIds(bookmarks.value.map((b) => b.id));
+      } else {
+        console.error("북마크 로드 실패:", bookmarks.reason);
+      }
 
-        // 스케줄: ScheduleResponse[] → ["월-새벽", "화-오전", ...] 변환
-        const scheduleList = Array.isArray(schedules) ? schedules : [];
+      if (blocked.status === "fulfilled") {
+        setBlockedUsers(blocked.value);
+      } else {
+        console.error("차단 로드 실패:", blocked.reason);
+      }
+
+      if (categoryRes.status === "fulfilled") {
+        setCategoryOptions((categoryRes.value.data ?? []).map((c) => c.categoryName));
+      }
+
+      if (schedules.status === "fulfilled") {
+        const scheduleList = Array.isArray(schedules.value) ? schedules.value : [];
         const converted = scheduleList
           .map((s) => {
             const dayKr = DAY_TO_KR[s.dayOfWeek];
-            const timeKr = s.slotName; // 백엔드 slotName이 "새벽"/"오전"/"오후"/"저녁" 이면 그대로
+            const timeKr = s.slotName;
             return dayKr && timeKr ? `${dayKr}-${timeKr}` : null;
           })
           .filter(Boolean);
         setActiveSchedule(converted);
-      } catch (e) {
-        console.error("마이페이지 데이터 로드 실패:", e);
-      } finally {
-        setLoading(false);
+      } else {
+        console.error("스케줄 로드 실패:", schedules.reason);
       }
+
+      setLoading(false);
     };
     load();
   }, []);
+
 
   // 모임 탭 변경 시 데이터 로드
   useEffect(() => {
@@ -191,9 +213,39 @@ function MyPage() {
     );
   };
 
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // 미리보기
+    const previewUrl = URL.createObjectURL(file);
+    setProfileImage(previewUrl);
+
+    // 서버 업로드
+    const formData = new FormData();
+    formData.append("image", file);
+    try {
+      const token = localStorage.getItem("accessToken");
+      const res = await fetch("http://localhost:8080/users/me/image", {
+        method: "PATCH",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+      const json = await res.json();
+      if (!res.ok || !json.success) throw new Error(json.message);
+      setProfileImage(json.data.profileImage);
+    } catch (err) {
+      console.error("이미지 업로드 실패:", err);
+      alert("이미지 업로드에 실패했습니다.");
+    }
+  };
+
   const handleSave = async () => {
     try {
-      await updateMyProfile({ ...userInfo, region });
+      // 닉네임이 변경된 경우에만 전송, 그대로면 null로 보내서 중복 체크 스킵
+      const nicknameToSend = userInfo.nickname !== originalNickname ? userInfo.nickname : null;
+      await updateMyProfile({ ...userInfo, nickname: nicknameToSend, region });
+      setOriginalNickname(userInfo.nickname);
     } catch (e) {
       console.error("프로필 저장 실패:", e);
       alert("프로필 저장에 실패했습니다.");
@@ -266,12 +318,34 @@ function MyPage() {
             <h2 className="nickname">{userInfo.nickname}</h2>
           )}
 
-          <div className="profile-image">
+          <div
+            className="profile-image"
+            style={{ position: "relative", cursor: isEdit ? "pointer" : "default" }}
+            onClick={() => isEdit && profileImageRef.current?.click()}
+          >
             {profileImage ? (
               <img src={profileImage} alt="프로필" className="profile-img" />
             ) : (
               <div className="profile-placeholder" />
             )}
+            {isEdit && (
+              <div style={{
+                position: "absolute", bottom: 0, right: 0,
+                background: "#3b82f6", borderRadius: "50%",
+                width: 28, height: 28, display: "flex",
+                alignItems: "center", justifyContent: "center",
+                fontSize: 14, color: "#fff",
+              }}>
+                📷
+              </div>
+            )}
+            <input
+              ref={profileImageRef}
+              type="file"
+              accept="image/*"
+              style={{ display: "none" }}
+              onChange={handleImageChange}
+            />
           </div>
 
           <div className="profile-info">

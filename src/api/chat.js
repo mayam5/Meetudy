@@ -1,24 +1,71 @@
-import { DUMMY_ROOMS } from "../data/dummyData";
+import { Client } from "@stomp/stompjs";
+import SockJS from "sockjs-client";
+
+const BASE_URL = "http://localhost:8080";
+
+const authHeader = () => ({
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+});
 
 // 채팅방 목록 조회
 export const fetchChatRooms = async () => {
-    // TODO: return await axios.get("/api/chat/rooms");
-    return DUMMY_ROOMS;
+    const res = await fetch(`${BASE_URL}/chats/me`, { headers: authHeader() });
+    const json = await res.json();
+    if (!res.ok || !json.success) throw new Error(json.message);
+    return json.data.map((room) => ({
+        id: room.chatRoomId,
+        title: room.groupName,
+        lastMessage: "",
+        time: "",
+        unread: 0,
+    }));
 };
 
-// 채팅방 메시지 조회
-export const fetchChatMessages = async (roomId) => {
-    // TODO: return await axios.get(`/api/chat/rooms/${roomId}/messages`);
-    return [
-        { id: 1, type: "system", text: "채팅방에 입장했습니다." },
-        { id: 2, type: "other", text: "안녕하세요!" },
-        { id: 3, type: "me", text: "네 반갑습니다 👋" },
-    ];
+// 메시지 목록 조회
+export const fetchChatMessages = async (roomId, page = 0, size = 30) => {
+    const res = await fetch(
+        `${BASE_URL}/chats/${roomId}/messages?page=${page}&size=${size}`,
+        { headers: authHeader() }
+    );
+    const json = await res.json();
+    if (!res.ok || !json.success) throw new Error(json.message);
+
+    const myId = Number(localStorage.getItem("userId"));
+    return json.data.content.map((msg) => ({
+        id: msg.messageId,
+        type: msg.senderId === myId ? "me" : "other",
+        text: msg.messageContent,
+        nickname: msg.senderNickname,
+    }));
 };
 
-// 메시지 전송
-export const sendMessage = async (roomId, text) => {
-    // TODO: return await axios.post(`/api/chat/rooms/${roomId}/messages`, { text });
-    console.log("sendMessage:", roomId, text);
-    return { success: true };
+// 읽음 처리
+export const markAsRead = async (roomId) => {
+    await fetch(`${BASE_URL}/chats/${roomId}/read`, {
+        method: "PATCH",
+        headers: authHeader(),
+    });
+};
+
+// STOMP 클라이언트 생성
+export const createStompClient = () =>
+    new Client({
+        webSocketFactory: () => new SockJS(`${BASE_URL}/ws`),
+        connectHeaders: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+        reconnectDelay: 5000,
+    });
+
+// 메시지 전송 (WebSocket)
+export const sendStompMessage = (client, roomId, text) => {
+    client.publish({
+        destination: "/app/chat.send",
+        body: JSON.stringify({
+            chatRoomId: roomId,
+            messageContent: text,
+            messageType: "TEXT",
+        }),
+    });
 };

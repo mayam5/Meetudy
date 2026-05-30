@@ -275,6 +275,7 @@
     border: 3px solid #f5f5f5;
     border-radius: 20px;
     overflow: hidden;
+    
 }
 
 .place-result-item {
@@ -282,6 +283,16 @@
     cursor: pointer;
     border-bottom: 1px solid #f5f5f5;
     transition: background-color 0.15s;
+    
+}
+
+.place-result-item strong,
+.place-result-item p {
+    color: black;
+}
+
+.place-result-item p {
+    margin: 5px 0 0;
 }
 
 .place-result-item:last-child {

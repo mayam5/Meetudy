@@ -16,6 +16,8 @@ function Login({ onClose, onLoginSuccess }) {
     const { login } = useAuth();
 
     const [categoryOptions, setCategoryOptions] = useState([]);
+    const [regionOptions, setRegionOptions] = useState([]);
+    const [region, setRegion] = useState("");
 
     const handleClose = () => {
         if (typeof onClose === "function") onClose();
@@ -40,6 +42,17 @@ function Login({ onClose, onLoginSuccess }) {
         console.error("카테고리 불러오기 실패:", error);
         });
     }, []);
+
+    useEffect(() => {
+  fetch("http://localhost:8080/regions/cities")
+    .then((res) => res.json())
+    .then((result) => {
+      setRegionOptions(result || []);
+    })
+    .catch((error) => {
+      console.error("지역 불러오기 실패:", error);
+    });
+}, []);
 
     // 💡 2. 로그인/회원가입 버튼 클릭 후 Formik의 유효성 검사를 통과하면 실행되는 최종 서밋 함수입니다.
 const handleFormSubmit = async (values) => {
@@ -314,9 +327,11 @@ const handleFormSubmit = async (values) => {
                                                     title={values.region || "지역 선택"}
                                                     onSelect={(value) => setFieldValue("region", value)}
                                                 >
-                                                    {["서울", "경기", "인천", "부산", "대구"].map((r) => (
-                                                        <Dropdown.Item key={r} eventKey={r}>{r}</Dropdown.Item>
-                                                    ))}
+                                                    {regionOptions.map((r) => (
+    <Dropdown.Item key={r} eventKey={r}>
+        {r}
+    </Dropdown.Item>
+))}
                                                 </DropdownButton>
                                                 {touched.region && errors.region && (
                                                     <div className="text-danger" style={{ fontSize: "12px" }}>

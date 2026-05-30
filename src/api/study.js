@@ -47,6 +47,7 @@ export const fetchStudyById = async (id) => {
     return DUMMY_STUDIES.find((s) => s.id === Number(id)) ?? null;
 };
 
+/*
 export const createStudy = async (payload) => {
     const token = localStorage.getItem("accessToken");
 
@@ -66,6 +67,64 @@ export const createStudy = async (payload) => {
     }
 
     return result.data;
+};
+
+
+export const createStudy = async (payload) => {
+    const token = localStorage.getItem("accessToken");
+
+    const response = await fetch("http://localhost:8080/posts", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+    });
+
+    const text = await response.text();
+    console.log("posts 응답 status:", response.status);
+    console.log("posts 응답 body:", text);
+
+    let result = {};
+    try {
+        result = text ? JSON.parse(text) : {};
+    } catch (e) {
+        console.error("JSON 파싱 실패:", e);
+    }
+
+    if (!response.ok || result.success === false) {
+        throw new Error(result.message || text || "게시글 작성 실패");
+    }
+
+    return result.data ?? result;
+};
+*/
+
+import axios from "axios";
+
+export const createStudy = async (payload) => {
+    const token = localStorage.getItem("accessToken");
+
+    console.log("accessToken:", token);
+
+    const response = await axios.post(
+        "http://localhost:8080/posts",
+        payload,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        }
+    );
+
+    console.log("posts 응답:", response.data);
+
+    if (response.data.success === false) {
+        throw new Error(response.data.message || "게시글 작성 실패");
+    }
+
+    return response.data.data ?? response.data;
 };
 
 export const updateStudy = async (id, payload) => {

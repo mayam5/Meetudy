@@ -9,8 +9,10 @@ import meetudy.demo.dto.response.PostResponse;
 import meetudy.demo.service.PostService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -55,7 +57,8 @@ public class PostController {
         return ResponseEntity.ok(ApiResponse.ok(postService.getMyPosts(userId)));
     }
 
-    /** POST-18: 게시글 작성 */
+
+    /** POST-18: 게시글 작성 
     @PostMapping
     public ResponseEntity<ApiResponse<PostResponse>> createPost(
             @AuthenticationPrincipal UserDetails userDetails,
@@ -64,6 +67,54 @@ public class PostController {
         PostResponse response = postService.createPost(userId, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.ok(response));
     }
+ 
+@PostMapping
+public ResponseEntity<ApiResponse<PostResponse>> createPost(
+        @AuthenticationPrincipal UserDetails userDetails,
+        @Valid @RequestBody CreatePostRequest request) {
+
+    if (userDetails == null) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(ApiResponse.fail("로그인이 필요합니다."));
+    }
+
+    Long userId = Long.parseLong(userDetails.getUsername());
+    PostResponse response = postService.createPost(userId, request);
+
+    return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.ok(response));
+}
+    */
+/** POST-18: 게시글 작성 */
+@PostMapping
+public ResponseEntity<ApiResponse<PostResponse>> createPost(
+        Authentication authentication,
+        @Valid @RequestBody CreatePostRequest request) {
+
+    System.out.println("===== PostController createPost =====");
+    System.out.println("method parameter authentication = " + authentication);
+
+    Authentication contextAuth = SecurityContextHolder.getContext().getAuthentication();
+    System.out.println("SecurityContext authentication = " + contextAuth);
+
+    if (contextAuth != null) {
+        System.out.println("principal = " + contextAuth.getPrincipal());
+        System.out.println("principal class = " + contextAuth.getPrincipal().getClass().getName());
+        System.out.println("authorities = " + contextAuth.getAuthorities());
+        System.out.println("isAuthenticated = " + contextAuth.isAuthenticated());
+    }
+
+    if (contextAuth == null || contextAuth.getPrincipal() == null) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(ApiResponse.fail("로그인이 필요합니다."));
+    }
+
+    UserDetails userDetails = (UserDetails) contextAuth.getPrincipal();
+
+    Long userId = Long.parseLong(userDetails.getUsername());
+    PostResponse response = postService.createPost(userId, request);
+
+    return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.ok(response));
+}
 
     /** POST-19: 게시글 수정 */
     @PatchMapping("/{postId}")

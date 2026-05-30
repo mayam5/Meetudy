@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
 import "./PostWrite.css";
 import Dropbox from "../components/Dropbox";
 import ConfirmPopup from "../components/ConfirmPopup";
@@ -16,11 +17,10 @@ const DAY_OPTIONS = [
 ];
 
 const TIME_OPTIONS = [
-    { value: "notDecided", label: "선택하지 않음" },
-    { value: "dawn", label: "새벽 00:00 - 06:00" },
-    { value: "morning", label: "아침 06:00 - 12:00" },
-    { value: "afternoon", label: "점심 12:00 - 18:00" },
-    { value: "night", label: "저녁 18:00 - 24:00" },
+    { value: "1", label: "새벽 00:00 - 06:00" },
+    { value: "2", label: "아침 06:00 - 12:00" },
+    { value: "3", label: "점심 12:00 - 18:00" },
+    { value: "4", label: "저녁 18:00 - 24:00" },
 ];
 
 const CATEGORY_OPTIONS = [
@@ -34,11 +34,13 @@ const CATEGORY_OPTIONS = [
     { value: "8", label: "기타" },
 ];
 
+/*
 const DUMMY_PLACES = [
     { id: 1, placeName: "투썸플레이스 강남역점", address: "서울 강남구 강남대로 438" },
     { id: 2, placeName: "투썸플레이스 강남대로점", address: "서울 강남구 강남대로 422" },
     { id: 3, placeName: "스타벅스 강남역점", address: "서울 강남구 테헤란로 101" },
 ];
+*/
 
 function PostWrite({ isEditMode = false }) {
     const { id } = useParams();
@@ -56,6 +58,7 @@ function PostWrite({ isEditMode = false }) {
     const [isTagFocused, setIsTagFocused] = useState(false);
     const [placeInput, setPlaceInput] = useState("");
     const [selectedPlace, setSelectedPlace] = useState(null);
+    const [searchResults, setSearchResults] = useState([]);
     const [cost, setCost] = useState("");
     const [isCostFocused, setIsCostFocused] = useState(false);
     const [isStatusPopupOpen, setIsStatusPopupOpen] = useState(false);
@@ -97,6 +100,82 @@ function PostWrite({ isEditMode = false }) {
     const openPopup = (message, onConfirm) => setPopup({ open: true, message, onConfirm });
     const closePopup = () => setPopup({ open: false, message: "", onConfirm: null });
 
+    const searchPlaces = async () => {
+        if (!placeInput.trim()) return;
+
+        try {
+            const response = await axios.get(
+                `http://localhost:8080/places/search?query=${encodeURIComponent(placeInput)}`
+            );
+
+            console.log("장소 검색 결과:", response.data);
+            setSearchResults(response.data.data ?? []);
+        } catch (error) {
+            console.error("장소 검색 실패", error);
+        }
+    };
+/*
+    const handleSelectPlace = async (place) => {
+  
+        try {
+            const response = await axios.post("http://localhost:8080/places", {
+                name: place.placeName,
+                address: place.roadAddressName || place.addressName,
+                latitude: Number(place.y),
+                longitude: Number(place.x),
+            });
+
+            const savedPlace = response.data.data;
+
+            setSelectedPlace({
+                id: savedPlace.id ?? savedPlace.placeId,
+                placeName: savedPlace.name ?? place.placeName,
+                address: savedPlace.address ?? place.roadAddressName ?? place.addressName,
+            });
+
+            setPlaceInput(place.placeName);
+            setSearchResults([]);
+            setErrors((prev) => ({ ...prev, place: undefined }));
+        } catch (error) {
+            console.error("장소 저장 실패", error);
+        }
+    };
+*/
+
+const handleSelectPlace = async (place) => {
+    console.log("선택한 place:", place);
+
+    const payload = {
+        name: place.name,
+        address: place.roadAddress || place.address,
+        latitude: place.latitude,
+        longitude: place.longitude,
+    };
+
+    console.log("장소 저장 payload:", payload);
+
+    try {
+        const response = await axios.post("http://localhost:8080/places", payload);
+
+        console.log("장소 저장 응답:", response.data);
+
+        const savedPlace = response.data.data;
+
+        setSelectedPlace({
+            id: savedPlace.id ?? savedPlace.placeId,
+            placeName: savedPlace.name ?? place.name,
+            address: savedPlace.address ?? place.roadAddress ?? place.address,
+        });
+
+        setPlaceInput(place.name);
+        setSearchResults([]);
+        setErrors((prev) => ({ ...prev, place: undefined }));
+    } catch (error) {
+        console.error("장소 저장 실패", error);
+        console.error("에러 응답:", error.response?.data);
+    }
+};
+
     // 유효성 검사
     const validate = () => {
         const newErrors = {};
@@ -104,6 +183,13 @@ function PostWrite({ isEditMode = false }) {
         if (!title.trim()) newErrors.title = "제목을 입력해주세요.";
         if (!description.trim()) newErrors.description = "모임 설명을 입력해주세요.";
         if (!number) newErrors.number = "최대 인원을 선택해주세요.";
+        if (meetingTimes.length === 0) {
+            newErrors.meetingTimes = "모임 시간을 선택해주세요.";
+        }
+        if (!selectedPlace) {
+            newErrors.place = "모임 장소를 선택해주세요.";
+        }
+
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -122,6 +208,7 @@ function PostWrite({ isEditMode = false }) {
         setHashtags(hashtags.filter((tag) => tag !== tagToRemove));
     };
 
+    /*
     const handleAddMeetingTime = () => {
         if (day === "" || meetingTimes.length >= 3) return;
         const dayLabel = DAY_OPTIONS.find((o) => o.value === day)?.label;
@@ -135,14 +222,30 @@ function PostWrite({ isEditMode = false }) {
         setDay("");
         setTime("");
     };
+    */
+
+    const handleAddMeetingTime = () => {
+        if (!day || !time) return;
+
+        const dayLabel = DAY_OPTIONS.find((o) => o.value === day)?.label;
+        const timeLabel = TIME_OPTIONS.find((o) => o.value === time)?.label;
+
+        const meetingTimeText = `${dayLabel} ${timeLabel}`;
+
+        setMeetingTimes([
+            {
+                day,
+                time,
+                label: meetingTimeText,
+            },
+        ]);
+
+        setErrors((prev) => ({ ...prev, meetingTimes: undefined }));
+    };
 
     const removeMeetingTime = (timeToRemove) => {
         setMeetingTimes(meetingTimes.filter((t) => t !== timeToRemove));
     };
-
-    const filteredPlaces = DUMMY_PLACES.filter((place) =>
-        place.placeName.includes(placeInput)
-    );
 
     /*
     const buildPayload = () => ({
@@ -158,24 +261,58 @@ function PostWrite({ isEditMode = false }) {
     });
     */
 
-const buildPayload = () => ({
-    postTitle: title,
-    postContent: description,
-    meetingTime: "2026-05-30T14:00:00",
-    endTime: "2026-05-30T16:00:00",
-    maxMembers: Number(number),
-    categoryId: Number(selectedCategory),
-    placeId: selectedPlace?.id ?? null,
-});
+    const buildPayload = () => ({
+        postTitle: title,
+        postContent: description,
+        // meetingTime: "2026-05-30T14:00:00",
+        // endTime: "2026-05-30T16:00:00",
+        maxMembers: Number(number),
+        categoryId: Number(selectedCategory),
+        placeId: selectedPlace?.id ?? null,
+        dayOfWeek: meetingTimes[0]?.day,
+        timeSlotId: Number(meetingTimes[0]?.time),
+    });
 
+    /*
     const handleSubmit = async () => {
+        if (!validate()) {
+            closePopup();
+            return;
+        }
+
         setLoading(true);
+
         try {
             if (isEditMode && id) {
                 await updateStudy(id, buildPayload());
             } else {
                 await createStudy(buildPayload());
             }
+
+            navigate("/whole-list");
+        } catch (e) {
+            console.error("저장 실패:", e);
+        } finally {
+        
+        setLoading(false);
+            closePopup();
+        }
+    };
+    */
+
+    const handleSubmit = async () => {
+        if (!validate()) {
+            closePopup();
+            return;
+        }
+
+        console.log("handleSubmit 실행됨");
+        console.log("payload:", buildPayload());
+
+        setLoading(true);
+
+        try {
+            await createStudy(buildPayload());
             navigate("/whole-list");
         } catch (e) {
             console.error("저장 실패:", e);
@@ -198,8 +335,24 @@ const buildPayload = () => ({
         }
     };
 
+    /*
     const handleSubmitClick = () => {
         if (!validate()) return;
+        openPopup(
+            isEditMode ? "수정하시겠습니까?" : "게시글을 올리시겠습니까?",
+            handleSubmit
+        );
+    };
+    */
+
+    const handleSubmitClick = () => {
+        console.log("올리기 클릭됨");
+
+        if (!validate()) {
+            console.log("필수값 누락", errors);
+            return;
+        }
+
         openPopup(
             isEditMode ? "수정하시겠습니까?" : "게시글을 올리시겠습니까?",
             handleSubmit
@@ -341,49 +494,83 @@ const buildPayload = () => ({
                         </div>
                         <div className="time-list">
                             {meetingTimes.map((meetingTime) => (
-                                <div className="time-item" key={meetingTime}>
-                                    {meetingTime}
-                                    <button className="time-delete" onClick={() => removeMeetingTime(meetingTime)}>×</button>
+                                <div className="time-item" key={`${meetingTime.day}-${meetingTime.time}`}>
+                                    {meetingTime.label}
+                                    <button
+                                        className="time-delete"
+                                        onClick={() => setMeetingTimes([])}
+                                    >
+                                        ×
+                                    </button>
                                 </div>
                             ))}
                         </div>
+
+                        {errors.meetingTimes && (
+                            <p className="field-error">{errors.meetingTimes}</p>
+                        )}
                     </div>
 
                     {/* 7. 모임 장소 */}
                     <div className="form-section">
                         <h4>7. 모임 장소</h4>
                         <div className="place-search-container">
-                            <input
-                                className="input"
-                                type="text"
-                                placeholder="모임 장소를 입력해 주세요"
-                                value={placeInput}
-                                onChange={(e) => { setPlaceInput(e.target.value); setSelectedPlace(null); }}
-                            />
-                            {placeInput && !selectedPlace && (
+                            <div style={{ display: "flex", gap: "8px" }}>
+                                <input
+                                    className={`input ${errors.place ? "input-error" : ""}`}
+                                    type="text"
+                                    placeholder="모임 장소를 입력해 주세요"
+                                    value={placeInput}
+                                    onChange={(e) => {
+                                        setPlaceInput(e.target.value);
+                                        setSelectedPlace(null);
+                                        setSearchResults([]);
+                                    }}
+                                />
+                                <button
+                                    type="button"
+                                    className="time-add-button"
+                                    onClick={searchPlaces}
+                                >
+                                    검색
+                                </button>
+                            </div>
+
+                            {searchResults.length > 0 && !selectedPlace && (
                                 <div className="place-result-list">
-                                    {filteredPlaces.length > 0 ? (
-                                        filteredPlaces.map((place) => (
-                                            <div
-                                                className="place-result-item"
-                                                key={place.id}
-                                                onClick={() => { setSelectedPlace(place); setPlaceInput(place.placeName); }}
-                                            >
-                                                <strong>{place.placeName}</strong>
-                                                <p>{place.address}</p>
-                                            </div>
-                                        ))
-                                    ) : (
-                                        <div className="place-no-result">검색 결과가 없습니다</div>
-                                    )}
+                                    {searchResults.map((place) => (
+                                        <div
+                                            className="place-result-item"
+                                            key={place.kakaoPlaceId ?? place.id}
+                                            onClick={() => handleSelectPlace(place)}
+                                                style={{
+    
+        color: "black"
+       
+    }}
+                                        >
+<strong>{place.name}</strong>
+<p>{place.roadAddress || place.address}</p>
+                                      
+                                        </div>
+                                    ))}
                                 </div>
                             )}
+
+                            {placeInput && searchResults.length === 0 && !selectedPlace && (
+                                <div className="place-no-result">
+                                    장소를 검색한 뒤 선택해주세요
+                                </div>
+                            )}
+
                             {selectedPlace && (
                                 <div className="selected-place">
                                     <strong>{selectedPlace.placeName}</strong>
                                     <p>{selectedPlace.address}</p>
                                 </div>
                             )}
+
+                            {errors.place && <p className="field-error">{errors.place}</p>}
                         </div>
                     </div>
 

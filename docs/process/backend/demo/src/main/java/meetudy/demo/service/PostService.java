@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import meetudy.demo.dto.request.CreatePostRequest;
 import meetudy.demo.dto.request.UpdatePostRequest;
 import meetudy.demo.dto.response.PostResponse;
-import meetudy.demo.entity.Category;
 import meetudy.demo.entity.*;
 import meetudy.demo.exception.CustomException;
 import meetudy.demo.exception.ErrorCode;
@@ -27,6 +26,7 @@ public class PostService {
     private final StudyGroupMemberRepository studyGroupMemberRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRoomMemberRepository chatRoomMemberRepository;
+    private final TimeSlotRepository timeSlotRepository;
 
     /** POST-06: OPEN 게시글 전체 조회 */
     @Transactional(readOnly = true)
@@ -82,20 +82,33 @@ public class PostService {
 
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new CustomException(ErrorCode.CATEGORY_NOT_FOUND));
-
+/* 
         Place place = null;
         if (request.getPlaceId() != null) {
             place = placeRepository.findById(request.getPlaceId())
                     .orElseThrow(() -> new CustomException(ErrorCode.PLACE_NOT_FOUND));
         }
+                    */
+
+        Place place = null;
+
+if (request.getPlaceId() != null) {
+    place = placeRepository.findById(request.getPlaceId())
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 장소입니다."));
+}
+
+        TimeSlot timeSlot = timeSlotRepository.findById(request.getTimeSlotId())
+    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 시간대입니다."));
 
         // 1. Post 저장
         Post post = postRepository.save(Post.builder()
                 .user(user)
                 .postTitle(request.getPostTitle())
                 .postContent(request.getPostContent())
-                .meetingTime(request.getMeetingTime())
-                .endTime(request.getEndTime())
+                //.meetingTime(request.getMeetingTime())
+                //.endTime(request.getEndTime())
+                .dayOfWeek(request.getDayOfWeek())
+                .timeSlot(timeSlot)
                 .maxMembers(request.getMaxMembers())
                 .category(category)
                 .place(place)

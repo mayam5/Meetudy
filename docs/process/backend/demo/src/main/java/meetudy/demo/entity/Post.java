@@ -28,11 +28,20 @@ public class Post {
     @Column(name = "post_content", nullable = false, columnDefinition = "TEXT")
     private String postContent;
 
+    /* 
     @Column(name = "meeting_time", nullable = false)
     private LocalDateTime meetingTime;
 
     @Column(name = "end_time", nullable = false)
     private LocalDateTime endTime;
+    */
+
+    @Column(name = "day_of_week", nullable = false)
+private String dayOfWeek;
+
+@ManyToOne(fetch = FetchType.LAZY)
+@JoinColumn(name = "time_slot_id", nullable = false)
+private TimeSlot timeSlot;
 
     @Column(name = "max_members", nullable = false)
     private Integer maxMembers;
@@ -40,6 +49,8 @@ public class Post {
     @Column(name = "current_members", nullable = false)
     @Builder.Default
     private Integer currentMembers = 1;
+
+    
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "place_id")
@@ -75,8 +86,8 @@ public class Post {
                        Integer maxMembers, Category category) {
         if (postTitle != null)   this.postTitle   = postTitle;
         if (postContent != null) this.postContent = postContent;
-        if (meetingTime != null) this.meetingTime = meetingTime;
-        if (endTime != null)     this.endTime     = endTime;
+        // if (meetingTime != null) this.meetingTime = meetingTime;
+        // if (endTime != null)     this.endTime     = endTime;
         if (maxMembers != null)  this.maxMembers  = maxMembers;
         if (category != null)    this.category    = category;
     }

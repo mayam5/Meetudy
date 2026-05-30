@@ -14,8 +14,11 @@ public class PostResponse {
     private final String nickname;
     private final String postTitle;
     private final String postContent;
-    private final LocalDateTime meetingTime;
-    private final LocalDateTime endTime;
+    //private final LocalDateTime meetingTime;
+    //private final LocalDateTime endTime;
+            private String dayOfWeek;
+private Long timeSlotId;
+private String timeSlotName;
     private final Integer maxMembers;
     private final Integer currentMembers;
     private final Long placeId;
@@ -32,8 +35,11 @@ public class PostResponse {
         this.nickname       = post.getUser().getNickname();
         this.postTitle      = post.getPostTitle();
         this.postContent    = post.getPostContent();
-        this.meetingTime    = post.getMeetingTime();
-        this.endTime        = post.getEndTime();
+        //this.meetingTime    = post.getMeetingTime();
+        //this.endTime        = post.getEndTime();
+this.dayOfWeek = post.getDayOfWeek();
+this.timeSlotId = post.getTimeSlot().getTimeSlotId();
+this.timeSlotName = post.getTimeSlot().getSlotName();
         this.maxMembers     = post.getMaxMembers();
         this.currentMembers = post.getCurrentMembers();
         this.placeId        = post.getPlace() != null ? post.getPlace().getPlaceId() : null;

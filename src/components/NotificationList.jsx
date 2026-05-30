@@ -27,7 +27,7 @@ function NotificationList({ onClose, notifications = [], onRead, onReadAll }) {
 
             {/* 헤더 */}
             <div className="noti-header">
-                <span>
+                <span className="noti-title-text">
                     알림
                     {unreadCount > 0 && (
                         <span className="noti-count">{unreadCount}</span>

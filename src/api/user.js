@@ -1,65 +1,124 @@
-// 백엔드 연동 시 아래 함수들의 return 부분을 axios/fetch로 교체하세요
+const BASE_URL = "http://localhost:8080";
+
+const authHeader = () => ({
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+});
+
+const DAY_MAP = { 월: "MON", 화: "TUE", 수: "WED", 목: "THU", 금: "FRI", 토: "SAT", 일: "SUN" };
+const TIME_MAP = { 새벽: 1, 오전: 2, 오후: 3, 저녁: 4, 밤: 5 };
 
 export const fetchMyProfile = async () => {
-    // TODO: return await axios.get("/api/users/me");
+    const res = await fetch(`${BASE_URL}/users/me`, { headers: authHeader() });
+    const json = await res.json();
+    if (!res.ok || !json.success) throw new Error(json.message);
+    const p = json.data;
     return {
-        email: localStorage.getItem("userEmail") || "",
-        nickname: "Nickname",
-        birth: "2000-01-01",
-        gender: "F",
-        bio: "안녕하세요!",
-        categories: ["분야1", "분야2"],
-        agePublic: false,
+        email: p.email ?? "",
+        nickname: p.nickname ?? "",
+        birth: p.birthDate ?? "2000-01-01",
+        gender: p.gender ?? "F",
+        bio: p.bio ?? "",
+        categories: [],
+        agePublic: p.isAgePublic ?? false,
     };
 };
 
 export const updateMyProfile = async (payload) => {
-    // TODO: return await axios.put("/api/users/me", payload);
-    console.log("updateMyProfile:", payload);
-    return { success: true };
+    const res = await fetch(`${BASE_URL}/users/me`, {
+        method: "PATCH",
+        headers: authHeader(),
+        body: JSON.stringify({
+            nickname: payload.nickname,
+            bio: payload.bio,
+            gender: payload.gender,
+            birthDate: payload.birth,
+            isAgePublic: payload.agePublic,
+        }),
+    });
+    const json = await res.json();
+    if (!res.ok || !json.success) throw new Error(json.message);
+    return json.data;
 };
 
 export const changePassword = async ({ current, newPassword }) => {
-    // TODO: return await axios.put("/api/users/me/password", { current, newPassword });
-    console.log("changePassword");
-    return { success: true };
+    const res = await fetch(`${BASE_URL}/users/me`, {
+        method: "PATCH",
+        headers: authHeader(),
+        body: JSON.stringify({ currentPassword: current, newPassword }),
+    });
+    const json = await res.json();
+    if (!res.ok || !json.success) throw new Error(json.message);
+    return json.data;
 };
 
 export const fetchUserById = async (id) => {
-    // TODO: return await axios.get(`/api/users/${id}`);
-    return { id, nickname: "닉네임", bio: "소개글이에요.", field: "개발" };
+    const res = await fetch(`${BASE_URL}/users/${id}`, { headers: authHeader() });
+    const json = await res.json();
+    if (!res.ok || !json.success) throw new Error(json.message);
+    return json.data;
 };
 
 export const fetchBlockedUsers = async () => {
-    // TODO: return await axios.get("/api/users/blocked");
-    return [
-        { id: 1, host: "닉네임1", field: "분야", blocked: true },
-        { id: 2, host: "닉네임2", field: "분야", blocked: true },
-    ];
+    const res = await fetch(`${BASE_URL}/users/block`, { headers: authHeader() });
+    const json = await res.json();
+    if (!res.ok || !json.success) throw new Error(json.message);
+    return json.data.map((u) => ({
+        id: u.blockedUserId,
+        host: u.blockedNickname,
+        field: "",
+        blocked: true,
+    }));
 };
 
-export const toggleBlockUser = async (userId, blocked) => {
-    // TODO: return await axios.put(`/api/users/block/${userId}`, { blocked });
-    return { success: true };
+export const toggleBlockUser = async (userId, isCurrentlyBlocked) => {
+    const method = isCurrentlyBlocked ? "DELETE" : "POST";
+    const res = await fetch(`${BASE_URL}/users/block/${userId}`, {
+        method,
+        headers: authHeader(),
+    });
+    const json = await res.json();
+    if (!res.ok || !json.success) throw new Error(json.message);
+    return json.data;
 };
 
 export const fetchBookmarks = async () => {
-    // TODO: return await axios.get("/api/users/bookmarks");
-    return [
-        { id: 1, title: "React 스터디", host: "김예빈", field: "개발" },
-        { id: 2, title: "토익 스터디", host: "홍길동", field: "외국어" },
-        { id: 3, title: "알고리즘 스터디", host: "철수", field: "개발" },
-    ];
+    const res = await fetch(`${BASE_URL}/posts/bookmarks`, { headers: authHeader() });
+    const json = await res.json();
+    if (!res.ok || !json.success) throw new Error(json.message);
+    return json.data.map((b) => ({
+        id: b.postId,
+        title: b.postTitle,
+        host: b.nickname ?? "",
+        field: b.categoryName ?? "",
+    }));
 };
 
-export const toggleBookmark = async (studyId) => {
-    // TODO: return await axios.post(`/api/users/bookmarks/${studyId}`);
-    return { success: true };
+export const toggleBookmark = async (postId, isCurrentlyBookmarked) => {
+    const method = isCurrentlyBookmarked ? "DELETE" : "POST";
+    const res = await fetch(`${BASE_URL}/posts/${postId}/bookmark`, {
+        method,
+        headers: authHeader(),
+    });
+    const json = await res.json();
+    if (!res.ok || !json.success) throw new Error(json.message);
+    return json.data;
 };
 
-// 스케줄 저장
 export const updateSchedule = async (schedule) => {
-    // TODO: return await axios.put("/api/users/me/schedule", { schedule });
-    console.log("updateSchedule:", schedule);
-    return { success: true };
+    const schedules = schedule
+        .map((key) => {
+            const [day, time] = key.split("-");
+            return { dayOfWeek: DAY_MAP[day], timeSlotId: TIME_MAP[time] };
+        })
+        .filter((s) => s.dayOfWeek && s.timeSlotId);
+
+    const res = await fetch(`${BASE_URL}/schedules`, {
+        method: "PUT",
+        headers: authHeader(),
+        body: JSON.stringify({ schedules }),
+    });
+    const json = await res.json();
+    if (!res.ok || !json.success) throw new Error(json.message);
+    return json.data;
 };

@@ -1,35 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import { Modal, Form, Button, Spinner } from "react-bootstrap";
+import { Modal, Form, Button, Spinner, Dropdown, DropdownButton } from "react-bootstrap";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { useAuth } from "../context/AuthContext";
 import "./Login.css";
 
-// ====================================================
-// [백엔드 연결] API 경로
-// - POST /api/auth/login
-//     body: { email, password }
-//     res:  { success, data: { accessToken }, message }
-//
-// - POST /api/auth/register
-//     body: { email, password, nickname, categoryIds, region }
-//     res:  { success, message }
-//
-// - POST /api/auth/find-email
-//     body: { nickname }
-//     res:  { success, data: { email }, message }
-//
-// - POST /api/auth/reset-password
-//     body: { email, newPassword }
-//     res:  { success, message }
-//
-// - GET  /api/categories
-//     res: { data: [{ categoryId, categoryName }, ...] }
-//
-// - GET  /api/regions/cities
-//     res: string[]
-// ====================================================
-const API_BASE = "/api";
+const BASE_URL = "http://localhost:8080";
 
 function Login({ onClose, onLoginSuccess }) {
     const [mode, setMode] = useState("login");
@@ -39,13 +15,11 @@ function Login({ onClose, onLoginSuccess }) {
     const [categoryOptions, setCategoryOptions] = useState([]);
     const [regionOptions, setRegionOptions] = useState([]);
 
-    // 이메일 찾기 state
     const [findNickname, setFindNickname] = useState("");
     const [foundEmail, setFoundEmail] = useState(null);
     const [findLoading, setFindLoading] = useState(false);
     const [findError, setFindError] = useState(null);
 
-    // 비밀번호 재설정 state
     const [resetEmail, setResetEmail] = useState("");
     const [resetNewPassword, setResetNewPassword] = useState("");
     const [resetConfirmPassword, setResetConfirmPassword] = useState("");
@@ -56,12 +30,6 @@ function Login({ onClose, onLoginSuccess }) {
     const loginFormRef = useRef(null);
     const signupFormRef = useRef(null);
     const { login } = useAuth();
-
-
-    const [categoryOptions, setCategoryOptions] = useState([]);
-    const [regionOptions, setRegionOptions] = useState([]);
-    const [region, setRegion] = useState("");
-
 
     const handleClose = () => {
         if (typeof onClose === "function") onClose();
@@ -94,63 +62,22 @@ function Login({ onClose, onLoginSuccess }) {
     }, [onClose]);
 
     useEffect(() => {
-        // [백엔드 연결] 카테고리 목록 조회
-        fetch(`${API_BASE}/categories`)
+        fetch(`${BASE_URL}/categories`)
             .then((res) => res.json())
             .then((result) => setCategoryOptions(result.data || []))
             .catch((e) => console.error("카테고리 불러오기 실패:", e));
 
-        // [백엔드 연결] 지역 목록 조회
-        fetch(`${API_BASE}/regions/cities`)
+        fetch(`${BASE_URL}/regions/cities`)
             .then((res) => res.json())
             .then((result) => setRegionOptions(result || []))
             .catch((e) => console.error("지역 불러오기 실패:", e));
     }, []);
 
-
-    useEffect(() => {
-  fetch("http://localhost:8080/regions/cities")
-    .then((res) => res.json())
-    .then((result) => {
-      setRegionOptions(result || []);
-    })
-    .catch((error) => {
-      console.error("지역 불러오기 실패:", error);
-    });
-}, []);
-
-/*
-    // 💡 2. 로그인/회원가입 버튼 클릭 후 Formik의 유효성 검사를 통과하면 실행되는 최종 서밋 함수입니다.
-const handleFormSubmit = async (values) => {
-    setLoading(true);
-
-    try {
-        if (mode === "login") {
-            const response = await fetch("http://localhost:8080/auth/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    email: values.email,
-                    password: values.password,
-                }),
-            });
-
-            const result = await response.json();
-
-            if (!result.success) {
-                setShake(true);
-                setTimeout(() => setShake(false), 500);
-                alert(result.message || "로그인에 실패했습니다.");
-                return;
-*/
-    // [백엔드 연결] 로그인 / 회원가입
     const handleFormSubmit = async (values) => {
         setLoading(true);
         try {
             if (mode === "login") {
-                const res = await fetch(`${API_BASE}/auth/login`, {
+                const res = await fetch(`${BASE_URL}/auth/login`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ email: values.email, password: values.password }),
@@ -158,12 +85,15 @@ const handleFormSubmit = async (values) => {
                 const result = await res.json();
                 if (!result.success) { triggerShake(); alert(result.message || "로그인에 실패했습니다."); return; }
                 localStorage.setItem("accessToken", result.data.accessToken);
+                localStorage.setItem("refreshToken", result.data.refreshToken);
+                localStorage.setItem("userId", result.data.userId);
+                localStorage.setItem("nickname", result.data.nickname);
                 localStorage.setItem("userEmail", values.email);
                 login(values.email);
                 if (typeof onLoginSuccess === "function") onLoginSuccess();
                 handleClose();
             } else {
-                const res = await fetch(`${API_BASE}/auth/register`, {
+                const res = await fetch(`${BASE_URL}/auth/register`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -178,7 +108,6 @@ const handleFormSubmit = async (values) => {
                 if (!result.success) { triggerShake(); alert(result.message || "회원가입에 실패했습니다."); return; }
                 alert("회원가입이 완료되었습니다.");
                 handleModeChange("login");
-
             }
         } catch (e) {
             console.error(e);
@@ -189,12 +118,11 @@ const handleFormSubmit = async (values) => {
         }
     };
 
-    // [백엔드 연결] 이메일 찾기
     const handleFindEmail = async () => {
         if (!findNickname.trim()) { setFindError("닉네임을 입력해주세요."); return; }
         setFindLoading(true); setFindError(null); setFoundEmail(null);
         try {
-            const res = await fetch(`${API_BASE}/auth/find-email`, {
+            const res = await fetch(`${BASE_URL}/auth/find-email`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ nickname: findNickname }),
@@ -209,8 +137,6 @@ const handleFormSubmit = async (values) => {
         }
     };
 
-    // [백엔드 연결] 비밀번호 재설정
-    // body: { email, newPassword } → 이메일 인증 없이 직접 변경
     const handleResetPassword = async () => {
         if (!resetEmail.trim()) { setResetError("이메일을 입력해주세요."); return; }
         if (!resetNewPassword.trim()) { setResetError("새 비밀번호를 입력해주세요."); return; }
@@ -218,7 +144,7 @@ const handleFormSubmit = async (values) => {
         if (resetNewPassword !== resetConfirmPassword) { setResetError("비밀번호가 일치하지 않습니다."); return; }
         setResetLoading(true); setResetError(null);
         try {
-            const res = await fetch(`${API_BASE}/auth/reset-password`, {
+            const res = await fetch(`${BASE_URL}/auth/reset-password`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email: resetEmail, newPassword: resetNewPassword }),
@@ -365,25 +291,20 @@ const handleFormSubmit = async (values) => {
                                                     )}
                                                 </Form.Group>
 
-                                            <Form.Group className="mb-3">
-                                                <div className="category-title">선호 지역</div>
-                                                <DropdownButton
-                                                    id="region-dropdown"
-                                                    title={values.region || "지역 선택"}
-                                                    onSelect={(value) => setFieldValue("region", value)}
-                                                >
-                                                    {regionOptions.map((r) => (
-                                                    <Dropdown.Item key={r} eventKey={r}>
-                                                        {r}
-                                                    </Dropdown.Item>
-                                                ))}
-                                                </DropdownButton>
-                                                {touched.region && errors.region && (
-                                                    <div className="text-danger" style={{ fontSize: "12px" }}>
-                                                        {errors.region}
-                                                    </div>
-                                                )}
-
+                                                <Form.Group className="mb-3">
+                                                    <div className="category-title">선호 지역</div>
+                                                    <DropdownButton
+                                                        id="region-dropdown"
+                                                        title={values.region || "지역 선택"}
+                                                        onSelect={(value) => setFieldValue("region", value)}
+                                                    >
+                                                        {regionOptions.map((r) => (
+                                                            <Dropdown.Item key={r} eventKey={r}>{r}</Dropdown.Item>
+                                                        ))}
+                                                    </DropdownButton>
+                                                    {touched.region && errors.region && (
+                                                        <div className="text-danger" style={{ fontSize: "12px" }}>{errors.region}</div>
+                                                    )}
                                                 </Form.Group>
                                             </div>
                                         </div>

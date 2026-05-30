@@ -1,7 +1,15 @@
+import axios from "axios";
 import { ALL_STUDIES, DUMMY_STUDIES } from "../data/dummyData";
 
+const BASE_URL = "http://localhost:8080";
+
+const authHeader = () => ({
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+});
+
 export const fetchAllStudies = async ({ search, region, field, page = 1, limit = 10 } = {}) => {
-    // TODO: return await axios.get("/api/studies", { params: { search, region, field, page, limit } });
+    // TODO: 백엔드 연동
     let filtered = [...DUMMY_STUDIES];
     if (search) filtered = filtered.filter((s) => s.title.toLowerCase().includes(search.toLowerCase()));
     if (region && region !== "지역") filtered = filtered.filter((s) => s.region === region);
@@ -9,172 +17,127 @@ export const fetchAllStudies = async ({ search, region, field, page = 1, limit =
     return { data: filtered.slice((page - 1) * limit, page * limit), total: filtered.length };
 };
 
-export const fetchMyStudies = async ({ page = 1, limit = 10 } = {}) => {
-    // TODO: return await axios.get("/api/studies/my", { params: { page, limit } });
-    const data = DUMMY_STUDIES.slice(0, 3);
-    return { data: data.slice((page - 1) * limit, page * limit), total: data.length };
+// 내가 작성한 게시글
+export const fetchMyStudies = async () => {
+    const res = await fetch(`${BASE_URL}/posts/me`, { headers: authHeader() });
+    const json = await res.json();
+    if (!res.ok || !json.success) throw new Error(json.message);
+    return {
+        data: json.data.map((p) => ({
+            id: p.postId,
+            title: p.postTitle,
+            host: p.nickname ?? "",
+            field: p.categoryName ?? "",
+            users: [],
+        })),
+    };
 };
 
-export const fetchJoinedStudies = async ({ page = 1, limit = 10 } = {}) => {
-    // TODO: return await axios.get("/api/studies/joined", { params: { page, limit } });
-    const data = DUMMY_STUDIES.slice(3, 6);
-    return { data: data.slice((page - 1) * limit, page * limit), total: data.length };
+// 참여 중인 스터디 그룹
+export const fetchJoinedStudies = async () => {
+    const res = await fetch(`${BASE_URL}/study-groups/me`, { headers: authHeader() });
+    const json = await res.json();
+    if (!res.ok || !json.success) throw new Error(json.message);
+    return {
+        data: json.data.map((g) => ({
+            id: g.studyGroupId,
+            title: g.groupName,
+            host: "",
+            field: "",
+            users: [],
+        })),
+    };
 };
 
 export const fetchPendingStudies = async ({ page = 1, limit = 10 } = {}) => {
-    // TODO: return await axios.get("/api/studies/pending", { params: { page, limit } });
+    // TODO: 백엔드 연동
     const data = DUMMY_STUDIES.slice(6, 9);
     return { data: data.slice((page - 1) * limit, page * limit), total: data.length };
 };
 
-export const fetchAppliedStudies = async ({ page = 1, limit = 10 } = {}) => {
-    // TODO: return await axios.get("/api/studies/applied", { params: { page, limit } });
-    const data = DUMMY_STUDIES.slice(0, 3).map((s, i) => ({
-        ...s,
-        applicationStatus: i === 0 ? "accepted" : i === 1 ? "rejected" : "pending",
-    }));
-    return { data: data.slice((page - 1) * limit, page * limit), total: data.length };
+// 신청한 스터디 목록
+export const fetchAppliedStudies = async () => {
+    const res = await fetch(`${BASE_URL}/applications/me`, { headers: authHeader() });
+    const json = await res.json();
+    if (!res.ok || !json.success) throw new Error(json.message);
+    return {
+        data: json.data.map((a) => ({
+            id: a.postId,
+            title: a.postTitle,
+            host: "",
+            field: "",
+            users: [],
+            applicationStatus: a.status?.toLowerCase(),
+        })),
+    };
 };
 
 export const fetchBookmarkedStudies = async ({ page = 1, limit = 10 } = {}) => {
-    // TODO: return await axios.get("/api/studies/bookmarked", { params: { page, limit } });
+    // TODO: 백엔드 연동
     const data = DUMMY_STUDIES.slice(1, 4);
     return { data: data.slice((page - 1) * limit, page * limit), total: data.length };
 };
 
 export const fetchStudyById = async (id) => {
-    // TODO: return await axios.get(`/api/studies/${id}`);
+    // TODO: 백엔드 연동
     return DUMMY_STUDIES.find((s) => s.id === Number(id)) ?? null;
 };
 
-/*
 export const createStudy = async (payload) => {
     const token = localStorage.getItem("accessToken");
-
-    const response = await fetch("http://localhost:8080/posts", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(payload),
+    const response = await axios.post(`${BASE_URL}/posts`, payload, {
+        headers: { Authorization: `Bearer ${token}` },
     });
-
-    const result = await response.json();
-
-    if (!response.ok || !result.success) {
-        throw new Error(result.message || "게시글 작성 실패");
-    }
-
-    return result.data;
-};
-
-
-export const createStudy = async (payload) => {
-    const token = localStorage.getItem("accessToken");
-
-    const response = await fetch("http://localhost:8080/posts", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(payload),
-    });
-
-    const text = await response.text();
-    console.log("posts 응답 status:", response.status);
-    console.log("posts 응답 body:", text);
-
-    let result = {};
-    try {
-        result = text ? JSON.parse(text) : {};
-    } catch (e) {
-        console.error("JSON 파싱 실패:", e);
-    }
-
-    if (!response.ok || result.success === false) {
-        throw new Error(result.message || text || "게시글 작성 실패");
-    }
-
-    return result.data ?? result;
-};
-*/
-
-import axios from "axios";
-
-export const createStudy = async (payload) => {
-    const token = localStorage.getItem("accessToken");
-
-    console.log("accessToken:", token);
-
-    const response = await axios.post(
-        "http://localhost:8080/posts",
-        payload,
-        {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        }
-    );
-
-    console.log("posts 응답:", response.data);
-
     if (response.data.success === false) {
         throw new Error(response.data.message || "게시글 작성 실패");
     }
-
     return response.data.data ?? response.data;
 };
 
 export const updateStudy = async (id, payload) => {
-    // TODO: return await axios.put(`/api/studies/${id}`, payload);
+    // TODO: 백엔드 연동
     console.log("updateStudy:", id, payload);
     return { success: true };
 };
 
 export const deleteStudy = async (id) => {
-    // TODO: return await axios.delete(`/api/studies/${id}`);
+    // TODO: 백엔드 연동
     console.log("deleteStudy:", id);
     return { success: true };
 };
 
 export const applyToStudy = async (id) => {
-    // TODO: return await axios.post(`/api/studies/${id}/apply`);
+    // TODO: 백엔드 연동
     console.log("applyToStudy:", id);
     return { success: true };
 };
 
 export const cancelApplication = async (id) => {
-    // TODO: return await axios.delete(`/api/studies/${id}/apply`);
+    // TODO: 백엔드 연동
     console.log("cancelApplication:", id);
     return { success: true };
 };
 
 export const fetchRecommendedStudies = async () => {
-    // TODO: return await axios.get("/api/studies/recommended");
+    // TODO: 백엔드 연동
     return ALL_STUDIES.slice(0, 3);
 };
 
 export const fetchStudyPreview = async () => {
-    // TODO: return await axios.get("/api/studies/preview");
+    // TODO: 백엔드 연동
     return ALL_STUDIES.slice(0, 5);
 };
 
 export const fetchMyStudyRelation = async (studyId) => {
-    // TODO: return await axios.get(`/api/studies/${studyId}/my-relation`);
-
-    // 더미 - 내가 작성한 스터디 id 목록 (실제 연동 시 삭제)
-    const myStudyIds = [1, 2]; // 내가 작성한 스터디 id
-    const joinedIds = [3];     // 참여 중인 스터디 id
-    const pendingIds = [4];    // 신청 대기 중
-    const rejectedIds = [5];   // 거절된 스터디 id
-
+    // TODO: 백엔드 연동
+    const myStudyIds = [1, 2];
+    const joinedIds = [3];
+    const pendingIds = [4];
+    const rejectedIds = [5];
     const numId = Number(studyId);
-
     if (myStudyIds.includes(numId)) return "owned";
     if (joinedIds.includes(numId)) return "joined";
     if (pendingIds.includes(numId)) return "pending";
     if (rejectedIds.includes(numId)) return "rejected";
-    return "none"; // 아무 관계 없음 → 신청하기 버튼
+    return "none";
 };

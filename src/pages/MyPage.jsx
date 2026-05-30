@@ -20,7 +20,7 @@ import {
   fetchMyStudies,
 } from "../api/study";
 
-const API_BASE = "/api";
+const API_BASE = "http://localhost:8080";
 
 const REGION_DATA = {
   "서울특별시": {
@@ -200,10 +200,11 @@ function MyPage() {
   };
 
   const handleToggleBookmark = async (itemId) => {
+    const isBookmarked = bookmarkedIds.includes(itemId);
     try {
-      await toggleBookmark(itemId);
+      await toggleBookmark(itemId, isBookmarked);
       setBookmarkedIds((prev) =>
-        prev.includes(itemId)
+        isBookmarked
           ? prev.filter((id) => id !== itemId)
           : [...prev, itemId]
       );
@@ -214,7 +215,7 @@ function MyPage() {
 
   const handleToggleBlock = async (userId, currentBlocked) => {
     try {
-      await toggleBlockUser(userId, !currentBlocked);
+      await toggleBlockUser(userId, currentBlocked);
       setBlockedUsers((prev) =>
         prev.map((u) => u.id === userId ? { ...u, blocked: !u.blocked } : u)
       );

@@ -1,12 +1,14 @@
 import "./Chat.css";
 import { FiX, FiSend } from "react-icons/fi";
 import { useState, useEffect, useRef } from "react";
-import { fetchChatMessages, sendMessage } from "../api/chat";
+import { fetchChatMessages, createStompClient, sendStompMessage } from "../api/chat";
 
 function Chat({ onClose, roomTitle = "채팅방", roomId }) {
     const [messages, setMessages] = useState([]);
     const [inputValue, setInputValue] = useState("");
     const bodyRef = useRef(null);
+    const stompClientRef = useRef(null);
+    const subscriptionRef = useRef(null);
 
     // 메시지 로드
     useEffect(() => {
@@ -23,6 +25,39 @@ function Chat({ onClose, roomTitle = "채팅방", roomId }) {
         load();
     }, [roomId, roomTitle]);
 
+    // STOMP 연결
+    useEffect(() => {
+        if (!roomId) return;
+        const client = createStompClient();
+        stompClientRef.current = client;
+
+        client.onConnect = () => {
+            subscriptionRef.current = client.subscribe(
+                `/user/queue/chat.${roomId}`,
+                (frame) => {
+                    const msg = JSON.parse(frame.body);
+                    const myId = Number(localStorage.getItem("userId"));
+                    setMessages((prev) => [
+                        ...prev,
+                        {
+                            id: msg.messageId ?? Date.now(),
+                            type: msg.senderId === myId ? "me" : "other",
+                            text: msg.messageContent,
+                            nickname: msg.senderNickname,
+                        },
+                    ]);
+                }
+            );
+        };
+
+        client.activate();
+
+        return () => {
+            subscriptionRef.current?.unsubscribe();
+            client.deactivate();
+        };
+    }, [roomId]);
+
     // 자동 스크롤
     useEffect(() => {
         if (bodyRef.current) {
@@ -30,16 +65,10 @@ function Chat({ onClose, roomTitle = "채팅방", roomId }) {
         }
     }, [messages]);
 
-    const handleSend = async () => {
-        if (!inputValue.trim()) return;
-        const newMsg = { id: Date.now(), type: "me", text: inputValue.trim() };
-        setMessages((prev) => [...prev, newMsg]);
+    const handleSend = () => {
+        if (!inputValue.trim() || !stompClientRef.current?.connected) return;
+        sendStompMessage(stompClientRef.current, roomId, inputValue.trim());
         setInputValue("");
-        try {
-            await sendMessage(roomId, inputValue.trim());
-        } catch (e) {
-            console.error("메시지 전송 실패:", e);
-        }
     };
 
     return (

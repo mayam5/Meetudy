@@ -1,198 +1,234 @@
-/* ========================= */
-/* modal 전체 컨테이너 */
-/* ========================= */
-.modal-content {
-    border-radius: 18px !important;
-    padding: 10px;
+/* =========================
+   MODAL
+========================= */
+
+.login-modal .modal-content {
+    border-radius: 20px !important;
     border: none !important;
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
+    border-top: 2px solid #2563eb !important;
+    overflow: hidden;
+    animation: modalPop 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-/* ========================= */
-/* header */
-/* ========================= */
+@keyframes modalPop {
+    from { opacity: 0; transform: scale(0.92) translateY(12px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
 .modal-header {
-    border-bottom: none !important;
-    padding-bottom: 10px;
+    border-bottom: 1px solid #f0f0f0 !important;
+    padding: 20px 24px 16px !important;
+    background: #fafafa;
 }
 
 .modal-header .modal-title {
-    font-size: 24px !important;
+    font-size: 18px !important;
     font-weight: 900 !important;
-    color: #111 !important;
+    color: #0a0a0a !important;
     letter-spacing: -0.5px;
 }
 
-/* ========================= */
-/* body */
-/* ========================= */
 .modal-body {
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding: 20px 24px !important;
 }
 
-/* ========================= */
-/* input - 모달 안에서만 */
-/* ========================= */
+.modal-footer {
+    border-top: 1px solid #f0f0f0 !important;
+    padding: 16px 24px !important;
+    background: #fafafa;
+}
+
+/* =========================
+   INPUT
+========================= */
+
 .modal-content .form-control {
     border-radius: 10px !important;
-    padding: 12px;
-    border: 1px solid #eee !important;
+    padding: 11px 14px !important;
+    border: 1.5px solid #e9e9e9 !important;
+    background: #f9f9f9 !important;
+    font-size: 13px !important;
+    font-weight: 500;
+    transition: all 0.2s ease !important;
     box-shadow: none !important;
 }
 
 .modal-content .form-control:focus {
-    border-color: #111 !important;
-    box-shadow: none !important;
-    background: #fafafa;
+    border-color: #2563eb !important;
+    background: #fff !important;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08) !important;
 }
 
-/* ========================= */
-/* footer */
-/* ========================= */
-.modal-footer {
-    border-top: none !important;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    padding-top: 10px;
+.modal-content .form-control::placeholder {
+    color: #a3a3a3;
+    font-weight: 400;
 }
 
-/* ========================= */
-/* forgot 영역 */
-/* ========================= */
-.auth-sub-link {
+/* =========================
+   FIELD LABEL
+========================= */
+
+.field-label {
+    font-size: 11px;
+    font-weight: 800;
+    color: #a3a3a3;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+}
+
+.field-error {
     font-size: 12px;
-    color: #888;
-    cursor: pointer;
-    margin-bottom: 2px;
+    color: #ef4444;
+    margin-top: 6px;
+    font-weight: 600;
 }
 
-.auth-sub-link:hover {
-    color: #007bff;
-    text-decoration: underline;
-}
+/* =========================
+   BUTTON
+========================= */
 
-/* ========================= */
-/* switch 영역 */
-/* ========================= */
-.auth-switch-text {
-    font-size: 13px;
-}
-
-.auth-switch-link {
-    color: #007bff;
-    cursor: pointer;
-    margin-left: 5px;
-    font-weight: 500;
-}
-
-.auth-switch-link:hover {
-    text-decoration: underline;
-}
-
-/* ========================= */
-/* 버튼 - 모달 안에서만 */
-/* ========================= */
 .modal-content .btn-primary {
-    width: 120px;
-    padding: 10px 12px;
-    border-radius: 10px !important;
-    background: #111 !important;
+    background: #0a0a0a !important;
     border: none !important;
+    border-top: 2px solid #2563eb !important;
+    border-radius: 10px !important;
+    padding: 10px 28px !important;
+    font-size: 13px !important;
+    font-weight: 800 !important;
+    letter-spacing: -0.2px;
+    transition: all 0.2s ease !important;
+    min-width: 100px;
 }
 
 .modal-content .btn-primary:hover {
-    opacity: 0.9;
+    background: #2563eb !important;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35) !important;
+    transform: translateY(-1px);
 }
 
-/* ========================= */
-/* spinner */
-/* ========================= */
-.spinner-border {
-    margin-right: 6px;
+.modal-content .btn-primary:active {
+    transform: scale(0.96) !important;
 }
 
-/* ========================= */
-/* shake animation */
-/* ========================= */
-.shake {
-    animation: shake 0.4s;
+.modal-content .btn-primary:disabled {
+    opacity: 0.6 !important;
 }
 
-@keyframes shake {
-    0%   { transform: translateX(0); }
-    25%  { transform: translateX(-5px); }
-    50%  { transform: translateX(5px); }
-    75%  { transform: translateX(-5px); }
-    100% { transform: translateX(0); }
+/* =========================
+   LINKS
+========================= */
+
+.auth-sub-link {
+    font-size: 12px;
+    color: #a3a3a3;
+    cursor: pointer;
+    margin-bottom: 4px;
+    transition: color 0.15s;
 }
 
-/* ========================= */
-/* submode */
-/* ========================= */
-.submode-wrap {
-    padding: 8px 0;
-}
+.auth-sub-link:hover { color: #2563eb; }
 
-.submode-desc {
-    font-size: 14px;
-    color: #555;
-    margin-bottom: 12px;
-}
-
-/* ===================================================== */
-/* CATEGORY UI */
-/* ===================================================== */
-
-.category-title {
+.auth-switch-text {
     font-size: 13px;
-    margin-bottom: 8px;
-    color: #333;
-    font-weight: 500;
+    color: #a3a3a3;
 }
+
+.auth-switch-link {
+    color: #2563eb;
+    cursor: pointer;
+    margin-left: 6px;
+    font-weight: 700;
+    transition: opacity 0.15s;
+}
+
+.auth-switch-link:hover {
+    opacity: 0.75;
+    text-decoration: underline;
+}
+
+/* =========================
+   CATEGORY CHECKBOXES
+========================= */
 
 .category-wrap {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
+    margin-bottom: 4px;
 }
 
-.category-check input {
-    display: none;
-}
+.category-check input { display: none; }
 
 .category-check label {
     display: inline-block;
-    padding: 6px 14px;
-    font-size: 13px;
-    border: 1px solid #ddd;
+    padding: 5px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    border: 1.5px solid #e9e9e9;
     border-radius: 999px;
     cursor: pointer;
     user-select: none;
     transition: all 0.2s ease;
-    background-color: #fff;
-    color: #333;
+    background: #f9f9f9;
+    color: #555;
 }
 
 .category-check label:hover {
-    border-color: #999;
+    border-color: #2563eb;
+    color: #2563eb;
     transform: translateY(-1px);
 }
 
 .category-check input:checked + label {
-    background-color: #111;
+    background: #0a0a0a;
     color: #fff;
-    border-color: #111;
+    border-color: #2563eb;
 }
 
-.category-check label:active {
-    transform: scale(0.96);
+.category-check label:active { transform: scale(0.95); }
+
+/* =========================
+   REGION BUTTONS
+========================= */
+
+.region-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 4px;
 }
 
-/* ========================= */
-/* signup 레이아웃 */
-/* ========================= */
+.region-btn {
+    padding: 5px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    border: 1.5px solid #e9e9e9;
+    border-radius: 999px;
+    cursor: pointer;
+    background: #f9f9f9;
+    color: #555;
+    transition: all 0.2s ease;
+}
+
+.region-btn:hover {
+    border-color: #2563eb;
+    color: #2563eb;
+    transform: translateY(-1px);
+}
+
+.region-btn.active {
+    background: #0a0a0a;
+    color: #fff;
+    border-color: #2563eb;
+}
+
+.region-btn:active { transform: scale(0.95); }
+
+/* =========================
+   SIGNUP LAYOUT
+========================= */
+
 .signup-flex {
     display: flex;
     gap: 20px;
@@ -205,8 +241,125 @@
     flex-direction: column;
 }
 
-@media (max-width: 768px) {
-    .signup-flex {
-        flex-direction: column;
-    }
+/* =========================
+   SUBMODE
+========================= */
+
+.submode-wrap { padding: 8px 0; }
+
+.submode-desc {
+    font-size: 13px;
+    color: #555;
+    margin-bottom: 14px;
+    line-height: 1.6;
 }
+
+/* =========================
+   SHAKE
+========================= */
+
+.shake { animation: shake 0.4s ease; }
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25%       { transform: translateX(-6px); }
+    75%       { transform: translateX(6px); }
+}
+
+/* =========================
+   SPINNER
+========================= */
+
+.spinner-border { margin-right: 6px; }
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 768px) {
+    .signup-flex { flex-direction: column; }
+}
+
+/* =========================
+   모드 전환 애니메이션
+========================= */
+
+.mode-content {
+    animation: modeFadeIn 0.25s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes modeFadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================
+   결과 박스 (이메일 찾기 / 재설정 완료)
+========================= */
+
+.result-box {
+    text-align: center;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 14px;
+    border: 1.5px solid #e9e9e9;
+    border-top: 2px solid #2563eb;
+}
+
+.result-icon {
+    font-size: 32px;
+    margin-bottom: 12px;
+}
+
+.result-label {
+    font-size: 12px;
+    font-weight: 800;
+    color: #a3a3a3;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+}
+
+.result-value {
+    font-size: 16px;
+    font-weight: 800;
+    color: #0a0a0a;
+    letter-spacing: -0.3px;
+    margin-bottom: 16px;
+}
+
+.result-desc {
+    font-size: 13px;
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 16px;
+}
+
+.result-action {
+    background: none;
+    border: none;
+    color: #2563eb;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.15s;
+}
+
+.result-action:hover { opacity: 0.7; }
+
+/* =========================
+   돌아가기 버튼
+========================= */
+
+.back-link {
+    background: none;
+    border: none;
+    color: #a3a3a3;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 0.15s;
+    padding: 0;
+}
+
+.back-link:hover { color: #0a0a0a; }

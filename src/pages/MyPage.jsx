@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import './MyPage.css';
 import StudyListItem from '../components/StudyListItem';
 import HostInfo from "../components/HostInfo";
-import { updateSchedule } from "../api/user";
 import { BsBookmark, BsBookmarkFill } from "react-icons/bs";
 import { useAuth } from "../context/AuthContext";
 import {
@@ -13,6 +12,8 @@ import {
   toggleBlockUser,
   fetchBookmarks,
   toggleBookmark,
+  fetchMySchedules,
+  updateSchedule,
 } from "../api/user";
 import {
   fetchJoinedStudies,
@@ -62,8 +63,11 @@ const REGION_DATA = {
 };
 
 const DAYS = ['월', '화', '수', '목', '금', '토', '일'];
-const TIMES = ['새벽', '오전', '오후', '저녁'];
+const TIMES = ['새벽', '아침', '오후', '저녁'];
 const MEETING_TABS = ['참여 중인 모임', '신청한 모임', '작성한 모임'];
+
+// 백엔드 dayOfWeek(MON...) + slotName(새벽...) → "월-새벽" 변환
+const DAY_TO_KR = { MON: '월', TUE: '화', WED: '수', THU: '목', FRI: '금', SAT: '토', SUN: '일' };
 
 const MEETING_TAB_FETCHER = {
   "참여 중인 모임": fetchJoinedStudies,
@@ -82,9 +86,7 @@ function MyPage() {
   const [meetingLoading, setMeetingLoading] = useState(false);
 
   const [region, setRegion] = useState({ sido: "", sigungu: "", dong: "" });
-  const [activeSchedule, setActiveSchedule] = useState([
-    '월-새벽', '화-오전', '목-오후', '토-오후', '일-저녁',
-  ]);
+  const [activeSchedule, setActiveSchedule] = useState([]);
   const [password, setPassword] = useState({ current: "", new: "", confirm: "" });
   const [userInfo, setUserInfo] = useState({
     email: "", nickname: "", birth: "2000-01-01",
@@ -97,32 +99,45 @@ function MyPage() {
   const [blockedUsers, setBlockedUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // 프로필 / 북마크 / 차단 / 카테고리 초기 로드
+  // 프로필 / 북마크 / 차단 / 카테고리 / 스케줄 초기 로드
   useEffect(() => {
     const load = async () => {
       setLoading(true);
       try {
-        const [profile, bookmarks, blocked, categoryRes] = await Promise.all([
+        const [profile, bookmarks, blocked, categoryRes, schedules] = await Promise.all([
           fetchMyProfile(),
           fetchBookmarks(),
           fetchBlockedUsers(),
           fetch(`${API_BASE}/categories`).then((r) => r.json()),
+          fetchMySchedules(),
         ]);
 
         setUserInfo({
-          email: profile.email ?? "",
-          nickname: profile.nickname ?? "",
-          birth: profile.birth ?? "2000-01-01",
-          gender: profile.gender ?? "F",
-          bio: profile.bio ?? "",
+          email:      profile.email      ?? "",
+          nickname:   profile.nickname   ?? "",
+          birth:      profile.birth      ?? "2000-01-01",
+          gender:     profile.gender     ?? "F",
+          bio:        profile.bio        ?? "",
           categories: profile.categories ?? [],
-          agePublic: profile.agePublic ?? false,
+          agePublic:  profile.agePublic  ?? false,
         });
+        if (profile.profileImage) setProfileImage(profile.profileImage);
 
         setBookmarkData(bookmarks);
         setBookmarkedIds(bookmarks.map((b) => b.id));
         setBlockedUsers(blocked);
         setCategoryOptions((categoryRes.data ?? []).map((c) => c.categoryName));
+
+        // 스케줄: ScheduleResponse[] → ["월-새벽", "화-오전", ...] 변환
+        const scheduleList = Array.isArray(schedules) ? schedules : [];
+        const converted = scheduleList
+          .map((s) => {
+            const dayKr = DAY_TO_KR[s.dayOfWeek];
+            const timeKr = s.slotName; // 백엔드 slotName이 "새벽"/"오전"/"오후"/"저녁" 이면 그대로
+            return dayKr && timeKr ? `${dayKr}-${timeKr}` : null;
+          })
+          .filter(Boolean);
+        setActiveSchedule(converted);
       } catch (e) {
         console.error("마이페이지 데이터 로드 실패:", e);
       } finally {
@@ -181,6 +196,8 @@ function MyPage() {
       await updateMyProfile({ ...userInfo, region });
     } catch (e) {
       console.error("프로필 저장 실패:", e);
+      alert("프로필 저장에 실패했습니다.");
+      return;
     }
     setIsEdit(false);
   };
@@ -196,18 +213,21 @@ function MyPage() {
       setPassword({ current: "", new: "", confirm: "" });
     } catch (e) {
       console.error("비밀번호 변경 실패:", e);
+      alert("비밀번호 변경에 실패했습니다.");
     }
   };
 
+  // toggleBookmark: 현재 북마크 상태를 함께 전달 (DELETE vs POST 결정)
   const handleToggleBookmark = async (itemId) => {
-    const isBookmarked = bookmarkedIds.includes(itemId);
+    const isCurrentlyBookmarked = bookmarkedIds.includes(itemId);
     try {
-      await toggleBookmark(itemId, isBookmarked);
-      setBookmarkedIds((prev) =>
-        isBookmarked
-          ? prev.filter((id) => id !== itemId)
-          : [...prev, itemId]
-      );
+      await toggleBookmark(itemId, isCurrentlyBookmarked);
+      if (isCurrentlyBookmarked) {
+        setBookmarkedIds((prev) => prev.filter((id) => id !== itemId));
+        setBookmarkData((prev) => prev.filter((b) => b.id !== itemId));
+      } else {
+        setBookmarkedIds((prev) => [...prev, itemId]);
+      }
     } catch (e) {
       console.error("북마크 토글 실패:", e);
     }
@@ -215,7 +235,7 @@ function MyPage() {
 
   const handleToggleBlock = async (userId, currentBlocked) => {
     try {
-      await toggleBlockUser(userId, currentBlocked);
+      await toggleBlockUser(userId, !currentBlocked);
       setBlockedUsers((prev) =>
         prev.map((u) => u.id === userId ? { ...u, blocked: !u.blocked } : u)
       );
@@ -247,88 +267,65 @@ function MyPage() {
           )}
 
           <div className="profile-image">
-            {profileImage
-              ? <img src={profileImage} alt="profile" />
-              : <span className="profile-placeholder">{userInfo.nickname?.[0] ?? "?"}</span>
-            }
+            {profileImage ? (
+              <img src={profileImage} alt="프로필" className="profile-img" />
+            ) : (
+              <div className="profile-placeholder" />
+            )}
           </div>
 
-          {isEdit && (
-            <label className="small-btn profile-upload-btn">
-              사진 변경
-              <input
-                type="file" accept="image/*" hidden
-                onChange={(e) => {
-                  const file = e.target.files[0];
-                  if (!file) return;
-                  setProfileImage(URL.createObjectURL(file));
-                }}
-              />
-            </label>
-          )}
-
-          <div className="info-box">
+          <div className="profile-info">
             <div className="info-row">
-              <span className="label">AGE</span>
-              {isEdit ? (
-                <div className="inline-edit">
-                  <input
-                    type="date"
-                    className="edit-input small"
-                    value={userInfo.birth}
-                    onChange={(e) => setUserInfo({ ...userInfo, birth: e.target.value })}
-                  />
-                  <label className="toggle-label">
-                    <input
-                      type="checkbox"
-                      checked={userInfo.agePublic}
-                      onChange={(e) => setUserInfo({ ...userInfo, agePublic: e.target.checked })}
-                    />
-                    공개
-                  </label>
-                </div>
-              ) : (
-                <span className="value">
-                  {userInfo.agePublic ? `${calculateAge(userInfo.birth)}세` : '비공개'}
-                </span>
-              )}
+              <span className="label">나이</span>
+              <span className="value">
+                {userInfo.birth ? `${calculateAge(userInfo.birth)}세` : "-"}
+              </span>
             </div>
-
             <div className="info-row">
-              <span className="label">GENDER</span>
+              <span className="label">성별</span>
               {isEdit ? (
                 <select
                   className="edit-input"
                   value={userInfo.gender}
                   onChange={(e) => setUserInfo({ ...userInfo, gender: e.target.value })}
                 >
-                  <option value="F">F</option>
-                  <option value="M">M</option>
+                  <option value="M">남성</option>
+                  <option value="F">여성</option>
                 </select>
               ) : (
-                <span className="value">{userInfo.gender}</span>
+                <span className="value">{userInfo.gender === "M" ? "남성" : "여성"}</span>
               )}
             </div>
-
             <div className="info-row">
-              <span className="label">REGION</span>
+              <span className="label">나이 공개</span>
               {isEdit ? (
-                <div className="region-select-group">
+                <input
+                  type="checkbox"
+                  checked={userInfo.agePublic}
+                  onChange={(e) => setUserInfo({ ...userInfo, agePublic: e.target.checked })}
+                />
+              ) : (
+                <span className="value">{userInfo.agePublic ? "공개" : "비공개"}</span>
+              )}
+            </div>
+            <div className="info-row">
+              <span className="label">지역</span>
+              {isEdit ? (
+                <div className="region-selects">
                   <select
                     className="edit-input"
                     value={region.sido}
                     onChange={(e) => setRegion({ sido: e.target.value, sigungu: "", dong: "" })}
                   >
                     <option value="">시/도</option>
-                    {Object.keys(REGION_DATA).map((sido) => (
-                      <option key={sido} value={sido}>{sido}</option>
+                    {Object.keys(REGION_DATA).map((s) => (
+                      <option key={s} value={s}>{s}</option>
                     ))}
                   </select>
                   <select
                     className="edit-input"
                     value={region.sigungu}
                     onChange={(e) => setRegion({ ...region, sigungu: e.target.value, dong: "" })}
-                    disabled={!region.sido}
                   >
                     <option value="">시/군/구</option>
                     {region.sido && Object.keys(REGION_DATA[region.sido]).map((g) => (
@@ -339,7 +336,6 @@ function MyPage() {
                     className="edit-input"
                     value={region.dong}
                     onChange={(e) => setRegion({ ...region, dong: e.target.value })}
-                    disabled={!region.sigungu}
                   >
                     <option value="">읍/면/동</option>
                     {region.sido && region.sigungu &&
@@ -441,6 +437,7 @@ function MyPage() {
                       await updateSchedule(activeSchedule);
                     } catch (e) {
                       console.error("스케줄 저장 실패:", e);
+                      alert("스케줄 저장에 실패했습니다.");
                     }
                   }
                   setScheduleEdit(!scheduleEdit);

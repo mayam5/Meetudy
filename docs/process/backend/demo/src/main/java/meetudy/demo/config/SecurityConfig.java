@@ -7,6 +7,7 @@ import meetudy.demo.security.JwtProvider;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -38,16 +39,13 @@ public class SecurityConfig {
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // 인증 없이 접근 허용
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/categories").permitAll()
-                        .requestMatchers("/posts").authenticated()
-                        .requestMatchers("/posts/{postId}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/posts").permitAll()       // ← GET만 비로그인 허용
+                        .requestMatchers(HttpMethod.GET, "/posts/{postId}").permitAll()
                         .requestMatchers("/ws/**").permitAll()
                         .requestMatchers("/places/**").permitAll()
                         .requestMatchers("/regions/**").permitAll()
-
-                        // 나머지는 인증 필요
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(
@@ -58,7 +56,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
@@ -66,7 +63,7 @@ public class SecurityConfig {
             "http://localhost:3000",
             "http://localhost:5173"
         ));
-        config.setAllowedMethods(List.of("GET", "POST", "PATCH", "DELETE", "OPTIONS"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")); // ← PUT 추가
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
 
@@ -74,9 +71,6 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", config);
         return source;
     }
-
-
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {

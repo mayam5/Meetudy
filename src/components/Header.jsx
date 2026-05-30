@@ -326,7 +326,7 @@ function Header() {
                         </div>
 
                         <Nav className="header-menu position-relative">
-                            <Button variant="light" size="sm" onClick={handleMyGroupClick}>내 모임</Button>
+                            <Button variant="light" size="sm" onClick={handleMyGroupClick}>내 채팅방</Button>
                             <Button variant="light" size="sm" onClick={handlePostWriteClick}>글 작성하기</Button>
 
                             <div className="noti-bell-wrap">

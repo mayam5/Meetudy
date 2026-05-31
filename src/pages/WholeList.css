@@ -130,7 +130,8 @@
     padding: 28px 32px;
     border-top: 2px solid #2563eb;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
+    z-index: 10;
 }
 
 /* 워터마크 텍스트 */
@@ -180,7 +181,7 @@
     gap: 10px;
     flex-shrink: 0;
     position: relative;
-    z-index: 1;
+    z-index: 100;
 }
 
 .whole-filters .dropbox {
@@ -210,12 +211,14 @@
 .whole-scroll-area {
     width: 100%;
     display: flex;
+     overflow: visible;
     flex-direction: column;
     border-radius: 16px;
-    overflow: hidden;
     border: 1px solid #e5e5e5;
     background: #fff;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+    position: relative;
+    z-index: 0;
 }
 
 /* =========================
@@ -456,6 +459,16 @@
 
 .whole-scroll-area {
     animation: sectionFadeIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
+}
+
+/* 첫 번째 아이템 상단 모서리 */
+.whole-scroll-area > *:first-child {
+    border-radius: 16px 16px 0 0;
+}
+
+/* 마지막 아이템 하단 모서리 */
+.whole-scroll-area > *:last-child {
+    border-radius: 0 0 16px 16px;
 }
 
 .whole-pagination {

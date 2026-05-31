@@ -87,8 +87,8 @@ function MyPage() {
   const [password, setPassword] = useState({ current: "", new: "", confirm: "" });
   const [originalNickname, setOriginalNickname] = useState("");
   const [userInfo, setUserInfo] = useState({
-    email: "", nickname: "", birth: "2000-01-01",
-    gender: "F", bio: "", categories: [], agePublic: false,
+    email: "", nickname: "", birth: "",
+    gender: "", bio: "", categories: [], agePublic: false,
   });
   const [categoryOptions, setCategoryOptions] = useState([]);
   const [bookmarkData, setBookmarkData] = useState([]);
@@ -112,13 +112,14 @@ function MyPage() {
         setUserInfo({
           email:      p.email      ?? "",
           nickname:   p.nickname   ?? "",
-          birth:      p.birth      ?? "2000-01-01",
-          gender:     p.gender     ?? "F",
+          birth:      p.birth      ?? "",
+          gender:     p.gender     ?? "",
           bio:        p.bio        ?? "",
           categories: p.categories ?? [],
           agePublic:  p.agePublic  ?? false,
         });
         if (p.profileImage) setProfileImage(p.profileImage);
+        if (p.region) setRegion(p.region);          // ← 지역 세팅
         setOriginalNickname(p.nickname ?? "");
       } else {
         console.error("프로필 로드 실패:", profile.reason);
@@ -177,6 +178,7 @@ function MyPage() {
   }, [activeMeetingTab]);
 
   const calculateAge = (birth) => {
+    if (!birth) return null;
     const today = new Date();
     const birthDate = new Date(birth);
     let age = today.getFullYear() - birthDate.getFullYear();
@@ -244,13 +246,17 @@ function MyPage() {
       alert("비밀번호가 일치하지 않습니다");
       return;
     }
+    if (password.new.length < 8) {
+      alert("비밀번호는 8자 이상이어야 합니다");
+      return;
+    }
     try {
       await changePassword({ current: password.current, newPassword: password.new });
       alert("비밀번호가 변경되었습니다.");
       setPassword({ current: "", new: "", confirm: "" });
     } catch (e) {
       console.error("비밀번호 변경 실패:", e);
-      alert("비밀번호 변경에 실패했습니다.");
+      alert(e.message || "비밀번호 변경에 실패했습니다.");
     }
   };
 
@@ -284,6 +290,8 @@ function MyPage() {
     return <div className="mypage-loading">불러오는 중...</div>;
   }
 
+  const age = calculateAge(userInfo.birth);
+
   return (
     <div className={isEdit ? "mypage editing" : "mypage"}>
 
@@ -291,7 +299,6 @@ function MyPage() {
         <div className="card profile-card">
 
           <div className="profile-top">
-            {/* 닉네임 — 상단 */}
             {isEdit ? (
               <input
                 className="edit-input nickname-input"
@@ -303,7 +310,6 @@ function MyPage() {
               <h2 className="nickname">{userInfo.nickname || "-"}</h2>
             )}
 
-            {/* 프로필 이미지 — 닉네임 아래 가운데 */}
             <div
               className="profile-image"
               style={{ cursor: isEdit ? "pointer" : "default" }}
@@ -314,9 +320,7 @@ function MyPage() {
               ) : (
                 <div className="profile-placeholder" />
               )}
-              {isEdit && (
-                <div className="profile-image-overlay">사진변경</div>
-              )}
+              {isEdit && <div className="profile-image-overlay">사진변경</div>}
               <input
                 ref={profileImageRef}
                 type="file"
@@ -339,7 +343,7 @@ function MyPage() {
                 />
               ) : (
                 <span className="value">
-                  {userInfo.birth ? `${calculateAge(userInfo.birth)}세` : "-"}
+                  {age !== null ? `${age}세` : "-"}
                 </span>
               )}
             </div>
@@ -351,11 +355,14 @@ function MyPage() {
                   value={userInfo.gender}
                   onChange={(e) => setUserInfo({ ...userInfo, gender: e.target.value })}
                 >
+                  <option value="">선택 안 함</option>
                   <option value="M">남성</option>
                   <option value="F">여성</option>
                 </select>
               ) : (
-                <span className="value">{userInfo.gender === "M" ? "남성" : "여성"}</span>
+                <span className="value">
+                  {userInfo.gender === "M" ? "남성" : userInfo.gender === "F" ? "여성" : "-"}
+                </span>
               )}
             </div>
             <div className="info-row">
@@ -427,7 +434,7 @@ function MyPage() {
               placeholder="한 줄 소개를 입력하세요"
             />
           ) : (
-            <p>{userInfo.bio || "소개가 없습니다."}</p>
+            <p>{userInfo.bio || "-"}</p>
           )}
           <div className="quote right">"</div>
         </div>
@@ -435,15 +442,19 @@ function MyPage() {
         <div className="card category-card">
           <h3>Category</h3>
           <div className="tag-wrapper">
-            {categoryOptions.map((item) => (
-              <div
-                key={item}
-                className={userInfo.categories.includes(item) ? 'tag active-tag' : 'tag'}
-                onClick={() => toggleCategory(item)}
-              >
-                {item}
-              </div>
-            ))}
+            {categoryOptions.length === 0 ? (
+              <span className="value">-</span>
+            ) : (
+              categoryOptions.map((item) => (
+                <div
+                  key={item}
+                  className={userInfo.categories.includes(item) ? 'tag active-tag' : 'tag'}
+                  onClick={() => toggleCategory(item)}
+                >
+                  {item}
+                </div>
+              ))
+            )}
           </div>
         </div>
 
@@ -467,7 +478,7 @@ function MyPage() {
               onChange={(e) => setPassword({ ...password, current: e.target.value })}
             />
             <input
-              type="password" placeholder="새 비밀번호"
+              type="password" placeholder="새 비밀번호 (8자 이상)"
               value={password.new} className="edit-input"
               onChange={(e) => setPassword({ ...password, new: e.target.value })}
             />

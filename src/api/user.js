@@ -15,34 +15,51 @@ export const fetchMySchedules = async () => {
     return json.data;
 };
 
-
-
 export const fetchMyProfile = async () => {
     const res = await fetch(`${BASE_URL}/users/me`, { headers: authHeader() });
     const json = await res.json();
     if (!res.ok || !json.success) throw new Error(json.message);
     const p = json.data;
+
+    // 지역 문자열 "서울특별시 강남구 역삼동" → { sido, sigungu, dong }
+    const regionParts = (p.region ?? "").split(" ");
+    const region = {
+        sido:    regionParts[0] ?? "",
+        sigungu: regionParts[1] ?? "",
+        dong:    regionParts[2] ?? "",
+    };
+
     return {
-        email: p.email ?? "",
-        nickname: p.nickname ?? "",
-        birth: p.birthDate ?? "2000-01-01",
-        gender: p.gender ?? "F",
-        bio: p.bio ?? "",
-        categories: [],
-        agePublic: p.isAgePublic ?? false,
+        email:      p.email      ?? "",
+        nickname:   p.nickname   ?? "",
+        birth:      p.birthDate  ?? "",
+        gender:     p.gender     ?? "",
+        bio:        p.bio        ?? "",
+        // 백엔드가 카테고리 이름 배열로 주면 그대로, 객체 배열이면 name 추출
+        categories: (p.categories ?? []).map((c) =>
+            typeof c === "string" ? c : (c.categoryName ?? c.name ?? "")
+        ),
+        agePublic:  p.isAgePublic ?? false,
+        profileImage: p.profileImage ?? null,
+        region,
     };
 };
 
 export const updateMyProfile = async (payload) => {
+    const regionStr = [payload.region?.sido, payload.region?.sigungu, payload.region?.dong]
+        .filter(Boolean)
+        .join(" ");
+
     const res = await fetch(`${BASE_URL}/users/me`, {
         method: "PATCH",
         headers: authHeader(),
         body: JSON.stringify({
-            nickname: payload.nickname,
-            bio: payload.bio,
-            gender: payload.gender,
-            birthDate: payload.birth,
+            nickname:    payload.nickname  || undefined,
+            bio:         payload.bio,
+            gender:      payload.gender,
+            birthDate:   payload.birth,
             isAgePublic: payload.agePublic,
+            region:      regionStr || undefined,
         }),
     });
     const json = await res.json();
@@ -50,8 +67,10 @@ export const updateMyProfile = async (payload) => {
     return json.data;
 };
 
+// 비밀번호 변경은 별도 엔드포인트 사용 (백엔드 스펙에 따라 경로 조정)
 export const changePassword = async ({ current, newPassword }) => {
-    const res = await fetch(`${BASE_URL}/users/me`, {
+    if (newPassword.length < 8) throw new Error("비밀번호는 8자 이상이어야 합니다.");
+    const res = await fetch(`${BASE_URL}/users/me/password`, {
         method: "PATCH",
         headers: authHeader(),
         body: JSON.stringify({ currentPassword: current, newPassword }),

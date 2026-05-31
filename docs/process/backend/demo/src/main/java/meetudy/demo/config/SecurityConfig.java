@@ -46,6 +46,8 @@ public class SecurityConfig {
                         .requestMatchers("/ws/**").permitAll()
                         .requestMatchers("/places/**").permitAll()
                         .requestMatchers("/regions/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/posts/me").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/posts/bookmarks").authenticated()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(

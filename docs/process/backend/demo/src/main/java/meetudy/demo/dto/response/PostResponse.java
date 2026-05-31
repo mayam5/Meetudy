@@ -38,8 +38,10 @@ public class PostResponse {
         //this.meetingTime    = post.getMeetingTime();
         //this.endTime        = post.getEndTime();
         this.dayOfWeek = post.getDayOfWeek();
-        this.timeSlotId = post.getTimeSlot().getTimeSlotId();
-        this.timeSlotName = post.getTimeSlot().getSlotName();
+        //this.timeSlotId = post.getTimeSlot().getTimeSlotId();
+        //this.timeSlotName = post.getTimeSlot().getSlotName();
+        this.timeSlotId = post.getTimeSlot() != null ? post.getTimeSlot().getTimeSlotId() : null;
+        this.timeSlotName = post.getTimeSlot() != null ? post.getTimeSlot().getSlotName() : null;
         this.maxMembers     = post.getMaxMembers();
         this.currentMembers = post.getCurrentMembers();
         this.placeId        = post.getPlace() != null ? post.getPlace().getPlaceId() : null;

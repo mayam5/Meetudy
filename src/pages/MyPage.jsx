@@ -72,6 +72,9 @@ const MEETING_TAB_FETCHER = {
   "작성한 모임": fetchMyStudies,
 };
 
+// 스터디 로그 로컬 저장 키
+const STUDY_LOG_KEY = "studyLog";
+
 function MyPage() {
   const { isLoggedIn } = useAuth();
 
@@ -96,6 +99,20 @@ function MyPage() {
   const [blockedUsers, setBlockedUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // 스터디 로그 state
+  const [studyLog, setStudyLog] = useState({ hours: 0, minutes: 0 });
+  const [studyLogEdit, setStudyLogEdit] = useState(false);
+  const [studyLogMode, setStudyLogMode] = useState("add"); // "add" | "subtract"
+  const [studyLogInput, setStudyLogInput] = useState({ hours: "0", minutes: "0" });
+
+  useEffect(() => {
+    // TODO: 백엔드 API 연동 시 fetch로 교체
+    try {
+      const saved = localStorage.getItem(STUDY_LOG_KEY);
+      if (saved) setStudyLog(JSON.parse(saved));
+    } catch {}
+  }, []);
+
   useEffect(() => {
     const load = async () => {
       setLoading(true);
@@ -119,7 +136,7 @@ function MyPage() {
           agePublic:  p.agePublic  ?? false,
         });
         if (p.profileImage) setProfileImage(p.profileImage);
-        if (p.region) setRegion(p.region);          // ← 지역 세팅
+        if (p.region) setRegion(p.region);
         setOriginalNickname(p.nickname ?? "");
       } else {
         console.error("프로필 로드 실패:", profile.reason);
@@ -286,6 +303,38 @@ function MyPage() {
     }
   };
 
+  const handleStudyLogEdit = () => {
+    setStudyLogInput({ hours: "0", minutes: "0" });
+    setStudyLogMode("add");
+    setStudyLogEdit(true);
+  };
+
+  const handleStudyLogSave = () => {
+    const inputH = Math.max(0, parseInt(studyLogInput.hours) || 0);
+    const inputM = Math.min(59, Math.max(0, parseInt(studyLogInput.minutes) || 0));
+    const inputTotal = inputH * 60 + inputM;
+    const currentTotal = studyLog.hours * 60 + studyLog.minutes;
+    const resultTotal = studyLogMode === "add"
+      ? currentTotal + inputTotal
+      : Math.max(0, currentTotal - inputTotal);
+    const updated = { hours: Math.floor(resultTotal / 60), minutes: resultTotal % 60 };
+    setStudyLog(updated);
+    try { localStorage.setItem(STUDY_LOG_KEY, JSON.stringify(updated)); } catch {}
+    setStudyLogEdit(false);
+  };
+
+  // 퀵 버튼 누적 (분 단위)
+  const handleStudyLogAdd = (addMinutes) => {
+    setStudyLog((prev) => {
+      const total = prev.hours * 60 + prev.minutes + addMinutes;
+      const h = Math.max(0, Math.floor(total / 60));
+      const m = Math.max(0, total % 60);
+      const updated = { hours: h, minutes: m };
+      try { localStorage.setItem(STUDY_LOG_KEY, JSON.stringify(updated)); } catch {}
+      return updated;
+    });
+  };
+
   if (loading) {
     return <div className="mypage-loading">불러오는 중...</div>;
   }
@@ -342,9 +391,7 @@ function MyPage() {
                   onChange={(e) => setUserInfo({ ...userInfo, birth: e.target.value })}
                 />
               ) : (
-                <span className="value">
-                  {age !== null ? `${age}세` : "-"}
-                </span>
+                <span className="value">{age !== null ? `${age}세` : "-"}</span>
               )}
             </div>
             <div className="info-row">
@@ -592,15 +639,74 @@ function MyPage() {
         </div>
 
         <div className="bottom-row">
+
+          {/* 스터디 로그 */}
           <div className="card study-card">
             <div className="card-header">
               <div>
                 <h3>Study Log</h3>
-                <p className="sub-text">일주일동안 이만큼 공부했어요!</p>
+                <p className="sub-text">지금까지 이만큼 공부했어요!</p>
               </div>
-              <button className="small-btn" onClick={() => alert("수정 기능 준비 중")}>수정</button>
+              {studyLogEdit ? (
+                <button className="small-btn active-edit-btn" onClick={handleStudyLogSave}>저장</button>
+              ) : (
+                <button className="small-btn" onClick={handleStudyLogEdit}>수정</button>
+              )}
             </div>
-            <div className="time-text">13H<br />06M</div>
+
+            {studyLogEdit ? (
+              <div className="study-log-edit">
+                {/* 현재 시간 — 수정 전과 동일한 레이아웃 */}
+                <div className="study-log-current">
+                  <span className="time-block">{String(studyLog.hours).padStart(2, '0')}<em>H</em></span>
+                  <span className="time-sep">:</span>
+                  <span className="time-block">{String(studyLog.minutes).padStart(2, '0')}<em>M</em></span>
+                </div>
+                {/* 추가 / 차감 탭 */}
+                <div className="study-log-mode-tabs">
+                  <button
+                    className={`study-log-mode-btn${studyLogMode === "add" ? " active" : ""}`}
+                    onClick={() => setStudyLogMode("add")}
+                  >+ 추가</button>
+                  <button
+                    className={`study-log-mode-btn${studyLogMode === "subtract" ? " active subtract" : ""}`}
+                    onClick={() => setStudyLogMode("subtract")}
+                  >− 차감</button>
+                </div>
+                {/* 입력 */}
+                <div className="study-log-fields">
+                  <div className="study-log-field">
+                    <input
+                      type="number"
+                      className="edit-input study-log-input"
+                      value={studyLogInput.hours}
+                      min="0"
+                      placeholder="0"
+                      onChange={(e) => setStudyLogInput({ ...studyLogInput, hours: e.target.value })}
+                    />
+                    <span className="study-log-unit">H</span>
+                  </div>
+                  <div className="study-log-field">
+                    <input
+                      type="number"
+                      className="edit-input study-log-input"
+                      value={studyLogInput.minutes}
+                      min="0" max="59"
+                      placeholder="0"
+                      onChange={(e) => setStudyLogInput({ ...studyLogInput, minutes: e.target.value })}
+                    />
+                    <span className="study-log-unit">M</span>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              /* 가로 표시 */
+              <div className="time-text-row">
+                <span className="time-block">{String(studyLog.hours).padStart(2, '0')}<em>H</em></span>
+                <span className="time-sep">:</span>
+                <span className="time-block">{String(studyLog.minutes).padStart(2, '0')}<em>M</em></span>
+              </div>
+            )}
           </div>
 
           <div className="card user-card">

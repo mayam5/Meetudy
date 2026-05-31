@@ -61,6 +61,13 @@
     gap: 14px;
 }
 
+.mypage .card:nth-child(1) { animation-delay: 0.05s; }
+.mypage .card:nth-child(2) { animation-delay: 0.10s; }
+.mypage .card:nth-child(3) { animation-delay: 0.15s; }
+.mypage .card:nth-child(4) { animation-delay: 0.20s; }
+.mypage .card:nth-child(5) { animation-delay: 0.25s; }
+.mypage .card:nth-child(6) { animation-delay: 0.30s; }
+
 .mypage .card {
     background: var(--bg-card);
     border-radius: var(--radius-lg);
@@ -68,13 +75,14 @@
     border: 1px solid var(--border);
     border-top: 2.5px solid var(--blue);
     box-shadow: var(--shadow-card);
-    transition: box-shadow var(--transition);
+    transition: box-shadow var(--transition), transform var(--transition);
     box-sizing: border-box;
-    animation: fadeIn 0.3s ease both;
+    animation: fadeIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .mypage .card:hover {
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
 }
 
 .mypage h3 {
@@ -125,7 +133,6 @@
     line-height: 1;
 }
 
-/* 닉네임 + 사진 세로 가운데 정렬 */
 .mypage .profile-top {
     display: flex;
     flex-direction: column;
@@ -147,6 +154,13 @@
     flex-shrink: 0;
     border: 2.5px solid var(--blue);
     box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2), 0 0 20px rgba(37, 99, 235, 0.15);
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+    animation: profilePulse 3s ease-in-out infinite;
+}
+
+.mypage .profile-image:hover {
+    transform: scale(1.06);
+    box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.25), 0 0 28px rgba(37, 99, 235, 0.25);
 }
 
 .mypage .profile-image img {
@@ -292,7 +306,7 @@
 
 .mypage .quote {
     position: absolute;
-    font-size: 52px;
+    font-size: 64px;
     color: var(--border);
     left: 14px;
     top: 2px;
@@ -327,7 +341,7 @@
     border-radius: var(--radius-pill);
     font-size: 12px;
     font-weight: 600;
-    transition: all var(--transition);
+    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
     cursor: pointer;
     border: 1.5px solid transparent;
 }
@@ -369,6 +383,12 @@
 .mypage .edit-btn:hover {
     background: var(--blue);
     box-shadow: 0 4px 16px rgba(37, 99, 235, 0.3);
+    transform: translateY(-1px);
+}
+
+.mypage .edit-btn:active {
+    transform: scale(0.97);
+    box-shadow: none;
 }
 
 .mypage.editing .edit-btn {
@@ -395,7 +415,12 @@
 .mypage .small-btn:hover {
     background: var(--blue);
     box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-    transform: translateY(-1px);
+    transform: translateY(-2px);
+}
+
+.mypage .small-btn:active {
+    transform: scale(0.95) translateY(0);
+    box-shadow: none;
 }
 
 .mypage .small-btn.active-edit-btn {
@@ -467,7 +492,7 @@
     padding: 8px 2px;
     border-radius: 8px;
     cursor: default;
-    transition: all var(--transition);
+    transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
     color: var(--text-muted);
     background: var(--bg-muted);
     border: 1.5px solid transparent;
@@ -540,7 +565,7 @@
     color: var(--text-muted);
     font-weight: 600;
     font-size: 12px;
-    transition: all var(--transition);
+    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
     white-space: nowrap;
     flex-shrink: 0;
     border: 1.5px solid transparent;
@@ -630,19 +655,188 @@
     line-height: 1;
 }
 
-.mypage .time-text {
-    font-size: 52px;
-    font-weight: 900;
-    color: var(--text-white);
-    line-height: 1;
-    margin-top: 14px;
-    letter-spacing: -3px;
+.mypage .study-card .card-header {
+    margin-bottom: 0;
+}
+
+/* 가로 시간 표시 */
+.mypage .time-text-row {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-top: 4px;
     position: relative;
     z-index: 1;
 }
 
-.mypage .time-text span {
+.mypage .time-block {
+    font-size: 56px;
+    font-weight: 900;
+    color: var(--text-white);
+    line-height: 1;
+    letter-spacing: -3px;
+}
+
+.mypage .time-block em {
+    font-size: 18px;
+    font-weight: 700;
     color: var(--blue-light);
+    letter-spacing: 0;
+    font-style: normal;
+    margin-left: 2px;
+}
+
+.mypage .time-sep {
+    font-size: 40px;
+    font-weight: 900;
+    color: rgba(255,255,255,0.2);
+    line-height: 1;
+    letter-spacing: 0;
+}
+
+/* 수정 모드 */
+.mypage .study-log-edit {
+    margin-top: 4px;
+    position: relative;
+    z-index: 1;
+}
+
+/* 현재 시간 — 수정 전 표시와 동일한 크기 */
+.mypage .study-log-current {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-bottom: 14px;
+}
+
+.mypage .study-log-current .time-block {
+    font-size: 56px;
+    font-weight: 900;
+    color: var(--text-white);
+    line-height: 1;
+    letter-spacing: -3px;
+}
+
+.mypage .study-log-current .time-block em {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--blue-light);
+    font-style: normal;
+    letter-spacing: 0;
+    margin-left: 2px;
+}
+
+.mypage .study-log-current .time-sep {
+    font-size: 40px;
+    font-weight: 900;
+    color: rgba(255,255,255,0.2);
+    line-height: 1;
+    letter-spacing: 0;
+}
+
+.mypage .study-log-mode-tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 10px;
+}
+
+.mypage .study-log-mode-btn {
+    flex: 1;
+    padding: 5px 0;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.05);
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all var(--transition);
+    font-family: inherit;
+}
+
+.mypage .study-log-mode-btn.active {
+    background: var(--blue);
+    border-color: var(--blue);
+    color: #fff;
+    animation: tabPop 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.mypage .study-log-mode-btn.active.subtract {
+    background: #ef4444;
+    border-color: #ef4444;
+}
+
+.mypage .study-log-fields {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.mypage .study-log-field {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.mypage .study-log-field {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.mypage .study-log-unit {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--blue-light);
+    letter-spacing: 1px;
+}
+
+.mypage .study-log-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.mypage .study-log-ctrl {
+    width: 32px;
+    height: 22px;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 6px;
+    background: rgba(255,255,255,0.06);
+    color: var(--text-white);
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: inherit;
+    line-height: 1;
+}
+
+.mypage .study-log-ctrl:hover {
+    background: var(--blue);
+    border-color: var(--blue);
+}
+
+.mypage .study-log-input {
+    width: 56px !important;
+    text-align: center !important;
+    font-size: 22px !important;
+    font-weight: 900 !important;
+    padding: 4px 4px !important;
+    background: rgba(255, 255, 255, 0.07) !important;
+    border-color: rgba(255, 255, 255, 0.12) !important;
+    color: var(--text-white) !important;
+    border-radius: 8px !important;
+}
+
+.mypage .study-log-input:focus {
+    border-color: var(--blue) !important;
+    background: rgba(255, 255, 255, 0.1) !important;
 }
 
 /* ===== USER MANAGEMENT ===== */
@@ -867,11 +1061,36 @@
     .mypage .time-text {
         font-size: 44px;
     }
+
+    .mypage .study-log-add {
+        gap: 5px;
+    }
+
+    .mypage .study-log-add-btn {
+        font-size: 10px;
+        padding: 3px 8px;
+    }
 }
 
 /* ===== 애니메이션 ===== */
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
+    from { opacity: 0; transform: translateY(16px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes profilePulse {
+    0%, 100% { box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2), 0 0 20px rgba(37, 99, 235, 0.15); }
+    50%       { box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.28), 0 0 28px rgba(37, 99, 235, 0.22); }
+}
+
+@keyframes tabPop {
+    0%   { transform: scale(0.92); }
+    60%  { transform: scale(1.04); }
+    100% { transform: scale(1); }
+}
+
+@keyframes timeCount {
+    from { opacity: 0; transform: translateY(8px); }
     to   { opacity: 1; transform: translateY(0); }
 }

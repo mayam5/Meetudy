@@ -134,7 +134,6 @@
 
 /* 검색어 없을 때 흔들기 */
 .search-error {
-    border-color: #ff4d4f !important;
     animation: shake 0.4s ease;
 }
 

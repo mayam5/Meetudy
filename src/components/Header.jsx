@@ -160,7 +160,7 @@ function Header() {
     const handleSearch = () => {
         if (!searchValue.trim()) {
             setSearchError(true);
-            setTimeout(() => setSearchError(false), 600);
+            setTimeout(() => setSearchError(false), 500);
             return;
         }
         const params = new URLSearchParams();

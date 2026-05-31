@@ -115,7 +115,7 @@ function Home() {
                         className="btn-hero-primary"
                         onClick={() => navigate("/post-write")}
                     >
-                        스터디 시작하기
+                        스터디 만들기
                     </button>
                     <button
                         className="btn-hero-secondary"

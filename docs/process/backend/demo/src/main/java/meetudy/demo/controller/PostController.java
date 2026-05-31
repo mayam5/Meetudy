@@ -29,19 +29,25 @@ public class PostController {
     /** POST-15: OPEN 게시글 목록 / POST-08: 카테고리 필터 / POST-09: 키워드 검색 */
     @GetMapping
     public ResponseEntity<ApiResponse<List<PostResponse>>> getPosts(
-            @RequestParam(required = false) Long categoryId,
+    @AuthenticationPrincipal UserDetails userDetails,    
+        @RequestParam(required = false) Long categoryId,
             @RequestParam(required = false) String keyword) {
+        Long userId = null;
 
-        List<PostResponse> result;
-        if (keyword != null && !keyword.isBlank()) {
-            result = postService.searchPosts(keyword);
-        } else if (categoryId != null) {
-            result = postService.getPostsByCategory(categoryId);
-        } else {
-            result = postService.getAllOpenPosts();
-        }
+            if (userDetails != null) {
+                userId = Long.parseLong(userDetails.getUsername());
+            }
+            
+                List<PostResponse> result;
+                if (keyword != null && !keyword.isBlank()) {
+                    result = postService.searchPosts(userId, keyword);
+                } else if (categoryId != null) {
+                    result = postService.getPostsByCategory(userId, categoryId);
+                } else {
+                    result = postService.getAllOpenPosts(userId);
+                }
 
-        return ResponseEntity.ok(ApiResponse.ok(result));
+                return ResponseEntity.ok(ApiResponse.ok(result));
     }
 
     /** POST-16: 게시글 단건 조회 (비로그인 허용) */
@@ -63,37 +69,37 @@ public class PostController {
     }
 
    
-/** POST-18: 게시글 작성 */
-@PostMapping
-public ResponseEntity<ApiResponse<PostResponse>> createPost(
-        Authentication authentication,
-        @Valid @RequestBody CreatePostRequest request) {
+    /** POST-18: 게시글 작성 */
+    @PostMapping
+    public ResponseEntity<ApiResponse<PostResponse>> createPost(
+            Authentication authentication,
+            @Valid @RequestBody CreatePostRequest request) {
 
-    System.out.println("===== PostController createPost =====");
-    System.out.println("method parameter authentication = " + authentication);
+        System.out.println("===== PostController createPost =====");
+        System.out.println("method parameter authentication = " + authentication);
 
-    Authentication contextAuth = SecurityContextHolder.getContext().getAuthentication();
-    System.out.println("SecurityContext authentication = " + contextAuth);
+        Authentication contextAuth = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println("SecurityContext authentication = " + contextAuth);
 
-    if (contextAuth != null) {
-        System.out.println("principal = " + contextAuth.getPrincipal());
-        System.out.println("principal class = " + contextAuth.getPrincipal().getClass().getName());
-        System.out.println("authorities = " + contextAuth.getAuthorities());
-        System.out.println("isAuthenticated = " + contextAuth.isAuthenticated());
+        if (contextAuth != null) {
+            System.out.println("principal = " + contextAuth.getPrincipal());
+            System.out.println("principal class = " + contextAuth.getPrincipal().getClass().getName());
+            System.out.println("authorities = " + contextAuth.getAuthorities());
+            System.out.println("isAuthenticated = " + contextAuth.isAuthenticated());
+        }
+
+        if (contextAuth == null || contextAuth.getPrincipal() == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(ApiResponse.fail("로그인이 필요합니다."));
+        }
+
+        UserDetails userDetails = (UserDetails) contextAuth.getPrincipal();
+
+        Long userId = Long.parseLong(userDetails.getUsername());
+        PostResponse response = postService.createPost(userId, request);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.ok(response));
     }
-
-    if (contextAuth == null || contextAuth.getPrincipal() == null) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(ApiResponse.fail("로그인이 필요합니다."));
-    }
-
-    UserDetails userDetails = (UserDetails) contextAuth.getPrincipal();
-
-    Long userId = Long.parseLong(userDetails.getUsername());
-    PostResponse response = postService.createPost(userId, request);
-
-    return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.ok(response));
-}
 
     /** POST-19: 게시글 수정 */
     @PatchMapping("/{postId}")

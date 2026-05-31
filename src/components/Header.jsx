@@ -26,7 +26,7 @@ import { useAuth } from "../context/AuthContext";
 import Login from "../components/Login";
 import { fetchNotifications, markNotificationRead } from "../api/notification";
 
-const API_BASE = "/api";
+const API_BASE = "http://localhost:8080";
 
 function Header() {
     const { isLoggedIn, logout } = useAuth();

@@ -27,38 +27,48 @@ public class PostService {
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRoomMemberRepository chatRoomMemberRepository;
     private final TimeSlotRepository timeSlotRepository;
+    private final PostBookmarkRepository postbookmarkRepository;
 
     /** POST-06: OPEN 게시글 전체 조회 */
     @Transactional(readOnly = true)
-    public List<PostResponse> getAllOpenPosts() {
+    public List<PostResponse> getAllOpenPosts(Long userId) {
         return postRepository.findAllByPostStatusOrderByCreatedAtDesc("OPEN")
                 .stream()
-                .map(PostResponse::from)
+                .map(post -> PostResponse.from(
+                        post,
+                        isBookmarked(userId, post.getPostId())
+                ))
                 .collect(Collectors.toList());
     }
 
     /** POST-07: 게시글 단건 조회 */
     @Transactional(readOnly = true)
     public PostResponse getPostById(Long postId) {
-        return PostResponse.from(findPost(postId));
+        return PostResponse.from(findPost(postId), false);
     }
 
     /** POST-08: 카테고리별 조회 */
     @Transactional(readOnly = true)
-    public List<PostResponse> getPostsByCategory(Long categoryId) {
+    public List<PostResponse> getPostsByCategory(Long userId, Long categoryId) {
         return postRepository
                 .findAllByPostStatusAndCategory_CategoryIdOrderByCreatedAtDesc("OPEN", categoryId)
                 .stream()
-                .map(PostResponse::from)
+                .map(post -> PostResponse.from(
+                        post,
+                        isBookmarked(userId, post.getPostId())
+                ))
                 .collect(Collectors.toList());
     }
 
     /** POST-09: 키워드 검색 */
     @Transactional(readOnly = true)
-    public List<PostResponse> searchPosts(String keyword) {
+    public List<PostResponse> searchPosts(Long userId, String keyword) {
         return postRepository.searchByKeyword(keyword)
                 .stream()
-                .map(PostResponse::from)
+                .map(post -> PostResponse.from(
+                        post,
+                        isBookmarked(userId, post.getPostId())
+                ))
                 .collect(Collectors.toList());
     }
 
@@ -67,7 +77,10 @@ public class PostService {
     public List<PostResponse> getMyPosts(Long userId) {
         return postRepository.findAllByUser_UserIdOrderByCreatedAtDesc(userId)
                 .stream()
-                .map(PostResponse::from)
+            .map(post -> PostResponse.from(
+                    post,
+                    isBookmarked(userId, post.getPostId())
+            ))
                 .collect(Collectors.toList());
     }
 
@@ -92,13 +105,13 @@ public class PostService {
 
         Place place = null;
 
-if (request.getPlaceId() != null) {
-    place = placeRepository.findById(request.getPlaceId())
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 장소입니다."));
-}
+    if (request.getPlaceId() != null) {
+        place = placeRepository.findById(request.getPlaceId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 장소입니다."));
+    }
 
         TimeSlot timeSlot = timeSlotRepository.findById(request.getTimeSlotId())
-    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 시간대입니다."));
+        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 시간대입니다."));
 
         // 1. Post 저장
         Post post = postRepository.save(Post.builder()
@@ -139,7 +152,7 @@ if (request.getPlaceId() != null) {
                 .memberStatus("ACTIVE")
                 .build());
 
-        return PostResponse.from(post);
+        return PostResponse.from(post, false);
     }
 
     /** POST-12: 게시글 수정 (작성자만) */
@@ -162,7 +175,7 @@ if (request.getPlaceId() != null) {
                 request.getMaxMembers(),
                 category
         );
-        return PostResponse.from(post);
+        return PostResponse.from(post, false);
     }
 
     /** POST-13: 모집 마감 (작성자만) */
@@ -197,4 +210,11 @@ if (request.getPlaceId() != null) {
             throw new CustomException(ErrorCode.POST_NOT_AUTHOR);
         }
     }
+
+private boolean isBookmarked(Long userId, Long postId) {
+    if (userId == null) return false;
+
+    return postbookmarkRepository
+            .existsByUser_UserIdAndPost_PostId(userId, postId);
+}
 }

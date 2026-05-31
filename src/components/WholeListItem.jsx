@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AvatarGroup from "./AvatarGroup";
 import HostInfo from "./HostInfo";
 import { FiBookmark, FiMessageCircle, FiUsers } from "react-icons/fi";
@@ -25,6 +25,11 @@ function WholeListItem({
   onLeave,
 }) {
   const [isBookmarked, setIsBookmarked] = useState(initialBookmarked);
+
+  useEffect(() => {
+  setIsBookmarked(initialBookmarked);
+}, [initialBookmarked]);
+
   const [popup, setPopup] = useState({
     open: false,
     message: "",
@@ -41,7 +46,7 @@ function WholeListItem({
     setIsBookmarked(!prev);
 
     try {
-      await toggleBookmark(id);
+      await toggleBookmark(id, prev);
     } catch (err) {
       console.error("북마크 실패:", err);
       setIsBookmarked(prev);

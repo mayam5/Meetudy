@@ -13,8 +13,10 @@ import meetudy.demo.repository.ChatRoomMemberRepository;
 import meetudy.demo.repository.ChatRoomRepository;
 import meetudy.demo.repository.StudyGroupMemberRepository;
 import meetudy.demo.repository.StudyGroupRepository;
+import meetudy.demo.repository.PostBookmarkRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,13 +29,25 @@ public class StudyGroupService {
     private final StudyGroupMemberRepository studyGroupMemberRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRoomMemberRepository chatRoomMemberRepository;
+    private final PostBookmarkRepository postBookmarkRepository;
 
     /** 내가 속한 스터디 그룹 목록 */
     @Transactional(readOnly = true)
     public List<StudyGroupResponse> getMyGroups(Long userId) {
         return studyGroupMemberRepository.findAllByUser_UserIdAndLeftAtIsNull(userId)
                 .stream()
-                .map(m -> StudyGroupResponse.from(m.getStudyGroup()))
+                .map(m -> {
+                    StudyGroup group = m.getStudyGroup();
+
+                    boolean bookmarked =
+                            postBookmarkRepository
+                                    .existsByUser_UserIdAndPost_PostId(
+                                            userId,
+                                            group.getPost().getPostId()
+                                    );
+
+                    return StudyGroupResponse.from(group, bookmarked);
+                })
                 .collect(Collectors.toList());
     }
 
@@ -42,9 +56,17 @@ public class StudyGroupService {
     public StudyGroupResponse getGroupInfo(Long userId, Long studyGroupId) {
         StudyGroup group = findGroupOrThrow(studyGroupId);
         validateMember(studyGroupId, userId);
-        return StudyGroupResponse.from(group);
-    }
 
+        boolean bookmarked =
+                postBookmarkRepository
+                        .existsByUser_UserIdAndPost_PostId(
+                                userId,
+                                group.getPost().getPostId()
+                        );
+
+        return StudyGroupResponse.from(group, bookmarked);
+    }
+    
     /** 스터디 그룹 멤버 목록 (멤버만) */
     @Transactional(readOnly = true)
     public List<StudyGroupMemberResponse> getGroupMembers(Long userId, Long studyGroupId) {

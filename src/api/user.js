@@ -111,26 +111,46 @@ export const toggleBlockUser = async (userId, isCurrentlyBlocked) => {
 };
 
 export const fetchBookmarks = async () => {
-    const res = await fetch(`${BASE_URL}/posts/bookmarks`, { headers: authHeader() });
-    const json = await res.json();
-    if (!res.ok || !json.success) throw new Error(json.message);
-    return json.data.map((b) => ({
-        id: b.postId,
-        title: b.postTitle,
-        host: b.nickname ?? "",
-        field: b.categoryName ?? "",
-    }));
-};
-
-export const toggleBookmark = async (postId, isCurrentlyBookmarked) => {
-    const method = isCurrentlyBookmarked ? "DELETE" : "POST";
-    const res = await fetch(`${BASE_URL}/posts/${postId}/bookmark`, {
-        method,
+    const res = await fetch(`${BASE_URL}/posts/bookmarks`, {
         headers: authHeader(),
     });
+
     const json = await res.json();
-    if (!res.ok || !json.success) throw new Error(json.message);
-    return json.data;
+
+    if (!res.ok) {
+        throw new Error(json.message || "북마크 목록 조회 실패");
+    }
+
+return {
+    data: json.map((b) => ({
+        id: b.postId,
+        title: b.postTitle,
+        description: b.postContent,
+        host: b.nickname ?? "",
+        hostId: b.userId,
+        field: b.categoryName ?? "",
+        place: b.placeName ?? "",
+        categoryId: b.categoryId,
+        tags: b.categoryName ? [b.categoryName] : [],
+        isBookmarked: b.bookmarked,
+    })),
+    total: json.length,
+};
+};
+
+export const toggleBookmark = async (postId, isBookmarked) => {
+  const res = await fetch(`${BASE_URL}/posts/${postId}/bookmark`, {
+    method: isBookmarked ? "DELETE" : "POST",
+    headers: authHeader(),
+  });
+
+  const json = await res.json();
+
+  if (!res.ok || !json.success) {
+    throw new Error(json.message || "북마크 변경 실패");
+  }
+
+  return json.data;
 };
 
 export const updateSchedule = async (schedule) => {

@@ -6,7 +6,9 @@ import meetudy.demo.dto.response.PostResponse;
 import meetudy.demo.service.BookmarkService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+// import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,10 +46,13 @@ public class BookmarkController {
 
     /** BM-08: 내 북마크 목록 GET /posts/bookmarks */
     @GetMapping("/bookmarks")
-    public ResponseEntity<ApiResponse<List<PostResponse>>> getMyBookmarks(
-            @AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<?> getMyBookmarks() {
 
-        Long userId = Long.parseLong(userDetails.getUsername());
-        return ResponseEntity.ok(ApiResponse.ok(bookmarkService.getMyBookmarks(userId)));
+        Long userId = 5L;
+
+        return ResponseEntity.ok(
+                bookmarkService.getMyBookmarks(userId)
+        );
     }
 }
+

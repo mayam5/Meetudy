@@ -57,7 +57,7 @@ public class BookmarkService {
     public List<PostResponse> getMyBookmarks(Long userId) {
         return bookmarkRepository.findAllByUser_UserIdOrderByCreatedAtDesc(userId)
                 .stream()
-                .map(bookmark -> PostResponse.from(bookmark.getPost()))
+                .map(bookmark -> PostResponse.from(bookmark.getPost(), true))
                 .collect(Collectors.toList());
     }
 }

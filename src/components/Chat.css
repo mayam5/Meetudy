@@ -89,6 +89,8 @@
     border-radius: 10px;
 }
 
+
+
 /* 메시지 */
 .chat-msg {
     font-size: 13px;
@@ -129,6 +131,8 @@
     font-weight: 600;
     color: #2563eb;
     margin-right: 2px;
+    margin-left: 6px;
+    margin-bottom: 4px;
 }
 
 /* 상대 */

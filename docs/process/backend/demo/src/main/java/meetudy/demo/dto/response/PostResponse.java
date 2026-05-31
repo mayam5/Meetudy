@@ -26,10 +26,12 @@ public class PostResponse {
     private final Long categoryId;
     private final String categoryName;
     private final String postStatus;
+    private final boolean isBookmarked;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
+  
 
-    private PostResponse(Post post) {
+    private PostResponse(Post post, boolean isBookmarked) {
         this.postId         = post.getPostId();
         this.userId         = post.getUser().getUserId();
         this.nickname       = post.getUser().getNickname();
@@ -49,11 +51,12 @@ public class PostResponse {
         this.categoryId     = post.getCategory() != null ? post.getCategory().getCategoryId() : null;
         this.categoryName   = post.getCategory() != null ? post.getCategory().getCategoryName() : null;
         this.postStatus     = post.getPostStatus();
+        this.isBookmarked = isBookmarked;
         this.createdAt      = post.getCreatedAt();
         this.updatedAt      = post.getUpdatedAt();
     }
 
-    public static PostResponse from(Post post) {
-        return new PostResponse(post);
+    public static PostResponse from(Post post, boolean isBookmarked) {
+        return new PostResponse(post, isBookmarked);
     }
 }

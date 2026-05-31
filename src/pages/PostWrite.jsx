@@ -127,43 +127,16 @@ function PostWrite({ isEditMode = false }) {
                 `http://localhost:8080/places/search?query=${encodeURIComponent(placeInput)}`
             );
 
-            console.log("장소 검색 결과:", response.data);
+            // console.log("장소 검색 결과:", response.data);
             setSearchResults(response.data.data ?? []);
         } catch (error) {
             console.error("장소 검색 실패", error);
         }
     };
 
-/*
-    const handleSelectPlace = async (place) => {
-  
-        try {
-            const response = await axios.post("http://localhost:8080/places", {
-                name: place.placeName,
-                address: place.roadAddressName || place.addressName,
-                latitude: Number(place.y),
-                longitude: Number(place.x),
-            });
-
-            const savedPlace = response.data.data;
-
-            setSelectedPlace({
-                id: savedPlace.id ?? savedPlace.placeId,
-                placeName: savedPlace.name ?? place.placeName,
-                address: savedPlace.address ?? place.roadAddressName ?? place.addressName,
-            });
-
-            setPlaceInput(place.placeName);
-            setSearchResults([]);
-            setErrors((prev) => ({ ...prev, place: undefined }));
-        } catch (error) {
-            console.error("장소 저장 실패", error);
-        }
-    };
-*/
 
 const handleSelectPlace = async (place) => {
-    console.log("선택한 place:", place);
+    //console.log("선택한 place:", place);
 
     const payload = {
         name: place.name,
@@ -172,12 +145,12 @@ const handleSelectPlace = async (place) => {
         longitude: place.longitude,
     };
 
-    console.log("장소 저장 payload:", payload);
+    //console.log("장소 저장 payload:", payload);
 
     try {
         const response = await axios.post("http://localhost:8080/places", payload);
 
-        console.log("장소 저장 응답:", response.data);
+        //console.log("장소 저장 응답:", response.data);
 
         const savedPlace = response.data.data;
 
@@ -326,8 +299,8 @@ const handleSelectPlace = async (place) => {
             return;
         }
 
-        console.log("handleSubmit 실행됨");
-        console.log("payload:", buildPayload());
+        //console.log("handleSubmit 실행됨");
+        //console.log("payload:", buildPayload());
 
         setLoading(true);
 
@@ -365,10 +338,10 @@ const handleSelectPlace = async (place) => {
     */
 
     const handleSubmitClick = () => {
-        console.log("올리기 클릭됨");
+        //console.log("올리기 클릭됨");
 
         if (!validate()) {
-            console.log("필수값 누락", errors);
+            //console.log("필수값 누락", errors);
             return;
         }
 
@@ -536,7 +509,7 @@ const handleSelectPlace = async (place) => {
                     <div className="form-section">
                         <div className="form-section-header">
                             <div className="form-section-icon">🕐</div>
-                            <h4>6. 모임 시간</h4>
+                            <h4>* 6. 모임 시간</h4>
                         </div>
                         <p>필수 입력 사항입니다. 요일과 시간대를 선택해 추가하세요 (최대 1개)</p>
                         <div className="dropdown-row">
@@ -700,7 +673,7 @@ const handleSelectPlace = async (place) => {
                                             onClick={() => {
                                                 setIsStatusPopupOpen(false);
                                                 openPopup("상태를 변경하시겠습니까?", async () => {
-                                                    console.log("상태 변경:", postStatus);
+                                                    //console.log("상태 변경:", postStatus);
                                                     closePopup();
                                                 });
                                             }}
@@ -716,7 +689,7 @@ const handleSelectPlace = async (place) => {
                                 <button
                                     className="post-button save"
                                     onClick={() => openPopup("임시 저장하시겠습니까?", async () => {
-                                        console.log("임시 저장");
+                                        //console.log("임시 저장");
                                         closePopup();
                                     })}
                                 >

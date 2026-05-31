@@ -15,15 +15,19 @@ function Chat({ onClose, roomTitle = "채팅방", roomId }) {
         const load = async () => {
             try {
                 const data = await fetchChatMessages(roomId);
-                setMessages(data);
-            } catch (e) {
-                setMessages([
-                    { id: 1, type: "system", text: `[${roomTitle}] 입장했습니다.` },
-                ]);
-            }
-        };
-        load();
-    }, [roomId, roomTitle]);
+                // console.log(data);
+                const sortedData = [...data].sort((a, b) => {
+                    return a.id - b.id;
+                });
+            setMessages(sortedData);
+                        } catch (e) {
+                            setMessages([
+                                { id: 1, type: "system", text: `[${roomTitle}] 입장했습니다.` },
+                            ]);
+                        }
+                    };
+                    load();
+                }, [roomId, roomTitle]);
 
     // STOMP 연결
     useEffect(() => {
@@ -84,12 +88,16 @@ function Chat({ onClose, roomTitle = "채팅방", roomId }) {
                 {messages.map((msg) => (
                     <div key={msg.id} className={`chat-msg ${msg.type}`}>
                         {msg.type === "other" && msg.nickname && (
-                            <span className="chat-msg-nickname">{msg.nickname}: </span>
+                            <span className="chat-msg-nickname">
+                                {msg.nickname}:
+                            </span>
                         )}
+
                         {msg.text}
                     </div>
                 ))}
             </div>
+
 
             <div className="chat-card-footer">
                 <textarea

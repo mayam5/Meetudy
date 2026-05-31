@@ -141,14 +141,14 @@ function WholeList() {
 
     try {
 
-console.log("activeTab:", activeTab);
+      // console.log("activeTab:", activeTab);
 
 
 
 
 
       const fetcher = getTabFetcher(activeTab);
-console.log("선택된 fetcher:", fetcher.name);
+      //console.log("선택된 fetcher:", fetcher.name);
       const result = await fetcher({
         search: searchValue,
         region,
@@ -157,11 +157,12 @@ console.log("선택된 fetcher:", fetcher.name);
         limit: STUDIES_PER_PAGE,
         signal: controller.signal,
       });
- console.log("목록 결과:", result);
 
-const nextData = result.data ?? [];
-setStudies(nextData);
-setTotalCount(result.total ?? nextData.length);
+// console.log("목록 결과:", result);
+
+      const nextData = result.data ?? [];
+      setStudies(nextData);
+      setTotalCount(result.total ?? nextData.length);
 
 
     } catch (e) {
@@ -337,19 +338,21 @@ const handleReject = async (applicationId) => {
             {!loading && !error && studies.length === 0 && (
               <div className="whole-status">목록이 없습니다.</div>
             )}
-
-            {!loading &&
-              !error &&
-              studies.map((study) => (
-                <WholeListItem
-                  key={study.id}
-                  {...study}
-                  type={getItemType(activeTab)}
+            {!loading && !error}
+                        {!loading &&
+                          !error &&
+                          studies.map((study) => (
+                            <WholeListItem
+                              key={study.id}
+                              {...study}
+                              type={getItemType(activeTab)}
+                              isBookmarked={study.isBookmarked ||
+              study.bookmarked}
                   onDelete={() => handleDelete(study.id)}
                   onCancel={() => handleCancel(study.id)}
                   onLeave={() => handleLeave(study)}
-                    onAccept={handleAccept}
-  onReject={handleReject}
+                  onAccept={handleAccept}
+                  onReject={handleReject}
 
                 />
               ))}

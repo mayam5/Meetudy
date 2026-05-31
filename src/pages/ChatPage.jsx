@@ -57,17 +57,22 @@ function ChatPage() {
             setLoadingMessages(true);
             try {
                 const data = await fetchChatMessages(activeRoom.id);
-                setMessages(data);
-                await markAsRead(activeRoom.id);
-            } catch (e) {
-                console.error("메시지 로드 실패:", e);
-                setMessages([{ id: Date.now(), type: "system", text: "메시지를 불러올 수 없습니다." }]);
-            } finally {
-                setLoadingMessages(false);
-            }
-        };
-        load();
-    }, [activeRoom]);
+                // console.log(data);
+                const sortedData = [...data].sort((a, b) => {
+                    return a.id - b.id;
+                });
+
+                setMessages(sortedData);
+                                await markAsRead(activeRoom.id);
+                            } catch (e) {
+                                console.error("메시지 로드 실패:", e);
+                                setMessages([{ id: Date.now(), type: "system", text: "메시지를 불러올 수 없습니다." }]);
+                            } finally {
+                                setLoadingMessages(false);
+                            }
+                        };
+                        load();
+                    }, [activeRoom]);
 
     // WebSocket 구독 (연결 완료 + 방 선택 시)
     useEffect(() => {
@@ -181,7 +186,7 @@ function ChatPage() {
                             {!loadingMessages && messages.map((msg) => (
                                 <div key={msg.id} className={`chat-page-msg ${msg.type}`}>
                                     {msg.type === "other" && msg.nickname && (
-                                        <span className="chat-page-msg-nickname">{msg.nickname}</span>
+                                        <span className="chat-page-msg-other">{msg.nickname}: </span>
                                     )}
                                     {msg.text}
                                 </div>

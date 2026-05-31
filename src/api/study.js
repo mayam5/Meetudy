@@ -121,6 +121,7 @@ export const fetchMyStudies = async ({
 export const fetchJoinedStudies = async () => {
     const res = await fetch(`${BASE_URL}/study-groups/me`, { headers: authHeader() });
     const json = await res.json();
+     console.log("참여중 응답:", json.data);
     if (!res.ok || !json.success) throw new Error(json.message);
     return {
         data: (json.data ?? []).map((g) => ({
@@ -130,6 +131,7 @@ export const fetchJoinedStudies = async () => {
             host: "",
             field: "",
             users: [],
+            isBookmarked: Boolean(g.bookmarked ?? g.isBookmarked),
         })),
     };
 };
@@ -153,15 +155,25 @@ export const fetchAppliedStudies = async () => {
     };
 };
 
-
 /** 북마크한 게시글 목록 GET /posts/bookmarks */
 export const fetchBookmarkedStudies = async ({ page = 1, limit = 10 } = {}) => {
-    const res = await fetch(`${BASE_URL}/posts/bookmarks`, { headers: authHeader() });
+    const res = await fetch(`${BASE_URL}/posts/bookmarks`, {
+        headers: authHeader(),
+    });
+
     const json = await res.json();
-    if (!res.ok || !json.success) throw new Error(json.message);
-    const mapped = (json.data ?? []).map(mapPost);
+
+    if (!res.ok) {
+        throw new Error("북마크 목록 조회 실패");
+    }
+
+    const mapped = json.map(mapPost);
     const start = (page - 1) * limit;
-    return { data: mapped.slice(start, start + limit), total: mapped.length };
+
+    return {
+        data: mapped.slice(start, start + limit),
+        total: mapped.length,
+    };
 };
 
 /** 게시글 단건 조회 GET /posts/:id */

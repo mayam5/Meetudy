@@ -55,6 +55,9 @@ public enum ErrorCode {
     ALREADY_BLOCKED(HttpStatus.CONFLICT,                "이미 차단한 유저입니다."),
     BLOCK_NOT_FOUND(HttpStatus.NOT_FOUND,               "차단 내역이 존재하지 않습니다."),
 
+    // 알림
+    NOTIFICATION_NOT_FOUND(HttpStatus.NOT_FOUND,        "존재하지 않는 알림입니다."),
+
     // 채팅
     CHAT_ROOM_NOT_FOUND(HttpStatus.NOT_FOUND,           "존재하지 않는 채팅방입니다."),
 

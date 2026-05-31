@@ -3,6 +3,7 @@ package meetudy.demo.service;
 import lombok.RequiredArgsConstructor;
 import meetudy.demo.dto.request.ApplicationRequest;
 import meetudy.demo.dto.response.ApplicationResponse;
+import meetudy.demo.service.NotificationService;
 import meetudy.demo.entity.*;
 import meetudy.demo.exception.CustomException;
 import meetudy.demo.exception.ErrorCode;
@@ -24,6 +25,7 @@ public class ApplicationService {
     private final StudyGroupMemberRepository studyGroupMemberRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final ChatRoomMemberRepository chatRoomMemberRepository;
+    private final NotificationService notificationService;
 
     /** APP-05: 스터디 신청 */
     @Transactional
@@ -53,6 +55,12 @@ public class ApplicationService {
                 .post(post)
                 .applicant(applicant)
                 .build());
+
+        notificationService.createNotification(
+                post.getUser().getUserId(),
+                "apply",
+                applicant.getNickname() + "님이 '" + post.getPostTitle() + "'에 참여 신청했습니다."
+        );
 
         return ApplicationResponse.from(application);
     }
@@ -151,6 +159,12 @@ public class ApplicationService {
                 .memberStatus("ACTIVE")
                 .build());
 
+        notificationService.createNotification(
+                application.getApplicant().getUserId(),
+                "accepted",
+                "'" + post.getPostTitle() + "' 참여가 수락되었습니다."
+        );
+
         return ApplicationResponse.from(application);
     }
 
@@ -169,6 +183,13 @@ public class ApplicationService {
         }
 
         application.reject();
+
+        notificationService.createNotification(
+                application.getApplicant().getUserId(),
+                "rejected",
+                "'" + application.getPost().getPostTitle() + "' 참여가 거절되었습니다."
+        );
+
         return ApplicationResponse.from(application);
     }
 }

@@ -8,6 +8,7 @@ import meetudy.demo.dto.response.WsErrorResponse;
 import meetudy.demo.exception.CustomException;
 import meetudy.demo.exception.ErrorCode;
 import meetudy.demo.service.ChatService;
+import meetudy.demo.service.NotificationService;
 import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -24,6 +25,7 @@ public class ChatMessageHandler {
 
     private final ChatService chatService;
     private final SimpMessagingTemplate messagingTemplate;
+    private final NotificationService notificationService;
 
     /**
      * 클라이언트가 /app/chat.send 로 메시지 전송
@@ -44,11 +46,20 @@ public class ChatMessageHandler {
         List<Long> recipients = chatService.getRecipientsForMessage(
                 request.getChatRoomId(), senderId);
 
+        String preview = response.getMessageContent().length() > 20
+                ? response.getMessageContent().substring(0, 20) + "..."
+                : response.getMessageContent();
+        String notificationMessage = response.getSenderNickname() + ": " + preview;
+
         for (Long recipientId : recipients) {
             messagingTemplate.convertAndSendToUser(
                     String.valueOf(recipientId),
                     "/queue/chat." + request.getChatRoomId(),
                     response);
+
+            if (!recipientId.equals(senderId)) {
+                notificationService.createNotification(recipientId, "chat", notificationMessage);
+            }
         }
     }
 

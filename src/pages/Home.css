@@ -249,10 +249,10 @@
 
 .marquee-inner {
     display: flex;
-    gap: 48px;
+    gap: 100px;
     white-space: nowrap;
     width: max-content;
-    animation: marquee-scroll 22s linear infinite;
+    animation: marquee-scroll 30s linear infinite;
 }
 
 @keyframes marquee-scroll {

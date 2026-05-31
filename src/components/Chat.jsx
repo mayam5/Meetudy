@@ -83,6 +83,9 @@ function Chat({ onClose, roomTitle = "채팅방", roomId }) {
             <div className="chat-card-body" ref={bodyRef}>
                 {messages.map((msg) => (
                     <div key={msg.id} className={`chat-msg ${msg.type}`}>
+                        {msg.type === "other" && msg.nickname && (
+                            <span className="chat-msg-nickname">{msg.nickname}: </span>
+                        )}
                         {msg.text}
                     </div>
                 ))}

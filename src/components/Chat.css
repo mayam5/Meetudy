@@ -125,6 +125,12 @@
     to   { opacity: 1; }
 }
 
+.chat-msg-nickname {
+    font-weight: 600;
+    color: #2563eb;
+    margin-right: 2px;
+}
+
 /* 상대 */
 .chat-msg.other {
     background: #fff;

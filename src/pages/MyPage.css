@@ -1,40 +1,26 @@
-/* =========================
-   CSS VARIABLES
-========================= */
-
 :root {
     --bg-base: #f5f5f0;
     --bg-dark: #0a0a0a;
     --bg-card: #ffffff;
     --bg-muted: #f5f5f5;
     --bg-panel: #111111;
-
     --text-primary: #0a0a0a;
     --text-white: #ffffff;
     --text-muted: #a3a3a3;
     --text-subtle: #525252;
-
     --blue: #2563eb;
     --blue-light: #3b82f6;
     --blue-soft: rgba(37, 99, 235, 0.12);
-
     --border: #e5e5e5;
     --border-focus: #2563eb;
-
     --radius-sm: 10px;
     --radius-md: 14px;
     --radius-lg: 20px;
     --radius-pill: 999px;
-
     --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.05);
     --shadow-pop: 0 8px 32px rgba(0, 0, 0, 0.14);
-
     --transition: 0.2s ease;
 }
-
-/* =========================
-   로딩
-========================= */
 
 .mypage-loading {
     text-align: center;
@@ -43,10 +29,6 @@
     font-weight: 600;
     color: var(--text-muted);
 }
-
-/* =========================
-   LAYOUT
-========================= */
 
 .mypage {
     display: flex;
@@ -79,10 +61,6 @@
     gap: 14px;
 }
 
-/* =========================
-   CARD (공통)
-========================= */
-
 .mypage .card {
     background: var(--bg-card);
     border-radius: var(--radius-lg);
@@ -92,6 +70,7 @@
     box-shadow: var(--shadow-card);
     transition: box-shadow var(--transition);
     box-sizing: border-box;
+    animation: fadeIn 0.3s ease both;
 }
 
 .mypage .card:hover {
@@ -119,9 +98,7 @@
     flex-shrink: 0;
 }
 
-/* =========================
-   PROFILE CARD — 다크 히어로
-========================= */
+/* ===== PROFILE CARD ===== */
 
 .mypage .profile-card {
     background: var(--bg-dark);
@@ -134,7 +111,6 @@
     overflow: hidden;
 }
 
-/* 워터마크 */
 .mypage .profile-card::after {
     content: 'ME';
     position: absolute;
@@ -149,32 +125,28 @@
     line-height: 1;
 }
 
-.mypage .nickname {
-    font-size: 22px;
-    font-weight: 900;
-    color: var(--text-white);
-    letter-spacing: -1px;
-    margin: 0 0 16px;
+/* 닉네임 + 사진 세로 가운데 정렬 */
+.mypage .profile-top {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    margin-bottom: 20px;
     position: relative;
     z-index: 1;
 }
 
 .mypage .profile-image {
-    width: 88px;
-    height: 88px;
+    width: 80px;
+    height: 80px;
     border-radius: 50%;
     background: #1a1a1a;
-    margin-bottom: 20px;
     overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
     position: relative;
-    z-index: 1;
+    flex-shrink: 0;
     border: 2.5px solid var(--blue);
     box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2), 0 0 20px rgba(37, 99, 235, 0.15);
-    flex-shrink: 0;
 }
 
 .mypage .profile-image img {
@@ -183,47 +155,67 @@
     object-fit: cover;
 }
 
-.mypage .profile-upload-btn {
-    margin-top: 8px;
+.mypage .profile-placeholder {
+    width: 100%;
+    height: 100%;
+    background: #2a2a2a;
+}
+
+.mypage .profile-image-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.52);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
     font-size: 11px;
-    padding: 5px 12px;
-    position: relative;
-    z-index: 1;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+    border-radius: 50%;
+    transition: background 0.2s ease;
 }
 
-/* info-box — 다크 카드 위 */
-.mypage .profile-card .info-box {
-    width: 100%;
-    position: relative;
-    z-index: 1;
+.mypage .profile-image:hover .profile-image-overlay {
+    background: rgba(37, 99, 235, 0.7);
 }
 
-.mypage .profile-card .info-row {
-    border-bottom-color: rgba(255, 255, 255, 0.06);
-}
-
-.mypage .profile-card .label {
-    color: var(--text-subtle);
-}
-
-.mypage .profile-card .value {
+.mypage .nickname {
+    font-size: 18px;
+    font-weight: 900;
     color: var(--text-white);
+    letter-spacing: -0.8px;
+    margin: 0;
+    text-align: center;
+    word-break: break-all;
+    position: relative;
+    z-index: 1;
 }
 
-/* =========================
-   INFO BOX
-========================= */
-
-.mypage .info-box {
+.mypage .nickname-input {
     width: 100%;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    text-align: center;
+    margin-bottom: 0;
 }
+
+.mypage .profile-info {
+    width: 100%;
+    position: relative;
+    z-index: 1;
+}
+
+/* ===== INFO ROWS ===== */
 
 .mypage .info-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 12px;
     padding: 10px 0;
-    border-bottom: 1px solid var(--bg-muted);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .mypage .info-row:last-child {
@@ -233,21 +225,55 @@
 .mypage .label {
     font-size: 10px;
     font-weight: 800;
-    color: var(--text-muted);
+    color: var(--text-subtle);
     letter-spacing: 1.5px;
     text-transform: uppercase;
+    flex-shrink: 0;
 }
 
 .mypage .value {
     font-size: 13px;
     font-weight: 600;
-    color: var(--text-primary);
+    color: var(--text-white);
     text-align: right;
 }
 
-/* =========================
-   BIO CARD
-========================= */
+.mypage .profile-card .info-row .edit-input,
+.mypage .profile-card .info-row select {
+    width: auto;
+    flex: 1;
+    min-width: 0;
+    text-align: right;
+}
+
+.mypage .profile-card .info-row input[type="date"] {
+    width: auto;
+    flex: 1;
+    text-align: right;
+    color-scheme: dark;
+}
+
+.mypage .profile-card .info-row input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--blue);
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.mypage .region-selects {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+}
+
+.mypage .region-selects select {
+    width: 100%;
+    text-align: right;
+}
+
+/* ===== BIO CARD ===== */
 
 .mypage .bio-card {
     position: relative;
@@ -282,9 +308,7 @@
     top: auto;
 }
 
-/* =========================
-   CATEGORY CARD
-========================= */
+/* ===== CATEGORY CARD ===== */
 
 .mypage .category-card h3 {
     margin-bottom: 12px;
@@ -326,9 +350,7 @@
     border-color: var(--blue);
 }
 
-/* =========================
-   EDIT BUTTON
-========================= */
+/* ===== EDIT BUTTON ===== */
 
 .mypage .edit-btn {
     height: 46px;
@@ -354,9 +376,7 @@
     border-top-color: var(--blue-light);
 }
 
-/* =========================
-   SMALL BUTTONS
-========================= */
+/* ===== SMALL BUTTONS ===== */
 
 .mypage .small-btn {
     border: none;
@@ -382,9 +402,7 @@
     background: var(--blue);
 }
 
-/* =========================
-   PASSWORD CARD
-========================= */
+/* ===== PASSWORD CARD ===== */
 
 .mypage .password-card {
     display: flex;
@@ -400,39 +418,14 @@
     align-self: flex-end;
 }
 
-/* =========================
-   REGION SELECT
-========================= */
-
-.mypage .region-select-group {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-    width: 100%;
-}
-
-.mypage .region-select-group select {
-    flex: 1;
-    min-width: 80px;
-}
-
-.mypage .region-select-group select:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-}
-
-/* =========================
-   CARD SIZING
-========================= */
+/* ===== CARD SIZING ===== */
 
 .mypage .schedule-card { flex: 3; }
 .mypage .bookmark-card { flex: 2; }
 .mypage .study-card    { flex: 1; }
 .mypage .user-card     { flex: 1; }
 
-/* =========================
-   CARD HEADER
-========================= */
+/* ===== CARD HEADER ===== */
 
 .mypage .card-header {
     display: flex;
@@ -452,9 +445,7 @@
     gap: 2px;
 }
 
-/* =========================
-   SCHEDULE
-========================= */
+/* ===== SCHEDULE ===== */
 
 .mypage .schedule-grid {
     display: grid;
@@ -512,9 +503,7 @@
     box-shadow: 0 2px 10px rgba(37, 99, 235, 0.35);
 }
 
-/* =========================
-   MEETING CARD
-========================= */
+/* ===== MEETING CARD ===== */
 
 .mypage .meeting-card-header {
     display: flex;
@@ -603,9 +592,7 @@
     font-weight: 600;
 }
 
-/* =========================
-   STUDY LOG — 다크 카드
-========================= */
+/* ===== STUDY LOG ===== */
 
 .mypage .study-card {
     background: var(--bg-dark);
@@ -629,7 +616,6 @@
     font-weight: 500;
 }
 
-/* 워터마크 */
 .mypage .study-card::after {
     content: 'LOG';
     position: absolute;
@@ -659,9 +645,7 @@
     color: var(--blue-light);
 }
 
-/* =========================
-   USER MANAGEMENT
-========================= */
+/* ===== USER MANAGEMENT ===== */
 
 .mypage .user-item {
     display: flex;
@@ -709,9 +693,7 @@
     border-color: #ef4444;
 }
 
-/* =========================
-   INPUT / EDIT MODE
-========================= */
+/* ===== INPUT / EDIT MODE ===== */
 
 .mypage .edit-input,
 .mypage .bio-textarea,
@@ -738,7 +720,6 @@
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
 }
 
-/* 다크 카드 안 인풋 — 프로필 편집 모드 */
 .mypage .profile-card .edit-input {
     background: rgba(255, 255, 255, 0.07);
     border-color: rgba(255, 255, 255, 0.12);
@@ -751,45 +732,12 @@
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
 }
 
-.mypage .nickname-input {
-    text-align: center;
-    font-size: 20px;
-    font-weight: 800;
-    letter-spacing: -0.5px;
-    margin-bottom: 12px;
-}
-
 .mypage .bio-textarea {
     resize: none;
     min-height: 80px;
     line-height: 1.7;
 }
 
-.mypage .inline-edit {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-}
-
-.mypage .inline-edit .edit-input.small {
-    width: auto;
-    min-width: 120px;
-}
-
-.mypage .toggle-label {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text-subtle);
-    cursor: pointer;
-    white-space: nowrap;
-}
-
-/* 다크 카드 위 select */
 .mypage .profile-card select {
     background: rgba(255, 255, 255, 0.07);
     border-color: rgba(255, 255, 255, 0.12);
@@ -801,9 +749,7 @@
     color: var(--text-white);
 }
 
-/* =========================
-   BOOKMARK
-========================= */
+/* ===== BOOKMARK ===== */
 
 .mypage .bookmark-card {
     overflow: hidden;
@@ -863,10 +809,6 @@
     background: var(--blue-soft);
 }
 
-.mypage .bookmark-icon:has(svg[fill="currentColor"]) {
-    color: var(--blue);
-}
-
 .mypage .bookmark-content {
     flex: 1;
     min-width: 0;
@@ -882,9 +824,7 @@
     background: transparent;
 }
 
-/* =========================
-   RESPONSIVE
-========================= */
+/* ===== RESPONSIVE ===== */
 
 @media (max-width: 1200px) {
     .mypage .left-section {
@@ -927,4 +867,11 @@
     .mypage .time-text {
         font-size: 44px;
     }
+}
+
+/* ===== 애니메이션 ===== */
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
 }

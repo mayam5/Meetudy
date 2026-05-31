@@ -65,10 +65,7 @@ const REGION_DATA = {
 const DAYS = ['월', '화', '수', '목', '금', '토', '일'];
 const TIMES = ['새벽', '아침', '오후', '저녁'];
 const MEETING_TABS = ['참여 중인 모임', '신청한 모임', '작성한 모임'];
-
-// 백엔드 dayOfWeek(MON...) + slotName(새벽...) → "월-새벽" 변환
 const DAY_TO_KR = { MON: '월', TUE: '화', WED: '수', THU: '목', FRI: '금', SAT: '토', SUN: '일' };
-
 const MEETING_TAB_FETCHER = {
   "참여 중인 모임": fetchJoinedStudies,
   "신청한 모임": fetchAppliedStudies,
@@ -85,7 +82,6 @@ function MyPage() {
   const [activeMeetingTab, setActiveMeetingTab] = useState('참여 중인 모임');
   const [meetingStudies, setMeetingStudies] = useState([]);
   const [meetingLoading, setMeetingLoading] = useState(false);
-
   const [region, setRegion] = useState({ sido: "", sigungu: "", dong: "" });
   const [activeSchedule, setActiveSchedule] = useState([]);
   const [password, setPassword] = useState({ current: "", new: "", confirm: "" });
@@ -94,19 +90,15 @@ function MyPage() {
     email: "", nickname: "", birth: "2000-01-01",
     gender: "F", bio: "", categories: [], agePublic: false,
   });
-
   const [categoryOptions, setCategoryOptions] = useState([]);
   const [bookmarkData, setBookmarkData] = useState([]);
   const [bookmarkedIds, setBookmarkedIds] = useState([]);
   const [blockedUsers, setBlockedUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // 프로필 / 북마크 / 차단 / 카테고리 / 스케줄 초기 로드
   useEffect(() => {
     const load = async () => {
       setLoading(true);
-
-      // 하나가 실패해도 나머지는 유지되도록 각각 독립적으로 로드
       const [profile, bookmarks, blocked, categoryRes, schedules] = await Promise.allSettled([
         fetchMyProfile(),
         fetchBookmarks(),
@@ -168,8 +160,6 @@ function MyPage() {
     load();
   }, []);
 
-
-  // 모임 탭 변경 시 데이터 로드
   useEffect(() => {
     const load = async () => {
       setMeetingLoading(true);
@@ -216,17 +206,13 @@ function MyPage() {
   const handleImageChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-
-    // 미리보기
     const previewUrl = URL.createObjectURL(file);
     setProfileImage(previewUrl);
-
-    // 서버 업로드
     const formData = new FormData();
     formData.append("image", file);
     try {
       const token = localStorage.getItem("accessToken");
-      const res = await fetch("http://localhost:8080/users/me/image", {
+      const res = await fetch(`${API_BASE}/users/me/image`, {
         method: "PATCH",
         headers: { Authorization: `Bearer ${token}` },
         body: formData,
@@ -242,7 +228,6 @@ function MyPage() {
 
   const handleSave = async () => {
     try {
-      // 닉네임이 변경된 경우에만 전송, 그대로면 null로 보내서 중복 체크 스킵
       const nicknameToSend = userInfo.nickname !== originalNickname ? userInfo.nickname : null;
       await updateMyProfile({ ...userInfo, nickname: nicknameToSend, region });
       setOriginalNickname(userInfo.nickname);
@@ -269,7 +254,6 @@ function MyPage() {
     }
   };
 
-  // toggleBookmark: 현재 북마크 상태를 함께 전달 (DELETE vs POST 결정)
   const handleToggleBookmark = async (itemId) => {
     const isCurrentlyBookmarked = bookmarkedIds.includes(itemId);
     try {
@@ -303,57 +287,61 @@ function MyPage() {
   return (
     <div className={isEdit ? "mypage editing" : "mypage"}>
 
-      {/* ===== 왼쪽 ===== */}
       <div className="left-section">
-
-        {/* 프로필 카드 */}
         <div className="card profile-card">
-          {isEdit ? (
-            <input
-              className="edit-input nickname-input"
-              value={userInfo.nickname}
-              onChange={(e) => setUserInfo({ ...userInfo, nickname: e.target.value })}
-            />
-          ) : (
-            <h2 className="nickname">{userInfo.nickname}</h2>
-          )}
 
-          <div
-            className="profile-image"
-            style={{ position: "relative", cursor: isEdit ? "pointer" : "default" }}
-            onClick={() => isEdit && profileImageRef.current?.click()}
-          >
-            {profileImage ? (
-              <img src={profileImage} alt="프로필" className="profile-img" />
+          <div className="profile-top">
+            {/* 닉네임 — 상단 */}
+            {isEdit ? (
+              <input
+                className="edit-input nickname-input"
+                value={userInfo.nickname}
+                onChange={(e) => setUserInfo({ ...userInfo, nickname: e.target.value })}
+                placeholder="닉네임"
+              />
             ) : (
-              <div className="profile-placeholder" />
+              <h2 className="nickname">{userInfo.nickname || "-"}</h2>
             )}
-            {isEdit && (
-              <div style={{
-                position: "absolute", bottom: 0, right: 0,
-                background: "#3b82f6", borderRadius: "50%",
-                width: 28, height: 28, display: "flex",
-                alignItems: "center", justifyContent: "center",
-                fontSize: 14, color: "#fff",
-              }}>
-                📷
-              </div>
-            )}
-            <input
-              ref={profileImageRef}
-              type="file"
-              accept="image/*"
-              style={{ display: "none" }}
-              onChange={handleImageChange}
-            />
+
+            {/* 프로필 이미지 — 닉네임 아래 가운데 */}
+            <div
+              className="profile-image"
+              style={{ cursor: isEdit ? "pointer" : "default" }}
+              onClick={() => isEdit && profileImageRef.current?.click()}
+            >
+              {profileImage ? (
+                <img src={profileImage} alt="프로필" className="profile-img" />
+              ) : (
+                <div className="profile-placeholder" />
+              )}
+              {isEdit && (
+                <div className="profile-image-overlay">사진변경</div>
+              )}
+              <input
+                ref={profileImageRef}
+                type="file"
+                accept="image/*"
+                style={{ display: "none" }}
+                onChange={handleImageChange}
+              />
+            </div>
           </div>
 
           <div className="profile-info">
             <div className="info-row">
-              <span className="label">나이</span>
-              <span className="value">
-                {userInfo.birth ? `${calculateAge(userInfo.birth)}세` : "-"}
-              </span>
+              <span className="label">생년월일</span>
+              {isEdit ? (
+                <input
+                  type="date"
+                  className="edit-input"
+                  value={userInfo.birth}
+                  onChange={(e) => setUserInfo({ ...userInfo, birth: e.target.value })}
+                />
+              ) : (
+                <span className="value">
+                  {userInfo.birth ? `${calculateAge(userInfo.birth)}세` : "-"}
+                </span>
+              )}
             </div>
             <div className="info-row">
               <span className="label">성별</span>
@@ -429,7 +417,6 @@ function MyPage() {
           </div>
         </div>
 
-        {/* 한 줄 소개 */}
         <div className="card bio-card">
           <div className="quote">"</div>
           {isEdit ? (
@@ -445,7 +432,6 @@ function MyPage() {
           <div className="quote right">"</div>
         </div>
 
-        {/* 카테고리 */}
         <div className="card category-card">
           <h3>Category</h3>
           <div className="tag-wrapper">
@@ -469,10 +455,8 @@ function MyPage() {
         </button>
       </div>
 
-      {/* ===== 오른쪽 ===== */}
       <div className="right-section">
 
-        {/* 계정 보안 — 편집 모드에서만 표시 */}
         {isEdit && (
           <div className="card password-card">
             <h3>계정 보안</h3>
@@ -496,10 +480,7 @@ function MyPage() {
           </div>
         )}
 
-        {/* 스케줄 + 북마크 */}
         <div className="top-row">
-
-          {/* 스케줄 */}
           <div className={scheduleEdit ? 'card schedule-card editing' : 'card schedule-card'}>
             <div className="card-header">
               <h3>Schedule</h3>
@@ -542,7 +523,6 @@ function MyPage() {
             </div>
           </div>
 
-          {/* 북마크 */}
           <div className="card bookmark-card">
             <h3>Bookmark</h3>
             <div className="bookmark-list">
@@ -551,20 +531,13 @@ function MyPage() {
               ) : (
                 bookmarkData.map((item) => (
                   <div className="bookmark-item" key={item.id}>
-                    <div
-                      className="bookmark-icon"
-                      onClick={() => handleToggleBookmark(item.id)}
-                    >
-                      {bookmarkedIds.includes(item.id)
-                        ? <BsBookmarkFill />
-                        : <BsBookmark />}
+                    <div className="bookmark-icon" onClick={() => handleToggleBookmark(item.id)}>
+                      {bookmarkedIds.includes(item.id) ? <BsBookmarkFill /> : <BsBookmark />}
                     </div>
                     <div className="bookmark-content">
                       <StudyListItem
-                        id={item.id}
-                        title={item.title}
-                        host={item.host}
-                        field={item.field}
+                        id={item.id} title={item.title}
+                        host={item.host} field={item.field}
                         users={item.users ?? []}
                       />
                     </div>
@@ -575,7 +548,6 @@ function MyPage() {
           </div>
         </div>
 
-        {/* 모임 관리 */}
         <div className="card meeting-card">
           <div className="meeting-card-header">
             <h3>모임 관리</h3>
@@ -591,7 +563,6 @@ function MyPage() {
               ))}
             </div>
           </div>
-
           <div className="meeting-list">
             {meetingLoading ? (
               <div className="meeting-loading">불러오는 중...</div>
@@ -600,36 +571,27 @@ function MyPage() {
             ) : (
               meetingStudies.map((study) => (
                 <StudyListItem
-                  key={study.id}
-                  id={study.id}
-                  title={study.title}
-                  host={study.host}
-                  field={study.field}
-                  users={study.users ?? []}
+                  key={study.id} id={study.id}
+                  title={study.title} host={study.host}
+                  field={study.field} users={study.users ?? []}
                 />
               ))
             )}
           </div>
         </div>
 
-        {/* Study Log + 사용자 관리 */}
         <div className="bottom-row">
-
-          {/* Study Log */}
           <div className="card study-card">
             <div className="card-header">
               <div>
                 <h3>Study Log</h3>
                 <p className="sub-text">일주일동안 이만큼 공부했어요!</p>
               </div>
-              <button className="small-btn" onClick={() => alert("수정 기능 준비 중")}>
-                수정
-              </button>
+              <button className="small-btn" onClick={() => alert("수정 기능 준비 중")}>수정</button>
             </div>
             <div className="time-text">13H<br />06M</div>
           </div>
 
-          {/* 사용자 관리 */}
           <div className="card user-card">
             <h3>사용자 관리</h3>
             {blockedUsers.length === 0 ? (
@@ -639,10 +601,7 @@ function MyPage() {
                 <div className="user-item" key={user.id}>
                   <HostInfo host={user.host} field={user.field} />
                   <button
-                    className={user.blocked
-                      ? "small-btn user-action-btn blocked"
-                      : "small-btn user-action-btn"
-                    }
+                    className={user.blocked ? "small-btn user-action-btn blocked" : "small-btn user-action-btn"}
                     onClick={() => handleToggleBlock(user.id, user.blocked)}
                   >
                     {user.blocked ? "차단 해제" : "차단하기"}

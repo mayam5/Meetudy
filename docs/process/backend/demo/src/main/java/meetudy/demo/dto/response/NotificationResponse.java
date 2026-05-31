@@ -12,6 +12,7 @@ public class NotificationResponse {
     private final String type;
     private final String message;
     private final boolean read;
+    private final String targetUrl;
     private final LocalDateTime createdAt;
 
     private NotificationResponse(Notification n) {
@@ -19,6 +20,7 @@ public class NotificationResponse {
         this.type      = n.getType();
         this.message   = n.getMessage();
         this.read      = n.isRead();
+        this.targetUrl = n.getTargetUrl();
         this.createdAt = n.getCreatedAt();
     }
 

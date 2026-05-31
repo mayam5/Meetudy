@@ -32,6 +32,9 @@ public class Notification {
     @Builder.Default
     private boolean isRead = false;
 
+    @Column(name = "target_url", length = 200)
+    private String targetUrl;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 

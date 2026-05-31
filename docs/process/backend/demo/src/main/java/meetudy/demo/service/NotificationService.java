@@ -46,13 +46,14 @@ public class NotificationService {
     }
 
     @Transactional
-    public void createNotification(Long userId, String type, String message) {
+    public void createNotification(Long userId, String type, String message, String targetUrl) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         notificationRepository.save(Notification.builder()
                 .user(user)
                 .type(type)
                 .message(message)
+                .targetUrl(targetUrl)
                 .build());
     }
 }

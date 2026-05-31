@@ -25,6 +25,7 @@ export const fetchNotifications = async () => {
         type: n.type,
         message: n.message,
         read: n.read,
+        link: n.targetUrl ?? null,
         time: formatTime(n.createdAt),
     }));
 };

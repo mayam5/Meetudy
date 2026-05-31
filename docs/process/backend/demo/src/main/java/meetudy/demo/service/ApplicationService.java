@@ -59,7 +59,8 @@ public class ApplicationService {
         notificationService.createNotification(
                 post.getUser().getUserId(),
                 "apply",
-                applicant.getNickname() + "님이 '" + post.getPostTitle() + "'에 참여 신청했습니다."
+                applicant.getNickname() + "님이 '" + post.getPostTitle() + "'에 참여 신청했습니다.",
+                "/whole-list"
         );
 
         return ApplicationResponse.from(application);
@@ -162,7 +163,8 @@ public class ApplicationService {
         notificationService.createNotification(
                 application.getApplicant().getUserId(),
                 "accepted",
-                "'" + post.getPostTitle() + "' 참여가 수락되었습니다."
+                "'" + post.getPostTitle() + "' 참여가 수락되었습니다.",
+                "/chat"
         );
 
         return ApplicationResponse.from(application);
@@ -187,7 +189,8 @@ public class ApplicationService {
         notificationService.createNotification(
                 application.getApplicant().getUserId(),
                 "rejected",
-                "'" + application.getPost().getPostTitle() + "' 참여가 거절되었습니다."
+                "'" + application.getPost().getPostTitle() + "' 참여가 거절되었습니다.",
+                "/whole-list"
         );
 
         return ApplicationResponse.from(application);

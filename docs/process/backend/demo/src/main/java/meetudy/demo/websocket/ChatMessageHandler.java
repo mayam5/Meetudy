@@ -58,7 +58,7 @@ public class ChatMessageHandler {
                     response);
 
             if (!recipientId.equals(senderId)) {
-                notificationService.createNotification(recipientId, "chat", notificationMessage);
+                notificationService.createNotification(recipientId, "chat", notificationMessage, "/chat");
             }
         }
     }

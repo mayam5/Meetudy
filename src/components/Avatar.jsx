@@ -1,3 +1,5 @@
+import "./Avatar.css";
+
 function Avatar({ name = "", isHost = false }) {
     return (
         <div className={`avatar ${isHost ? "host" : ""}`}>

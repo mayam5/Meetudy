@@ -24,22 +24,22 @@ export const fetchMyProfile = async () => {
     // 지역 문자열 "서울특별시 강남구 역삼동" → { sido, sigungu, dong }
     const regionParts = (p.region ?? "").split(" ");
     const region = {
-        sido:    regionParts[0] ?? "",
+        sido: regionParts[0] ?? "",
         sigungu: regionParts[1] ?? "",
-        dong:    regionParts[2] ?? "",
+        dong: regionParts[2] ?? "",
     };
 
     return {
-        email:      p.email      ?? "",
-        nickname:   p.nickname   ?? "",
-        birth:      p.birthDate  ?? "",
-        gender:     p.gender     ?? "",
-        bio:        p.bio        ?? "",
+        email: p.email ?? "",
+        nickname: p.nickname ?? "",
+        birth: p.birthDate ?? "",
+        gender: p.gender ?? "",
+        bio: p.bio ?? "",
         // 백엔드가 카테고리 이름 배열로 주면 그대로, 객체 배열이면 name 추출
         categories: (p.categories ?? []).map((c) =>
             typeof c === "string" ? c : (c.categoryName ?? c.name ?? "")
         ),
-        agePublic:  p.isAgePublic ?? false,
+        agePublic: p.isAgePublic ?? false,
         profileImage: p.profileImage ?? null,
         region,
     };
@@ -54,12 +54,12 @@ export const updateMyProfile = async (payload) => {
         method: "PATCH",
         headers: authHeader(),
         body: JSON.stringify({
-            nickname:    payload.nickname  || undefined,
-            bio:         payload.bio,
-            gender:      payload.gender,
-            birthDate:   payload.birth,
+            nickname: payload.nickname || undefined,
+            bio: payload.bio,
+            gender: payload.gender,
+            birthDate: payload.birth,
             isAgePublic: payload.agePublic,
-            region:      regionStr || undefined,
+            region: regionStr || undefined,
         }),
     });
     const json = await res.json();
@@ -121,36 +121,39 @@ export const fetchBookmarks = async () => {
         throw new Error(json.message || "북마크 목록 조회 실패");
     }
 
-return {
-    data: json.map((b) => ({
-        id: b.postId,
-        title: b.postTitle,
-        description: b.postContent,
-        host: b.nickname ?? "",
-        hostId: b.userId,
-        field: b.categoryName ?? "",
-        place: b.placeName ?? "",
-        categoryId: b.categoryId,
-        tags: b.categoryName ? [b.categoryName] : [],
-        isBookmarked: b.bookmarked,
-    })),
-    total: json.length,
-};
+    return {
+        data: json.map((b) => ({
+            id: b.postId,
+            title: b.postTitle,
+            description: b.postContent,
+            host: b.nickname ?? "",
+            hostId: b.userId,
+            field: b.categoryName ?? "",
+            place: b.placeName ?? "",
+            categoryId: b.categoryId,
+            tags: b.categoryName ? [b.categoryName] : [],
+            isBookmarked: b.bookmarked,
+            currentMembers: b.currentMembers ?? 0,
+            maxMembers: b.maxMembers ?? 0,
+        })),
+        total: json.length,
+    };
 };
 
 export const toggleBookmark = async (postId, isBookmarked) => {
-  const res = await fetch(`${BASE_URL}/posts/${postId}/bookmark`, {
-    method: isBookmarked ? "DELETE" : "POST",
-    headers: authHeader(),
-  });
+    const res = await fetch(`${BASE_URL}/posts/${postId}/bookmark`, {
+        method: isBookmarked ? "DELETE" : "POST",
+        headers: authHeader(),
+    });
 
-  const json = await res.json();
+    if (!res.ok) {
+        const json = await res.json().catch(() => ({}));
+        throw new Error(json.message || "북마크 변경 실패");
+    }
 
-  if (!res.ok || !json.success) {
-    throw new Error(json.message || "북마크 변경 실패");
-  }
-
-  return json.data;
+    // 응답 body가 비어있을 수 있으므로 안전하게 처리
+    const text = await res.text();
+    return text ? JSON.parse(text) : {};
 };
 
 export const updateSchedule = async (schedule) => {

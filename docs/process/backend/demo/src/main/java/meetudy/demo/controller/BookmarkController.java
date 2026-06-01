@@ -46,13 +46,12 @@ public class BookmarkController {
 
     /** BM-08: 내 북마크 목록 GET /posts/bookmarks */
     @GetMapping("/bookmarks")
-    public ResponseEntity<?> getMyBookmarks() {
+    public ResponseEntity<?> getMyBookmarks(
+            @AuthenticationPrincipal UserDetails userDetails) {
 
-        Long userId = 5L;
+        Long userId = Long.parseLong(userDetails.getUsername());
 
         return ResponseEntity.ok(
-                bookmarkService.getMyBookmarks(userId)
-        );
+                bookmarkService.getMyBookmarks(userId));
     }
 }
-

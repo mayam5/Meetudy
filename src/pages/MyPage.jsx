@@ -15,6 +15,9 @@ import {
   fetchMySchedules,
   updateSchedule,
 } from "../api/user";
+
+import { useNavigate } from "react-router-dom";
+
 import {
   fetchJoinedStudies,
   fetchAppliedStudies,
@@ -77,7 +80,7 @@ const STUDY_LOG_KEY = "studyLog";
 
 function MyPage() {
   const { isLoggedIn } = useAuth();
-
+  const navigate = useNavigate();
   const [isEdit, setIsEdit] = useState(false);
   const [profileImage, setProfileImage] = useState(null);
   const profileImageRef = useRef(null);
@@ -110,7 +113,7 @@ function MyPage() {
     try {
       const saved = localStorage.getItem(STUDY_LOG_KEY);
       if (saved) setStudyLog(JSON.parse(saved));
-    } catch {}
+    } catch { }
   }, []);
 
   useEffect(() => {
@@ -127,13 +130,13 @@ function MyPage() {
       if (profile.status === "fulfilled") {
         const p = profile.value;
         setUserInfo({
-          email:      p.email      ?? "",
-          nickname:   p.nickname   ?? "",
-          birth:      p.birth      ?? "",
-          gender:     p.gender     ?? "",
-          bio:        p.bio        ?? "",
+          email: p.email ?? "",
+          nickname: p.nickname ?? "",
+          birth: p.birth ?? "",
+          gender: p.gender ?? "",
+          bio: p.bio ?? "",
           categories: p.categories ?? [],
-          agePublic:  p.agePublic  ?? false,
+          agePublic: p.agePublic ?? false,
         });
         if (p.profileImage) setProfileImage(p.profileImage);
         if (p.region) setRegion(p.region);
@@ -143,8 +146,9 @@ function MyPage() {
       }
 
       if (bookmarks.status === "fulfilled") {
-        setBookmarkData(bookmarks.value);
-        setBookmarkedIds(bookmarks.value.map((b) => b.id));
+        const list = bookmarks.value.data ?? [];
+        setBookmarkData(list);
+        setBookmarkedIds(list.map((b) => b.id));
       } else {
         console.error("북마크 로드 실패:", bookmarks.reason);
       }
@@ -277,20 +281,30 @@ function MyPage() {
     }
   };
 
-  const handleToggleBookmark = async (itemId) => {
+ const handleToggleBookmark = async (itemId) => {
     const isCurrentlyBookmarked = bookmarkedIds.includes(itemId);
-    try {
-      await toggleBookmark(itemId, isCurrentlyBookmarked);
-      if (isCurrentlyBookmarked) {
+    // 먼저 아이콘 색만 바꿈
+    if (isCurrentlyBookmarked) {
         setBookmarkedIds((prev) => prev.filter((id) => id !== itemId));
-        setBookmarkData((prev) => prev.filter((b) => b.id !== itemId));
-      } else {
+    } else {
         setBookmarkedIds((prev) => [...prev, itemId]);
-      }
-    } catch (e) {
-      console.error("북마크 토글 실패:", e);
     }
-  };
+    try {
+        await toggleBookmark(itemId, isCurrentlyBookmarked);
+        // API 성공했을 때만 목록에서 제거
+        if (isCurrentlyBookmarked) {
+            setBookmarkData((prev) => prev.filter((b) => b.id !== itemId));
+        }
+    } catch (e) {
+        console.error("북마크 토글 실패:", e);
+        // 실패하면 아이콘 색 롤백
+        if (isCurrentlyBookmarked) {
+            setBookmarkedIds((prev) => [...prev, itemId]);
+        } else {
+            setBookmarkedIds((prev) => prev.filter((id) => id !== itemId));
+        }
+    }
+};
 
   const handleToggleBlock = async (userId, currentBlocked) => {
     try {
@@ -319,7 +333,7 @@ function MyPage() {
       : Math.max(0, currentTotal - inputTotal);
     const updated = { hours: Math.floor(resultTotal / 60), minutes: resultTotal % 60 };
     setStudyLog(updated);
-    try { localStorage.setItem(STUDY_LOG_KEY, JSON.stringify(updated)); } catch {}
+    try { localStorage.setItem(STUDY_LOG_KEY, JSON.stringify(updated)); } catch { }
     setStudyLogEdit(false);
   };
 
@@ -330,7 +344,7 @@ function MyPage() {
       const h = Math.max(0, Math.floor(total / 60));
       const m = Math.max(0, total % 60);
       const updated = { hours: h, minutes: m };
-      try { localStorage.setItem(STUDY_LOG_KEY, JSON.stringify(updated)); } catch {}
+      try { localStorage.setItem(STUDY_LOG_KEY, JSON.stringify(updated)); } catch { }
       return updated;
     });
   };
@@ -589,15 +603,29 @@ function MyPage() {
               ) : (
                 bookmarkData.map((item) => (
                   <div className="bookmark-item" key={item.id}>
-                    <div className="bookmark-icon" onClick={() => handleToggleBookmark(item.id)}>
-                      {bookmarkedIds.includes(item.id) ? <BsBookmarkFill /> : <BsBookmark />}
+                    <div
+                      className="bookmark-icon"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleToggleBookmark(item.id);
+                      }}
+                    >
+                      {bookmarkedIds.includes(item.id) ? (
+                        <BsBookmarkFill style={{ color: 'var(--blue)' }} />
+                      ) : (
+                        <BsBookmark style={{ color: '#a3a3a3' }} />
+                      )}
                     </div>
-                    <div className="bookmark-content">
-                      <StudyListItem
-                        id={item.id} title={item.title}
-                        host={item.host} field={item.field}
-                        users={item.users ?? []}
-                      />
+                    <div
+                      className="bookmark-content"
+                      onClick={() => navigate(`/study/${item.id}`)}
+                    >
+                      <div className="bookmark-title">{item.title}</div>
+                      <div className="bookmark-meta">
+                        <span className="bookmark-host">{item.host}</span>
+                        <span className="bookmark-field">#{item.field}</span>
+                        <span className="bookmark-members">{item.currentMembers}/{item.maxMembers}명</span>
+                      </div>
                     </div>
                   </div>
                 ))

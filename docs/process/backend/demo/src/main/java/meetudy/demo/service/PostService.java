@@ -43,8 +43,8 @@ public class PostService {
 
     /** POST-07: 게시글 단건 조회 */
     @Transactional(readOnly = true)
-    public PostResponse getPostById(Long postId) {
-        return PostResponse.from(findPost(postId), false);
+    public PostResponse getPostById(Long userId, Long postId) {
+        return PostResponse.from(findPost(postId), isBookmarked(userId, postId));
     }
 
     /** POST-08: 카테고리별 조회 */
@@ -77,17 +77,14 @@ public class PostService {
     public List<PostResponse> getMyPosts(Long userId) {
         return postRepository.findAllByUser_UserIdOrderByCreatedAtDesc(userId)
                 .stream()
-            .map(post -> PostResponse.from(
-                    post,
-                    isBookmarked(userId, post.getPostId())
-            ))
+                .map(post -> PostResponse.from(
+                        post,
+                        isBookmarked(userId, post.getPostId())
+                ))
                 .collect(Collectors.toList());
     }
 
-    /**
-     * POST-11: 게시글 작성
-     * → StudyGroup, StudyGroupMember(HOST), ChatRoom, ChatRoomMember 동시 생성
-     */
+    /** POST-11: 게시글 작성 */
     @Transactional
     public PostResponse createPost(Long userId, CreatePostRequest request) {
         User user = userRepository.findById(userId)
@@ -95,31 +92,20 @@ public class PostService {
 
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new CustomException(ErrorCode.CATEGORY_NOT_FOUND));
-/* 
+
         Place place = null;
         if (request.getPlaceId() != null) {
             place = placeRepository.findById(request.getPlaceId())
-                    .orElseThrow(() -> new CustomException(ErrorCode.PLACE_NOT_FOUND));
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 장소입니다."));
         }
-*/
-
-        Place place = null;
-
-    if (request.getPlaceId() != null) {
-        place = placeRepository.findById(request.getPlaceId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 장소입니다."));
-    }
 
         TimeSlot timeSlot = timeSlotRepository.findById(request.getTimeSlotId())
-        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 시간대입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 시간대입니다."));
 
-        // 1. Post 저장
         Post post = postRepository.save(Post.builder()
                 .user(user)
                 .postTitle(request.getPostTitle())
                 .postContent(request.getPostContent())
-                //.meetingTime(request.getMeetingTime())
-                //.endTime(request.getEndTime())
                 .dayOfWeek(request.getDayOfWeek())
                 .timeSlot(timeSlot)
                 .maxMembers(request.getMaxMembers())
@@ -127,25 +113,21 @@ public class PostService {
                 .place(place)
                 .build());
 
-        // 2. StudyGroup 생성 (그룹 이름 = 게시글 제목)
         StudyGroup studyGroup = studyGroupRepository.save(StudyGroup.builder()
                 .post(post)
                 .groupName(post.getPostTitle())
                 .build());
 
-        // 3. 작성자를 HOST로 StudyGroupMember 추가
         studyGroupMemberRepository.save(StudyGroupMember.builder()
                 .studyGroup(studyGroup)
                 .user(user)
                 .memberRole("HOST")
                 .build());
 
-        // 4. ChatRoom 생성
         ChatRoom chatRoom = chatRoomRepository.save(ChatRoom.builder()
                 .studyGroup(studyGroup)
                 .build());
 
-        // 5. 작성자를 ChatRoomMember로 추가
         chatRoomMemberRepository.save(ChatRoomMember.builder()
                 .chatRoom(chatRoom)
                 .user(user)
@@ -183,7 +165,6 @@ public class PostService {
     public void closePost(Long userId, Long postId) {
         Post post = findPost(postId);
         checkAuthor(post, userId);
-
         if (!post.isOpen()) {
             throw new CustomException(ErrorCode.POST_ALREADY_CLOSED);
         }
@@ -198,8 +179,6 @@ public class PostService {
         postRepository.delete(post);
     }
 
-    // ── 내부 헬퍼 ──────────────────────────────────────────
-
     private Post findPost(Long postId) {
         return postRepository.findById(postId)
                 .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
@@ -211,10 +190,8 @@ public class PostService {
         }
     }
 
-private boolean isBookmarked(Long userId, Long postId) {
-    if (userId == null) return false;
-
-    return postbookmarkRepository
-            .existsByUser_UserIdAndPost_PostId(userId, postId);
-}
+    private boolean isBookmarked(Long userId, Long postId) {
+        if (userId == null) return false;
+        return postbookmarkRepository.existsByUser_UserIdAndPost_PostId(userId, postId);
+    }
 }

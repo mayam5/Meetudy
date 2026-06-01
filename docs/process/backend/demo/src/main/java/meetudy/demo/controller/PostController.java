@@ -29,32 +29,34 @@ public class PostController {
     /** POST-15: OPEN 게시글 목록 / POST-08: 카테고리 필터 / POST-09: 키워드 검색 */
     @GetMapping
     public ResponseEntity<ApiResponse<List<PostResponse>>> getPosts(
-    @AuthenticationPrincipal UserDetails userDetails,    
-        @RequestParam(required = false) Long categoryId,
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestParam(required = false) Long categoryId,
             @RequestParam(required = false) String keyword) {
         Long userId = null;
 
-            if (userDetails != null) {
-                userId = Long.parseLong(userDetails.getUsername());
-            }
-            
-                List<PostResponse> result;
-                if (keyword != null && !keyword.isBlank()) {
-                    result = postService.searchPosts(userId, keyword);
-                } else if (categoryId != null) {
-                    result = postService.getPostsByCategory(userId, categoryId);
-                } else {
-                    result = postService.getAllOpenPosts(userId);
-                }
+        if (userDetails != null) {
+            userId = Long.parseLong(userDetails.getUsername());
+        }
 
-                return ResponseEntity.ok(ApiResponse.ok(result));
+        List<PostResponse> result;
+        if (keyword != null && !keyword.isBlank()) {
+            result = postService.searchPosts(userId, keyword);
+        } else if (categoryId != null) {
+            result = postService.getPostsByCategory(userId, categoryId);
+        } else {
+            result = postService.getAllOpenPosts(userId);
+        }
+
+        return ResponseEntity.ok(ApiResponse.ok(result));
     }
 
     /** POST-16: 게시글 단건 조회 (비로그인 허용) */
     @GetMapping("/{postId}")
     public ResponseEntity<ApiResponse<PostResponse>> getPost(
+            @AuthenticationPrincipal UserDetails userDetails,
             @PathVariable Long postId) {
-        return ResponseEntity.ok(ApiResponse.ok(postService.getPostById(postId)));
+        Long userId = userDetails != null ? Long.parseLong(userDetails.getUsername()) : null;
+        return ResponseEntity.ok(ApiResponse.ok(postService.getPostById(userId, postId)));
     }
 
     /** POST-17: 내 게시글 목록 */
@@ -62,13 +64,12 @@ public class PostController {
     public ResponseEntity<ApiResponse<List<PostResponse>>> getMyPosts(
             @AuthenticationPrincipal UserDetails userDetails) {
         if (userDetails == null) {
-        throw new CustomException(ErrorCode.UNAUTHORIZED);
+            throw new CustomException(ErrorCode.UNAUTHORIZED);
         }
         Long userId = Long.parseLong(userDetails.getUsername());
         return ResponseEntity.ok(ApiResponse.ok(postService.getMyPosts(userId)));
     }
 
-   
     /** POST-18: 게시글 작성 */
     @PostMapping
     public ResponseEntity<ApiResponse<PostResponse>> createPost(

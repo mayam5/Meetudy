@@ -1,3 +1,4 @@
+import "./AvatarGroup.css";
 import Avatar from "./Avatar";
 
 const MAX_DISPLAY = 3;
@@ -8,26 +9,15 @@ function AvatarGroup({ users = [] }) {
 
     return (
         <div className="avatar-group">
-
-
-{users.map((u, i) => (
-  <Avatar
-    key={u.id || i}
-    name={typeof u === "string" ? u : u.name}
-  />
-))}
-            <div className="more">
-                +{users.length}
-            </div>
-
-/*
-            {visible.map((u) => (
-                <Avatar key={u} name={u} />
+            {visible.map((u, i) => (
+                <Avatar
+                    key={u.id || i}
+                    name={typeof u === "string" ? u : (u.name ?? u.nickname ?? "")}
+                />
             ))}
             {extra > 0 && (
                 <div className="more">+{extra}</div>
             )}
-*/
         </div>
     );
 }

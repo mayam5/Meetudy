@@ -59,6 +59,7 @@
 .mypage .bottom-row {
     display: flex;
     gap: 14px;
+    align-items: stretch;
 }
 
 .mypage .card:nth-child(1) { animation-delay: 0.05s; }
@@ -445,10 +446,21 @@
 
 /* ===== CARD SIZING ===== */
 
-.mypage .schedule-card { flex: 3; }
-.mypage .bookmark-card { flex: 2; }
-.mypage .study-card    { flex: 1; }
-.mypage .user-card     { flex: 1; }
+.mypage .schedule-card {
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+}
+
+.mypage .bookmark-card {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.mypage .study-card { flex: 1; }
+.mypage .user-card  { flex: 1; }
 
 /* ===== CARD HEADER ===== */
 
@@ -659,7 +671,6 @@
     margin-bottom: 0;
 }
 
-/* 가로 시간 표시 */
 .mypage .time-text-row {
     display: flex;
     align-items: baseline;
@@ -694,14 +705,12 @@
     letter-spacing: 0;
 }
 
-/* 수정 모드 */
 .mypage .study-log-edit {
     margin-top: 4px;
     position: relative;
     z-index: 1;
 }
 
-/* 현재 시간 — 수정 전 표시와 동일한 크기 */
 .mypage .study-log-current {
     display: flex;
     align-items: baseline;
@@ -774,12 +783,6 @@
 
 .mypage .study-log-field {
     display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.mypage .study-log-field {
-    display: flex;
     flex-direction: column;
     align-items: center;
     gap: 6px;
@@ -790,13 +793,6 @@
     font-weight: 800;
     color: var(--blue-light);
     letter-spacing: 1px;
-}
-
-.mypage .study-log-controls {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
 }
 
 .mypage .study-log-ctrl {
@@ -945,21 +941,19 @@
 
 /* ===== BOOKMARK ===== */
 
-.mypage .bookmark-card {
-    overflow: hidden;
-}
-
 .mypage .bookmark-card h3 {
     margin-bottom: 12px;
+    flex-shrink: 0;
 }
 
 .mypage .bookmark-list {
     display: flex;
     flex-direction: column;
-    gap: 2px;
-    max-height: 280px;
+    gap: 4px;
+    flex: 1;
     overflow-y: auto;
     scrollbar-gutter: stable;
+    min-height: 0;
 }
 
 .mypage .bookmark-list::-webkit-scrollbar {
@@ -974,14 +968,18 @@
 .mypage .bookmark-item {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 6px 4px;
+    gap: 10px;
+    padding: 10px 8px;
     border-radius: var(--radius-sm);
-    transition: background var(--transition);
+    border: 1px solid transparent;
+    transition: all var(--transition);
+    flex-shrink: 0;
+    cursor: pointer;
 }
 
 .mypage .bookmark-item:hover {
     background: var(--bg-muted);
+    border-color: var(--border);
 }
 
 .mypage .bookmark-icon {
@@ -991,16 +989,16 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    color: var(--border);
+    color: var(--blue);
     transition: all var(--transition);
     border-radius: 6px;
     flex-shrink: 0;
-    font-size: 14px;
+    font-size: 15px;
 }
 
 .mypage .bookmark-icon:hover {
-    color: var(--blue);
-    background: var(--blue-soft);
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
 }
 
 .mypage .bookmark-content {
@@ -1008,14 +1006,48 @@
     min-width: 0;
 }
 
-.mypage .bookmark-content .study-item {
-    padding: 4px 0;
-    border-bottom: none;
-    background: transparent;
+.mypage .bookmark-title {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 5px;
+    letter-spacing: -0.2px;
 }
 
-.mypage .bookmark-content .study-item:hover {
-    background: transparent;
+.mypage .bookmark-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.mypage .bookmark-host {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-subtle);
+    white-space: nowrap;
+}
+
+.mypage .bookmark-field {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: var(--bg-muted);
+    padding: 2px 7px;
+    border-radius: var(--radius-pill);
+    white-space: nowrap;
+    border: 1px solid var(--border);
+}
+
+.mypage .bookmark-members {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--blue);
+    margin-left: auto;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 /* ===== RESPONSIVE ===== */
@@ -1056,19 +1088,6 @@
     .mypage .schedule-cell {
         padding: 6px 2px;
         font-size: 9px;
-    }
-
-    .mypage .time-text {
-        font-size: 44px;
-    }
-
-    .mypage .study-log-add {
-        gap: 5px;
-    }
-
-    .mypage .study-log-add-btn {
-        font-size: 10px;
-        padding: 3px 8px;
     }
 }
 

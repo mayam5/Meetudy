@@ -96,36 +96,34 @@ function Home() {
 
             {/* ===== HERO ===== */}
             <div className="hero-section">
-                <div className="hero-blue-line" />
-                <div className="hero-tag">
-                    <span className="hero-tag-dot" />
-                    STUDY PLATFORM
-                </div>
-                <h1 className="main-title">
-                    공부는 혼자보다<br />
-                    <span className="accent">같이</span>할 때<br />
-                    <span className="scratch">다르다</span>
-                </h1>
-                <p className="hero-sub">
-                    나에게 맞는 스터디를 찾고,<br />
-                    함께 성장하는 경험을 시작해보세요.
-                </p>
-                <div className="button-group">
-                    <button
-                        className="btn-hero-primary"
-                        onClick={() => navigate("/post-write")}
-                    >
-                        스터디 만들기
-                    </button>
-                    <button
-                        className="btn-hero-secondary"
-                        onClick={() => navigate("/whole-list")}
-                    >
-                        둘러보기 →
-                    </button>
-                </div>
-            </div>
-
+    <div className="hero-blue-line" />
+    <div className="hero-tag">
+        <span className="hero-tag-dot" />
+        STUDY PLATFORM
+    </div>
+    <h1 className="main-title">
+        함께 공부할<br />
+        <span className="accent">사람</span>을 찾고 있나요?
+    </h1>
+    <p className="hero-sub">
+        같은 목표를 가진 사람들과 지금 바로<br />
+        스터디를 시작해보세요.
+    </p>
+    <div className="button-group">
+        <button
+            className="btn-hero-primary"
+            onClick={() => navigate("/post-write")}
+        >
+            스터디 만들기
+        </button>
+        <button
+            className="btn-hero-secondary"
+            onClick={() => navigate("/whole-list")}
+        >
+            둘러보기 →
+        </button>
+    </div>
+</div>
             {/* ===== MARQUEE ===== */}
             <div className="marquee-wrap">
                 <div className="marquee-inner">

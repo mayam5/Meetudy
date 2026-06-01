@@ -142,12 +142,21 @@ function MyPage() {
         console.error("프로필 로드 실패:", profile.reason);
       }
 
-      if (bookmarks.status === "fulfilled") {
-        setBookmarkData(bookmarks.value);
-        setBookmarkedIds(bookmarks.value.map((b) => b.id));
-      } else {
-        console.error("북마크 로드 실패:", bookmarks.reason);
-      }
+  
+
+if (bookmarks.status === "fulfilled") {
+  const bookmarkList = Array.isArray(bookmarks.value)
+    ? bookmarks.value
+    : bookmarks.value?.data ?? [];
+
+  setBookmarkData(bookmarkList);
+
+  setBookmarkedIds(
+    bookmarkList.map((post) => post.id)
+  );
+} else {
+  console.error("북마크 로드 실패:", bookmarks.reason);
+}
 
       if (blocked.status === "fulfilled") {
         setBlockedUsers(blocked.value);

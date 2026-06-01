@@ -1,3 +1,20 @@
+# Meetudy
+
+**Meet + Study**
+
+Meetudy is a study group matching platform where users can create and join study groups with multiple people.
+
+---
+
+# Main Features
+
+* Create study posts
+* View other users’ profiles
+* Apply to join study groups
+* Chat with group members
+
+---
+
 # How to Run Meetudy
 
 ## 1. Clone the Project

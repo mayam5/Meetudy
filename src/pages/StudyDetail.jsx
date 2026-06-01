@@ -247,7 +247,7 @@ function StudyDetail() {
                 <h1 className="study-detail-title">{study.title}</h1>
 
                 <div className="study-detail-host-row">
-                    <HostInfo host={study.host} field={study.field} />
+                    <HostInfo host={study.host} field={study.field} hostId={study.hostId} />
                     <AvatarGroup users={study.users ?? []} />
                 </div>
 

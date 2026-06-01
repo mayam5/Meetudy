@@ -1,0 +1,55 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.5.14'
+	id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'meetudy'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+	implementation 'org.springframework.boot:spring-boot-starter-websocket' // web socket 의존성 추가
+
+	implementation 'org.springframework.boot:spring-boot-starter-security'    // 인증/인가
+	implementation 'org.springframework.boot:spring-boot-starter-validation'  // @Valid, @NotBlank 등
+
+	// JWT
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+	runtimeOnly    'io.jsonwebtoken:jjwt-impl:0.11.5'
+	runtimeOnly    'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+
+	// Lombok
+	compileOnly 'org.projectlombok:lombok'  // Lombok 컴파일 시점 의존성 추가
+	annotationProcessor 'org.projectlombok:lombok' // // 컴파일 시 Lombok 어노테이션을 해석하고 코드를 생성할 프로세서 추가
+	
+	// flyway 마이그레이션
+	//implementation 'org.flywaydb:flyway-core'
+	//implementation 'org.flywaydb:flyway-mysql'
+
+	// MySQL
+
+	runtimeOnly 'com.mysql:mysql-connector-j'  
+
+	// 테스트
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.security:spring-security-test'
+	testRuntimeOnly    'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}

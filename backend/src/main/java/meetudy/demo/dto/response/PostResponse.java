@@ -1,0 +1,62 @@
+package meetudy.demo.dto.response;
+import meetudy.demo.entity.Category;
+
+import lombok.Getter;
+import meetudy.demo.entity.Post;
+
+import java.time.LocalDateTime;
+
+@Getter
+public class PostResponse {
+
+    private final Long postId;
+    private final Long userId;
+    private final String nickname;
+    private final String postTitle;
+    private final String postContent;
+    //private final LocalDateTime meetingTime;
+    //private final LocalDateTime endTime;
+    private String dayOfWeek;
+    private Long timeSlotId;
+    private String timeSlotName;
+    private final Integer maxMembers;
+    private final Integer currentMembers;
+    private final Long placeId;
+    private final String placeName;
+    private final Long categoryId;
+    private final String categoryName;
+    private final String postStatus;
+    private final boolean isBookmarked;
+    private final LocalDateTime createdAt;
+    private final LocalDateTime updatedAt;
+  
+
+    private PostResponse(Post post, boolean isBookmarked) {
+        this.postId         = post.getPostId();
+        this.userId         = post.getUser().getUserId();
+        this.nickname       = post.getUser().getNickname();
+        this.postTitle      = post.getPostTitle();
+        this.postContent    = post.getPostContent();
+        //this.meetingTime    = post.getMeetingTime();
+        //this.endTime        = post.getEndTime();
+        this.dayOfWeek = post.getDayOfWeek();
+        //this.timeSlotId = post.getTimeSlot().getTimeSlotId();
+        //this.timeSlotName = post.getTimeSlot().getSlotName();
+        this.timeSlotId = post.getTimeSlot() != null ? post.getTimeSlot().getTimeSlotId() : null;
+        this.timeSlotName = post.getTimeSlot() != null ? post.getTimeSlot().getSlotName() : null;
+        this.maxMembers     = post.getMaxMembers();
+        this.currentMembers = post.getCurrentMembers();
+        this.placeId        = post.getPlace() != null ? post.getPlace().getPlaceId() : null;
+        this.placeName      = post.getPlace() != null ? post.getPlace().getName()    : null;
+        this.categoryId     = post.getCategory() != null ? post.getCategory().getCategoryId() : null;
+        this.categoryName   = post.getCategory() != null ? post.getCategory().getCategoryName() : null;
+        this.postStatus     = post.getPostStatus();
+        this.isBookmarked = isBookmarked;
+        this.createdAt      = post.getCreatedAt();
+        this.updatedAt      = post.getUpdatedAt();
+    }
+
+    public static PostResponse from(Post post, boolean isBookmarked) {
+        return new PostResponse(post, isBookmarked);
+    }
+}

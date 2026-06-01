@@ -1,0 +1,58 @@
+.interest-section {
+    padding: 20px;
+    text-align: center;
+    background: #f0f0f0;
+    border-radius: 20px;
+    box-sizing: border-box;
+}
+
+/* 버튼 */
+.interest-buttons {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+/* 리스트 기본 상태 (닫힘) */
+.interest-list {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.35s ease;
+    width: 100%;
+}
+
+/* 열림 */
+.interest-list.open {
+    max-height: 400px;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* =========================
+   애니메이션
+========================= */
+
+.interest-section {
+    animation: sectionFadeIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes sectionFadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.interest-buttons .btn {
+    transition: all 0.2s ease;
+}
+
+.interest-buttons .btn:hover {
+    transform: translateY(-2px);
+}
+
+.interest-buttons .btn:active {
+    transform: scale(0.95);
+}

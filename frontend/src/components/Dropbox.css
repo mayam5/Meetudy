@@ -1,0 +1,137 @@
+.dropbox {
+    position: relative;
+    width: 200px;
+}
+
+.dropbox-button {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1.5px solid #e5e5e5;
+    border-radius: 14px;
+    background-color: #f5f5f5;
+    color: #a3a3a3;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.dropbox-button:hover {
+    border-color: #2563eb;
+    background-color: #fff;
+    color: #0a0a0a;
+}
+
+.dropbox-button.selected {
+    color: #0a0a0a;
+    background-color: #fff;
+    border-color: #e5e5e5;
+}
+
+.dropbox-button.selected:hover {
+    border-color: #2563eb;
+}
+
+.dropbox-arrow {
+    font-size: 12px;
+    color: #a3a3a3;
+    display: inline-block;
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+.dropbox-arrow.open {
+    transform: rotate(180deg);
+    color: #2563eb;
+}
+
+.dropbox-list {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    width: 100%;
+    background-color: #0a0a0a;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 2px solid #2563eb;
+    border-radius: 14px;
+    box-sizing: border-box;
+    z-index: 50;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    animation: dropboxSlide 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes dropboxSlide {
+    from {
+        opacity: 0;
+        transform: translateY(-6px) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.dropbox-scroll-area {
+    max-height: 200px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 6px 0;
+    list-style: none;
+}
+
+.dropbox-scroll-area::-webkit-scrollbar {
+    width: 4px;
+}
+
+.dropbox-scroll-area::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+
+.dropbox-scroll-area::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-radius: 999px;
+}
+
+.dropbox-item {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: inherit;
+    color: #a3a3a3;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.dropbox-item:hover {
+    background-color: rgba(255, 255, 255, 0.06);
+    color: #fff;
+}
+
+.dropbox-item.active {
+    color: #fff;
+    font-weight: 700;
+    background-color: rgba(37, 99, 235, 0.15);
+}
+
+.dropbox-item.active::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #3b82f6;
+    margin-right: 8px;
+    flex-shrink: 0;
+    display: inline-block;
+}

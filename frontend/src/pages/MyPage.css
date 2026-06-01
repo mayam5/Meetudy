@@ -1,0 +1,1115 @@
+:root {
+    --bg-base: #f5f5f0;
+    --bg-dark: #0a0a0a;
+    --bg-card: #ffffff;
+    --bg-muted: #f5f5f5;
+    --bg-panel: #111111;
+    --text-primary: #0a0a0a;
+    --text-white: #ffffff;
+    --text-muted: #a3a3a3;
+    --text-subtle: #525252;
+    --blue: #2563eb;
+    --blue-light: #3b82f6;
+    --blue-soft: rgba(37, 99, 235, 0.12);
+    --border: #e5e5e5;
+    --border-focus: #2563eb;
+    --radius-sm: 10px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+    --radius-pill: 999px;
+    --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.05);
+    --shadow-pop: 0 8px 32px rgba(0, 0, 0, 0.14);
+    --transition: 0.2s ease;
+}
+
+.mypage-loading {
+    text-align: center;
+    margin-top: 200px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.mypage {
+    display: flex;
+    gap: 20px;
+    padding: 100px 40px 60px;
+    min-height: 100vh;
+    background: var(--bg-base);
+    box-sizing: border-box;
+}
+
+.mypage .left-section {
+    width: 280px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.mypage .right-section {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.mypage .top-row,
+.mypage .bottom-row {
+    display: flex;
+    gap: 14px;
+    align-items: stretch;
+}
+
+.mypage .card:nth-child(1) { animation-delay: 0.05s; }
+.mypage .card:nth-child(2) { animation-delay: 0.10s; }
+.mypage .card:nth-child(3) { animation-delay: 0.15s; }
+.mypage .card:nth-child(4) { animation-delay: 0.20s; }
+.mypage .card:nth-child(5) { animation-delay: 0.25s; }
+.mypage .card:nth-child(6) { animation-delay: 0.30s; }
+
+.mypage .card {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    border: 1px solid var(--border);
+    border-top: 2.5px solid var(--blue);
+    box-shadow: var(--shadow-card);
+    transition: box-shadow var(--transition), transform var(--transition);
+    box-sizing: border-box;
+    animation: fadeIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.mypage .card:hover {
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.mypage h3 {
+    font-weight: 900;
+    font-size: 14px;
+    color: var(--text-primary);
+    margin: 0 0 16px;
+    letter-spacing: -0.3px;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.mypage h3::before {
+    content: '';
+    display: inline-block;
+    width: 14px;
+    height: 2px;
+    background: var(--blue);
+    border-radius: var(--radius-pill);
+    flex-shrink: 0;
+}
+
+/* ===== PROFILE CARD ===== */
+
+.mypage .profile-card {
+    background: var(--bg-dark);
+    border-top-color: var(--blue);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.mypage .profile-card::after {
+    content: 'ME';
+    position: absolute;
+    right: -6px;
+    bottom: -10px;
+    font-size: 88px;
+    color: rgba(255, 255, 255, 0.03);
+    font-weight: 900;
+    letter-spacing: -4px;
+    pointer-events: none;
+    user-select: none;
+    line-height: 1;
+}
+
+.mypage .profile-top {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+}
+
+.mypage .profile-image {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: #1a1a1a;
+    overflow: hidden;
+    position: relative;
+    flex-shrink: 0;
+    border: 2.5px solid var(--blue);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2), 0 0 20px rgba(37, 99, 235, 0.15);
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+    animation: profilePulse 3s ease-in-out infinite;
+}
+
+.mypage .profile-image:hover {
+    transform: scale(1.06);
+    box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.25), 0 0 28px rgba(37, 99, 235, 0.25);
+}
+
+.mypage .profile-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.mypage .profile-placeholder {
+    width: 100%;
+    height: 100%;
+    background: #2a2a2a;
+}
+
+.mypage .profile-image-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.52);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+    border-radius: 50%;
+    transition: background 0.2s ease;
+}
+
+.mypage .profile-image:hover .profile-image-overlay {
+    background: rgba(37, 99, 235, 0.7);
+}
+
+.mypage .nickname {
+    font-size: 18px;
+    font-weight: 900;
+    color: var(--text-white);
+    letter-spacing: -0.8px;
+    margin: 0;
+    text-align: center;
+    word-break: break-all;
+    position: relative;
+    z-index: 1;
+}
+
+.mypage .nickname-input {
+    width: 100%;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    text-align: center;
+    margin-bottom: 0;
+}
+
+.mypage .profile-info {
+    width: 100%;
+    position: relative;
+    z-index: 1;
+}
+
+/* ===== INFO ROWS ===== */
+
+.mypage .info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.mypage .info-row:last-child {
+    border-bottom: none;
+}
+
+.mypage .label {
+    font-size: 10px;
+    font-weight: 800;
+    color: var(--text-subtle);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    flex-shrink: 0;
+}
+
+.mypage .value {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-white);
+    text-align: right;
+}
+
+.mypage .profile-card .info-row .edit-input,
+.mypage .profile-card .info-row select {
+    width: auto;
+    flex: 1;
+    min-width: 0;
+    text-align: right;
+}
+
+.mypage .profile-card .info-row input[type="date"] {
+    width: auto;
+    flex: 1;
+    text-align: right;
+    color-scheme: dark;
+}
+
+.mypage .profile-card .info-row input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--blue);
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.mypage .region-selects {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+}
+
+.mypage .region-selects select {
+    width: 100%;
+    text-align: right;
+}
+
+/* ===== BIO CARD ===== */
+
+.mypage .bio-card {
+    position: relative;
+    min-height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-subtle);
+    font-size: 13px;
+    line-height: 1.85;
+    padding: 32px 24px;
+    text-align: center;
+    border-top-color: var(--bg-dark);
+    font-style: italic;
+}
+
+.mypage .quote {
+    position: absolute;
+    font-size: 64px;
+    color: var(--border);
+    left: 14px;
+    top: 2px;
+    font-family: Georgia, serif;
+    line-height: 1;
+    font-style: normal;
+}
+
+.mypage .quote.right {
+    right: 14px;
+    left: auto;
+    bottom: 2px;
+    top: auto;
+}
+
+/* ===== CATEGORY CARD ===== */
+
+.mypage .category-card h3 {
+    margin-bottom: 12px;
+}
+
+.mypage .tag-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+}
+
+.mypage .category-card .tag {
+    background: var(--bg-muted);
+    color: var(--text-subtle);
+    padding: 7px 14px;
+    border-radius: var(--radius-pill);
+    font-size: 12px;
+    font-weight: 600;
+    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    cursor: pointer;
+    border: 1.5px solid transparent;
+}
+
+.mypage .category-card .tag:hover {
+    background: var(--bg-dark);
+    color: var(--text-white);
+    transform: translateY(-1px);
+}
+
+.mypage .category-card .active-tag {
+    background: var(--bg-dark);
+    color: var(--text-white);
+    border-color: var(--blue);
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
+}
+
+.mypage.editing .category-card .active-tag {
+    background: var(--blue);
+    border-color: var(--blue);
+}
+
+/* ===== EDIT BUTTON ===== */
+
+.mypage .edit-btn {
+    height: 46px;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: var(--bg-dark);
+    color: var(--text-white);
+    font-weight: 800;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all var(--transition);
+    border-top: 2px solid var(--blue);
+    letter-spacing: -0.2px;
+}
+
+.mypage .edit-btn:hover {
+    background: var(--blue);
+    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.3);
+    transform: translateY(-1px);
+}
+
+.mypage .edit-btn:active {
+    transform: scale(0.97);
+    box-shadow: none;
+}
+
+.mypage.editing .edit-btn {
+    background: var(--blue);
+    border-top-color: var(--blue-light);
+}
+
+/* ===== SMALL BUTTONS ===== */
+
+.mypage .small-btn {
+    border: none;
+    background: var(--bg-dark);
+    color: var(--text-white);
+    padding: 7px 14px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 12px;
+    transition: all var(--transition);
+    border-top: 1.5px solid var(--blue);
+    font-family: inherit;
+}
+
+.mypage .small-btn:hover {
+    background: var(--blue);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    transform: translateY(-2px);
+}
+
+.mypage .small-btn:active {
+    transform: scale(0.95) translateY(0);
+    box-shadow: none;
+}
+
+.mypage .small-btn.active-edit-btn {
+    background: var(--blue);
+}
+
+/* ===== PASSWORD CARD ===== */
+
+.mypage .password-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.mypage .password-card h3 {
+    margin-bottom: 8px;
+}
+
+.mypage .password-card .small-btn {
+    align-self: flex-end;
+}
+
+/* ===== CARD SIZING ===== */
+
+.mypage .schedule-card {
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+}
+
+.mypage .bookmark-card {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.mypage .study-card { flex: 1; }
+.mypage .user-card  { flex: 1; }
+
+/* ===== CARD HEADER ===== */
+
+.mypage .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.mypage .card-header h3 {
+    margin-bottom: 0;
+}
+
+.mypage .card-header > div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+/* ===== SCHEDULE ===== */
+
+.mypage .schedule-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    text-align: center;
+    font-size: 11px;
+}
+
+.mypage .schedule-grid > div:not(.schedule-cell) {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--text-muted);
+    padding: 5px 0;
+    letter-spacing: 0.3px;
+}
+
+.mypage .schedule-cell {
+    padding: 8px 2px;
+    border-radius: 8px;
+    cursor: default;
+    transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+    color: var(--text-muted);
+    background: var(--bg-muted);
+    border: 1.5px solid transparent;
+    font-weight: 600;
+    user-select: none;
+    font-size: 10px;
+}
+
+.mypage .schedule-cell.active {
+    background: var(--bg-dark);
+    color: var(--text-white);
+    font-weight: 700;
+    border-color: var(--blue);
+    box-shadow: 0 0 8px rgba(37, 99, 235, 0.2);
+}
+
+.mypage .schedule-card.editing .schedule-cell {
+    cursor: pointer;
+    border: 1.5px dashed var(--border);
+}
+
+.mypage .schedule-card.editing .schedule-cell:hover {
+    border-color: var(--blue);
+    background: var(--blue-soft);
+    color: var(--blue);
+}
+
+.mypage .schedule-card.editing .schedule-cell.active {
+    background: var(--blue);
+    color: var(--text-white);
+    border-color: var(--blue);
+    border-style: solid;
+    box-shadow: 0 2px 10px rgba(37, 99, 235, 0.35);
+}
+
+/* ===== MEETING CARD ===== */
+
+.mypage .meeting-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.mypage .meeting-card-header h3 {
+    margin-bottom: 0;
+    flex-shrink: 0;
+}
+
+.mypage .meeting-tabs {
+    display: flex;
+    gap: 5px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.mypage .meeting-tabs::-webkit-scrollbar {
+    display: none;
+}
+
+.mypage .meeting-tabs span {
+    padding: 6px 14px;
+    border-radius: var(--radius-pill);
+    background: var(--bg-muted);
+    cursor: pointer;
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 12px;
+    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    white-space: nowrap;
+    flex-shrink: 0;
+    border: 1.5px solid transparent;
+}
+
+.mypage .meeting-tabs span:hover {
+    background: var(--bg-dark);
+    color: var(--text-white);
+    transform: translateY(-1px);
+}
+
+.mypage .active-tab {
+    background: var(--bg-dark) !important;
+    color: var(--text-white) !important;
+    font-weight: 700 !important;
+    border-color: var(--blue) !important;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
+}
+
+.mypage .meeting-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.mypage .meeting-list .study-item {
+    padding: 12px 4px;
+    border-bottom: 1px solid var(--bg-muted);
+    border-radius: 0;
+    transition: all var(--transition);
+}
+
+.mypage .meeting-list .study-item:last-child {
+    border-bottom: none;
+}
+
+.mypage .meeting-list .study-item:hover {
+    background: var(--bg-muted);
+    border-radius: var(--radius-sm);
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.mypage .meeting-empty,
+.mypage .meeting-loading {
+    padding: 40px 0;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* ===== STUDY LOG ===== */
+
+.mypage .study-card {
+    background: var(--bg-dark);
+    border-top-color: var(--blue);
+    position: relative;
+    overflow: hidden;
+}
+
+.mypage .study-card h3 {
+    color: var(--text-white);
+}
+
+.mypage .study-card h3::before {
+    background: var(--blue);
+}
+
+.mypage .sub-text {
+    font-size: 11px;
+    color: var(--text-subtle);
+    margin-top: 2px;
+    font-weight: 500;
+}
+
+.mypage .study-card::after {
+    content: 'LOG';
+    position: absolute;
+    right: -4px;
+    bottom: -8px;
+    font-size: 72px;
+    color: rgba(255, 255, 255, 0.03);
+    font-weight: 900;
+    letter-spacing: -3px;
+    pointer-events: none;
+    user-select: none;
+    line-height: 1;
+}
+
+.mypage .study-card .card-header {
+    margin-bottom: 0;
+}
+
+.mypage .time-text-row {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-top: 4px;
+    position: relative;
+    z-index: 1;
+}
+
+.mypage .time-block {
+    font-size: 56px;
+    font-weight: 900;
+    color: var(--text-white);
+    line-height: 1;
+    letter-spacing: -3px;
+}
+
+.mypage .time-block em {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--blue-light);
+    letter-spacing: 0;
+    font-style: normal;
+    margin-left: 2px;
+}
+
+.mypage .time-sep {
+    font-size: 40px;
+    font-weight: 900;
+    color: rgba(255,255,255,0.2);
+    line-height: 1;
+    letter-spacing: 0;
+}
+
+.mypage .study-log-edit {
+    margin-top: 4px;
+    position: relative;
+    z-index: 1;
+}
+
+.mypage .study-log-current {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-bottom: 14px;
+}
+
+.mypage .study-log-current .time-block {
+    font-size: 56px;
+    font-weight: 900;
+    color: var(--text-white);
+    line-height: 1;
+    letter-spacing: -3px;
+}
+
+.mypage .study-log-current .time-block em {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--blue-light);
+    font-style: normal;
+    letter-spacing: 0;
+    margin-left: 2px;
+}
+
+.mypage .study-log-current .time-sep {
+    font-size: 40px;
+    font-weight: 900;
+    color: rgba(255,255,255,0.2);
+    line-height: 1;
+    letter-spacing: 0;
+}
+
+.mypage .study-log-mode-tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 10px;
+}
+
+.mypage .study-log-mode-btn {
+    flex: 1;
+    padding: 5px 0;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.05);
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all var(--transition);
+    font-family: inherit;
+}
+
+.mypage .study-log-mode-btn.active {
+    background: var(--blue);
+    border-color: var(--blue);
+    color: #fff;
+    animation: tabPop 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.mypage .study-log-mode-btn.active.subtract {
+    background: #ef4444;
+    border-color: #ef4444;
+}
+
+.mypage .study-log-fields {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.mypage .study-log-field {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.mypage .study-log-unit {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--blue-light);
+    letter-spacing: 1px;
+}
+
+.mypage .study-log-ctrl {
+    width: 32px;
+    height: 22px;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 6px;
+    background: rgba(255,255,255,0.06);
+    color: var(--text-white);
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: inherit;
+    line-height: 1;
+}
+
+.mypage .study-log-ctrl:hover {
+    background: var(--blue);
+    border-color: var(--blue);
+}
+
+.mypage .study-log-input {
+    width: 56px !important;
+    text-align: center !important;
+    font-size: 22px !important;
+    font-weight: 900 !important;
+    padding: 4px 4px !important;
+    background: rgba(255, 255, 255, 0.07) !important;
+    border-color: rgba(255, 255, 255, 0.12) !important;
+    color: var(--text-white) !important;
+    border-radius: 8px !important;
+}
+
+.mypage .study-log-input:focus {
+    border-color: var(--blue) !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* ===== USER MANAGEMENT ===== */
+
+.mypage .user-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 6px;
+    border-radius: var(--radius-sm);
+    transition: background var(--transition);
+}
+
+.mypage .user-item:hover {
+    background: var(--bg-muted);
+}
+
+.mypage .user-action-btn {
+    padding: 5px 12px;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: var(--radius-pill);
+    background: transparent;
+    color: var(--text-subtle);
+    border: 1.5px solid var(--border);
+    cursor: pointer;
+    transition: all var(--transition);
+    white-space: nowrap;
+    flex-shrink: 0;
+    font-family: inherit;
+}
+
+.mypage .user-action-btn:hover {
+    background: var(--bg-dark);
+    color: var(--text-white);
+    border-color: var(--bg-dark);
+}
+
+.mypage .user-action-btn.blocked {
+    background: transparent;
+    color: #ef4444;
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+.mypage .user-action-btn.blocked:hover {
+    background: #ef4444;
+    color: white;
+    border-color: #ef4444;
+}
+
+/* ===== INPUT / EDIT MODE ===== */
+
+.mypage .edit-input,
+.mypage .bio-textarea,
+.mypage select {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--bg-muted);
+    font-size: 13px;
+    font-weight: 500;
+    outline: none;
+    color: var(--text-primary);
+    transition: all var(--transition);
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+.mypage .edit-input:focus,
+.mypage .bio-textarea:focus,
+.mypage select:focus {
+    border-color: var(--border-focus);
+    background: var(--bg-card);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+}
+
+.mypage .profile-card .edit-input {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(255, 255, 255, 0.12);
+    color: var(--text-white);
+}
+
+.mypage .profile-card .edit-input:focus {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+.mypage .bio-textarea {
+    resize: none;
+    min-height: 80px;
+    line-height: 1.7;
+}
+
+.mypage .profile-card select {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(255, 255, 255, 0.12);
+    color: var(--text-white);
+}
+
+.mypage .profile-card select option {
+    background: var(--bg-dark);
+    color: var(--text-white);
+}
+
+/* ===== BOOKMARK ===== */
+
+.mypage .bookmark-card h3 {
+    margin-bottom: 12px;
+    flex-shrink: 0;
+}
+
+.mypage .bookmark-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+    min-height: 0;
+}
+
+.mypage .bookmark-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.mypage .bookmark-list::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: var(--radius-pill);
+}
+
+.mypage .bookmark-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 8px;
+    border-radius: var(--radius-sm);
+    border: 1px solid transparent;
+    transition: all var(--transition);
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+.mypage .bookmark-item:hover {
+    background: var(--bg-muted);
+    border-color: var(--border);
+}
+
+.mypage .bookmark-icon {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--blue);
+    transition: all var(--transition);
+    border-radius: 6px;
+    flex-shrink: 0;
+    font-size: 15px;
+}
+
+.mypage .bookmark-icon:hover {
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.mypage .bookmark-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.mypage .bookmark-title {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 5px;
+    letter-spacing: -0.2px;
+}
+
+.mypage .bookmark-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.mypage .bookmark-host {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-subtle);
+    white-space: nowrap;
+}
+
+.mypage .bookmark-field {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: var(--bg-muted);
+    padding: 2px 7px;
+    border-radius: var(--radius-pill);
+    white-space: nowrap;
+    border: 1px solid var(--border);
+}
+
+.mypage .bookmark-members {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--blue);
+    margin-left: auto;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width: 1200px) {
+    .mypage .left-section {
+        width: 260px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .mypage {
+        flex-direction: column;
+        padding: 80px 24px 40px;
+    }
+
+    .mypage .left-section,
+    .mypage .right-section {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .mypage {
+        padding: 70px 16px 32px;
+        gap: 12px;
+    }
+
+    .mypage .top-row,
+    .mypage .bottom-row {
+        flex-direction: column;
+    }
+
+    .mypage .schedule-grid {
+        gap: 4px;
+    }
+
+    .mypage .schedule-cell {
+        padding: 6px 2px;
+        font-size: 9px;
+    }
+}
+
+/* ===== 애니메이션 ===== */
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(16px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes profilePulse {
+    0%, 100% { box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2), 0 0 20px rgba(37, 99, 235, 0.15); }
+    50%       { box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.28), 0 0 28px rgba(37, 99, 235, 0.22); }
+}
+
+@keyframes tabPop {
+    0%   { transform: scale(0.92); }
+    60%  { transform: scale(1.04); }
+    100% { transform: scale(1); }
+}
+
+@keyframes timeCount {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}

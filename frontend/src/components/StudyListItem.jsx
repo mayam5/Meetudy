@@ -15,22 +15,22 @@ function StudyListItem({ id, title = "", host = "", field = "", users = [], curr
     };
 
     return (
-    <div className="study-item" onClick={handleClick}>
-        <strong className="list-study-title">{title}</strong>
-        <span className={`status-badge ${status === "OPEN" ? "open" : "closed"}`}>
-            {status === "OPEN" ? "모집중" : "모집마감"}
-        </span>
-        <div className="host-box">
-            <HostInfo host={host} field={field} />
+        <div className="study-item" onClick={handleClick}>
+            <strong className="list-study-title">{title}</strong>
+            <div className="host-box">
+                <HostInfo host={host} field={field} />
+            </div>
+            <div className="item-right">
+                <AvatarGroup users={users} />
+                {currentMembers !== undefined && maxMembers !== undefined && (
+                    <span className="member-count">{currentMembers} / {maxMembers}</span>
+                )}
+                <span className={`status-badge ${status === "OPEN" ? "open" : "closed"}`}>
+                    {status === "OPEN" ? "모집중" : "모집마감"}
+                </span>
+            </div>
         </div>
-        <div className="item-right">
-            <AvatarGroup users={users} />
-            {currentMembers !== undefined && maxMembers !== undefined && (
-                <span className="member-count">{currentMembers} / {maxMembers}</span>
-            )}
-        </div>
-    </div>
-);
+    );
 }
 
 export default StudyListItem;

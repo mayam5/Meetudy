@@ -3,7 +3,7 @@ import AvatarGroup from "./AvatarGroup";
 import HostInfo from "./HostInfo";
 import { useNavigate } from "react-router-dom";
 
-function StudyCard({ id, title = "", host = "", field = "", users = [], currentMembers, maxMembers, onClick }) {
+function StudyCard({ id, title = "", host = "", field = "", users = [], currentMembers, maxMembers, status = "OPEN", onClick }) {
     const navigate = useNavigate();
 
     const handleClick = () => {
@@ -22,9 +22,14 @@ function StudyCard({ id, title = "", host = "", field = "", users = [], currentM
             </div>
             <div className="study-bottom">
                 <HostInfo host={host} field={field} />
-                {currentMembers !== undefined && maxMembers !== undefined && (
-                    <span className="member-count">{currentMembers} / {maxMembers}</span>
-                )}
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", marginTop: "6px" }}>
+                    {currentMembers !== undefined && maxMembers !== undefined && (
+                        <span className="member-count">{currentMembers} / {maxMembers}</span>
+                    )}
+                    <span className={`status-badge ${status === "OPEN" ? "open" : "closed"}`}>
+                        {status === "OPEN" ? "모집중" : "모집마감"}
+                    </span>
+                </div>
             </div>
         </div>
     );

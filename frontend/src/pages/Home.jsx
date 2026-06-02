@@ -66,6 +66,7 @@ function Home() {
                 host: post.nickname,
                 field: post.categoryName,
                 users: users,
+                status: post.postStatus, 
                 currentMembers: post.currentMembers,
                 maxMembers: post.maxMembers,
             };

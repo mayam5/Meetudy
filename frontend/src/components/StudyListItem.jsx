@@ -3,7 +3,7 @@ import AvatarGroup from "./AvatarGroup";
 import HostInfo from "./HostInfo";
 import { useNavigate } from "react-router-dom";
 
-function StudyListItem({ id, title = "", host = "", field = "", users = [], currentMembers, maxMembers, onClick }) {
+function StudyListItem({ id, title = "", host = "", field = "", users = [], currentMembers, maxMembers, status = "OPEN", onClick }) {
     const navigate = useNavigate();
 
     const handleClick = () => {
@@ -16,7 +16,12 @@ function StudyListItem({ id, title = "", host = "", field = "", users = [], curr
 
     return (
         <div className="study-item" onClick={handleClick}>
-            <strong className="list-study-title">{title}</strong>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", width: "200px", flexShrink: 0 }}>
+                <strong className="list-study-title">{title}</strong>
+                <span className={`status-badge ${status === "OPEN" ? "open" : "closed"}`}>
+                    {status === "OPEN" ? "모집중" : "모집마감"}
+                </span>
+            </div>
             <div className="host-box">
                 <HostInfo host={host} field={field} />
             </div>

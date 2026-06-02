@@ -16,6 +16,7 @@ function WholeListItem({
   host = "",
   hostId,
   field = "",
+  status = "OPEN",
   users = [],
   currentMembers,
   maxMembers,
@@ -86,7 +87,12 @@ function WholeListItem({
           onClick={handleTitleClick}
           style={{ cursor: "pointer" }}
         >
-          <strong className="list-title">{title}</strong>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+        <strong className="list-title">{title}</strong>
+        <span className={`status-badge ${status === "OPEN" ? "open" : "closed"}`}>
+            {status === "OPEN" ? "모집중" : "모집마감"}
+        </span>
+    </div>
           <span className="list-tags">
             {Array.isArray(tags) ? tags.map((t) => `#${t}`).join(" ") : ""}
           </span>
@@ -102,7 +108,7 @@ function WholeListItem({
         >
           <HostInfo host={host} field={field} />
         </div>
-        
+
         <div className="list-actions" onClick={stopProp}>
           <AvatarGroup users={users} />
           {currentMembers !== undefined && maxMembers !== undefined && (

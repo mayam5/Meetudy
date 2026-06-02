@@ -510,3 +510,22 @@
 
     .app-popup { width: 95vw; }
 }
+
+.status-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.status-badge.open {
+    background: rgba(37, 99, 235, 0.1);
+    color: #2563eb;
+}
+
+.status-badge.closed {
+    background: #f0f0f0;
+    color: #a3a3a3;
+}

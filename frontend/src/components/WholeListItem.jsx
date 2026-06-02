@@ -44,10 +44,8 @@ function WholeListItem({
 
   const handleBookmark = async (e) => {
     e.stopPropagation();
-
     const prev = isBookmarked;
     setIsBookmarked(!prev);
-
     try {
       await toggleBookmark(id, prev);
     } catch (err) {
@@ -82,17 +80,8 @@ function WholeListItem({
           )}
         </button>
 
-        <div
-          className="list-title-box"
-          onClick={handleTitleClick}
-          style={{ cursor: "pointer" }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-        <strong className="list-title">{title}</strong>
-        <span className={`status-badge ${status === "OPEN" ? "open" : "closed"}`}>
-            {status === "OPEN" ? "모집중" : "모집마감"}
-        </span>
-    </div>
+        <div className="list-title-box" onClick={handleTitleClick} style={{ cursor: "pointer" }}>
+          <strong className="list-title">{title}</strong>
           <span className="list-tags">
             {Array.isArray(tags) ? tags.map((t) => `#${t}`).join(" ") : ""}
           </span>
@@ -114,28 +103,20 @@ function WholeListItem({
           {currentMembers !== undefined && maxMembers !== undefined && (
             <span className="member-count">{currentMembers} / {maxMembers}</span>
           )}
+          <span className={`status-badge ${status === "OPEN" ? "open" : "closed"}`}>
+            {status === "OPEN" ? "모집중" : "모집마감"}
+          </span>
+
           {type === "n" && (
             <>
-              <button
-                className="applicant-manage-btn"
-                onClick={() => setShowAppPopup(true)}
-              >
+              <button className="applicant-manage-btn" onClick={() => setShowAppPopup(true)}>
                 <FiUsers />
                 신청 관리
               </button>
-
-              <button onClick={() => navigate(`/post-edit/${id}`)}>
-                수정
-              </button>
-
+              <button onClick={() => navigate(`/post-edit/${id}`)}>수정</button>
               <button
                 className="delete-btn"
-                onClick={() =>
-                  openPopup("정말 삭제하시겠습니까?", () => {
-                    onDelete?.();
-                    closePopup();
-                  })
-                }
+                onClick={() => openPopup("정말 삭제하시겠습니까?", () => { onDelete?.(); closePopup(); })}
               >
                 삭제
               </button>
@@ -147,24 +128,13 @@ function WholeListItem({
               {applicationStatus === "pending" && (
                 <button
                   className="cancel-btn"
-                  onClick={() =>
-                    openPopup("신청을 취소하시겠습니까?", () => {
-                      onCancel?.();
-                      closePopup();
-                    })
-                  }
+                  onClick={() => openPopup("신청을 취소하시겠습니까?", () => { onCancel?.(); closePopup(); })}
                 >
                   신청 취소
                 </button>
               )}
-
-              {applicationStatus === "accepted" && (
-                <span className="accepted-text">수락됨</span>
-              )}
-
-              {applicationStatus === "rejected" && (
-                <span className="rejected-text">거절됨</span>
-              )}
+              {applicationStatus === "accepted" && <span className="accepted-text">수락됨</span>}
+              {applicationStatus === "rejected" && <span className="rejected-text">거절됨</span>}
             </>
           )}
 
@@ -174,14 +144,8 @@ function WholeListItem({
                 <FiMessageCircle />
                 채팅방
               </button>
-
               <button
-                onClick={() =>
-                  openPopup("모임에서 나가시겠습니까?", () => {
-                    onLeave?.();
-                    closePopup();
-                  })
-                }
+                onClick={() => openPopup("모임에서 나가시겠습니까?", () => { onLeave?.(); closePopup(); })}
               >
                 나가기
               </button>
@@ -191,10 +155,7 @@ function WholeListItem({
       </div>
 
       {showAppPopup && (
-        <ApplicantPopup
-          studyId={id}
-          onClose={() => setShowAppPopup(false)}
-        />
+        <ApplicantPopup studyId={id} onClose={() => setShowAppPopup(false)} />
       )}
 
       {popup.open && (

@@ -4,7 +4,7 @@
 
 .list-item {
     display: grid;
-    grid-template-columns: 44px 1fr 210px 130px auto;
+    grid-template-columns: 44px 220px 210px 1fr;
     column-gap: 24px;
     align-items: center;
     min-height: 88px;
@@ -110,7 +110,6 @@
 .list-item .avatar-group {
     display: flex;
     align-items: center;
-    justify-self: center;
 }
 
 .list-item .avatar {
@@ -227,6 +226,25 @@
    STATUS BADGES
 ========================= */
 
+.status-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.status-badge.open {
+    background: rgba(37, 99, 235, 0.1);
+    color: #2563eb;
+}
+
+.status-badge.closed {
+    background: #f0f0f0;
+    color: #a3a3a3;
+}
+
 .accepted-text {
     font-size: 11px;
     font-weight: 800;
@@ -251,6 +269,13 @@
     white-space: nowrap;
     letter-spacing: 0.2px;
     text-transform: uppercase;
+}
+
+.member-count {
+    font-size: 12px;
+    font-weight: 700;
+    color: #2563eb;
+    white-space: nowrap;
 }
 
 /* =========================
@@ -471,7 +496,7 @@
 
 @media (max-width: 1024px) {
     .list-item {
-        grid-template-columns: 40px 1fr 170px auto;
+        grid-template-columns: 40px 180px 170px 1fr;
         column-gap: 16px;
         padding-right: 16px;
     }
@@ -483,15 +508,13 @@
         flex-wrap: wrap;
         align-items: center;
         gap: 10px;
-        padding: 14px 14px;
+        padding: 14px;
         min-height: auto;
     }
 
     .list-item:hover { padding-left: 14px; }
 
-    .list-bookmark {
-        flex-shrink: 0;
-    }
+    .list-bookmark { flex-shrink: 0; }
 
     .list-title-box {
         flex: 1;
@@ -509,23 +532,4 @@
     }
 
     .app-popup { width: 95vw; }
-}
-
-.status-badge {
-    font-size: 11px;
-    font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 999px;
-    white-space: nowrap;
-    flex-shrink: 0;
-}
-
-.status-badge.open {
-    background: rgba(37, 99, 235, 0.1);
-    color: #2563eb;
-}
-
-.status-badge.closed {
-    background: #f0f0f0;
-    color: #a3a3a3;
 }

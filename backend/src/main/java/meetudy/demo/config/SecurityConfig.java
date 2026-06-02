@@ -43,6 +43,7 @@ public class SecurityConfig {
                         .requestMatchers("/categories").permitAll()
                         .requestMatchers(HttpMethod.GET, "/posts").permitAll()       // ← GET만 비로그인 허용
                         .requestMatchers(HttpMethod.GET, "/posts/{postId}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/posts/{postId}/members").permitAll()
                         .requestMatchers("/ws/**").permitAll()
                         .requestMatchers("/places/**").permitAll()
                         .requestMatchers("/regions/**").permitAll()

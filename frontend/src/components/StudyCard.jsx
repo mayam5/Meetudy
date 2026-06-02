@@ -1,9 +1,9 @@
-import "./StudyCard.css";
+﻿import "./StudyCard.css";
 import AvatarGroup from "./AvatarGroup";
 import HostInfo from "./HostInfo";
 import { useNavigate } from "react-router-dom";
 
-function StudyCard({ id, title = "", host = "", field = "", users = [], onClick }) {
+function StudyCard({ id, title = "", host = "", field = "", users = [], currentMembers, maxMembers, onClick }) {
     const navigate = useNavigate();
 
     const handleClick = () => {
@@ -22,6 +22,9 @@ function StudyCard({ id, title = "", host = "", field = "", users = [], onClick 
             </div>
             <div className="study-bottom">
                 <HostInfo host={host} field={field} />
+                {currentMembers !== undefined && maxMembers !== undefined && (
+                    <span className="member-count">{currentMembers} / {maxMembers}</span>
+                )}
             </div>
         </div>
     );

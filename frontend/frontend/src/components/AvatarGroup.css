@@ -1,0 +1,22 @@
+.avatar-group {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.avatar-group .avatar {
+    margin-left: -8px;
+}
+
+.avatar-group .avatar:first-child {
+    margin-left: 0;
+}
+
+.more {
+    font-size: 10px;
+    font-weight: 700;
+    color: #a3a3a3;
+    margin-left: 6px;
+    white-space: nowrap;
+    transition: color 0.2s;
+}

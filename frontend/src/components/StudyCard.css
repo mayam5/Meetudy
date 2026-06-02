@@ -119,3 +119,11 @@
     line-height: 1;
     transition: color 0.2s;
 }
+
+.member-count {
+    font-size: 12px;
+    font-weight: 700;
+    color: #2563eb;
+    margin-top: 6px;
+    display: inline-block;
+}

@@ -6,6 +6,7 @@ import meetudy.demo.common.ApiResponse;
 import meetudy.demo.dto.request.CreatePostRequest;
 import meetudy.demo.dto.request.UpdatePostRequest;
 import meetudy.demo.dto.response.PostResponse;
+import meetudy.demo.dto.response.StudyGroupMemberResponse;
 import meetudy.demo.exception.CustomException;
 import meetudy.demo.exception.ErrorCode;
 import meetudy.demo.service.PostService;
@@ -130,5 +131,12 @@ public class PostController {
         Long userId = Long.parseLong(userDetails.getUsername());
         postService.deletePost(userId, postId);
         return ResponseEntity.ok(ApiResponse.ok("게시글이 삭제되었습니다.", null));
+    }
+
+    /** POST 멤버 목록 조회 */
+    @GetMapping("/{postId}/members")
+    public ResponseEntity<ApiResponse<List<StudyGroupMemberResponse>>> getPostMembers(
+            @PathVariable Long postId) {
+        return ResponseEntity.ok(ApiResponse.ok(postService.getPostMembers(postId)));
     }
 }

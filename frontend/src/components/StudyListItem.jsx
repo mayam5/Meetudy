@@ -1,9 +1,9 @@
-import "./StudyListItem.css";
+﻿import "./StudyListItem.css";
 import AvatarGroup from "./AvatarGroup";
 import HostInfo from "./HostInfo";
 import { useNavigate } from "react-router-dom";
 
-function StudyListItem({ id, title = "", host = "", field = "", users = [], onClick }) {
+function StudyListItem({ id, title = "", host = "", field = "", users = [], currentMembers, maxMembers, onClick }) {
     const navigate = useNavigate();
 
     const handleClick = () => {
@@ -17,8 +17,15 @@ function StudyListItem({ id, title = "", host = "", field = "", users = [], onCl
     return (
         <div className="study-item" onClick={handleClick}>
             <strong className="list-study-title">{title}</strong>
-            <HostInfo host={host} field={field} />
-            <AvatarGroup users={users} />
+            <div className="host-box">
+                <HostInfo host={host} field={field} />
+            </div>
+            <div className="item-right">
+                <AvatarGroup users={users} />
+                {currentMembers !== undefined && maxMembers !== undefined && (
+                    <span className="member-count">{currentMembers} / {maxMembers}</span>
+                )}
+            </div>
         </div>
     );
 }

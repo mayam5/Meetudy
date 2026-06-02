@@ -1,4 +1,4 @@
-/*
+﻿/*
   [수정 사항]
   1. 디자인 리뉴얼 - 히어로 섹션, 마퀴 애니메이션 추가
   2. useNavigate 선언 누락 수정
@@ -51,20 +51,30 @@ function Home() {
     useEffect(() => {
         // ✅ 백엔드 연동 - 게시글 목록
         fetch(`${API_BASE}/posts`)
-            .then((res) => res.json())
-            .then((result) => {
-                const mappedPosts = result.data.map((post) => ({
-                    id: post.postId,
-                    title: post.postTitle,
-                    host: post.nickname,
-                    field: post.categoryName,
-                    users: [post.nickname],
-                }));
-                setPosts(mappedPosts);
-            })
-            .catch((error) => {
-                console.error("홈 게시글 불러오기 실패:", error);
-            });
+    .then((res) => res.json())
+    .then(async (result) => {
+        const mappedPosts = await Promise.all(result.data.map(async (post) => {
+            let users = [post.nickname];
+            try {
+                const memberRes = await fetch(`${API_BASE}/posts/${post.postId}/members`);
+                const memberData = await memberRes.json();
+                users = memberData.data.map((m) => m.nickname);
+            } catch (e) {}
+            return {
+                id: post.postId,
+                title: post.postTitle,
+                host: post.nickname,
+                field: post.categoryName,
+                users: users,
+                currentMembers: post.currentMembers,
+                maxMembers: post.maxMembers,
+            };
+        }));
+        setPosts(mappedPosts);
+    })
+    .catch((error) => {
+        console.error("홈 게시글 불러오기 실패:", error);
+    });
 
         // ✅ 백엔드 연동 - 카테고리 목록
         fetch(`${API_BASE}/categories`)
@@ -96,34 +106,34 @@ function Home() {
 
             {/* ===== HERO ===== */}
             <div className="hero-section">
-    <div className="hero-blue-line" />
-    <div className="hero-tag">
-        <span className="hero-tag-dot" />
-        STUDY PLATFORM
-    </div>
-    <h1 className="main-title">
-        함께 공부할<br />
-        <span className="accent">사람</span>을 찾고 있나요?
-    </h1>
-    <p className="hero-sub">
-        같은 목표를 가진 사람들과 지금 바로<br />
-        스터디를 시작해보세요.
-    </p>
-    <div className="button-group">
-        <button
-            className="btn-hero-primary"
-            onClick={() => navigate("/post-write")}
-        >
-            스터디 만들기
-        </button>
-        <button
-            className="btn-hero-secondary"
-            onClick={() => navigate("/whole-list")}
-        >
-            둘러보기 →
-        </button>
-    </div>
-</div>
+                <div className="hero-blue-line" />
+                <div className="hero-tag">
+                    <span className="hero-tag-dot" />
+                    STUDY PLATFORM
+                </div>
+                <h1 className="main-title">
+                    함께 공부할<br />
+                    <span className="accent">사람</span>을 찾고 있나요?
+                </h1>
+                <p className="hero-sub">
+                    같은 목표를 가진 사람들과 지금 바로<br />
+                    스터디를 시작해보세요.
+                </p>
+                <div className="button-group">
+                    <button
+                        className="btn-hero-primary"
+                        onClick={() => navigate("/post-write")}
+                    >
+                        스터디 만들기
+                    </button>
+                    <button
+                        className="btn-hero-secondary"
+                        onClick={() => navigate("/whole-list")}
+                    >
+                        둘러보기 →
+                    </button>
+                </div>
+            </div>
             {/* ===== MARQUEE ===== */}
             <div className="marquee-wrap">
                 <div className="marquee-inner">
@@ -225,6 +235,8 @@ function Home() {
                             host={study.host}
                             field={study.field}
                             users={study.users}
+                            currentMembers={study.currentMembers}
+                            maxMembers={study.maxMembers}
                         />
                     ))}
                 </div>
@@ -255,6 +267,8 @@ function Home() {
                             host={study.host}
                             field={study.field}
                             users={study.users}
+                            currentMembers={study.currentMembers}
+                            maxMembers={study.maxMembers}
                         />
                     ))}
                 </div>

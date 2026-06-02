@@ -4,12 +4,14 @@ import lombok.RequiredArgsConstructor;
 import meetudy.demo.dto.request.CreatePostRequest;
 import meetudy.demo.dto.request.UpdatePostRequest;
 import meetudy.demo.dto.response.PostResponse;
+import meetudy.demo.dto.response.StudyGroupMemberResponse;
 import meetudy.demo.entity.*;
 import meetudy.demo.exception.CustomException;
 import meetudy.demo.exception.ErrorCode;
 import meetudy.demo.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import meetudy.demo.dto.response.StudyGroupMemberResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -177,6 +179,17 @@ public class PostService {
         Post post = findPost(postId);
         checkAuthor(post, userId);
         postRepository.delete(post);
+    }
+
+    /** POST 멤버 목록 조회 */
+    @Transactional(readOnly = true)
+    public List<StudyGroupMemberResponse> getPostMembers(Long postId) {
+        StudyGroup studyGroup = studyGroupRepository.findByPost_PostId(postId)
+                .orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+        return studyGroupMemberRepository.findAllByStudyGroup_StudyGroupId(studyGroup.getStudyGroupId())
+                .stream()
+                .map(StudyGroupMemberResponse::from)
+                .collect(Collectors.toList());
     }
 
     private Post findPost(Long postId) {

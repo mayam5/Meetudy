@@ -17,6 +17,8 @@ function WholeListItem({
   hostId,
   field = "",
   users = [],
+  currentMembers,
+  maxMembers,
   type = "all",
   applicationStatus = "pending",
   isBookmarked: initialBookmarked = false,
@@ -27,8 +29,8 @@ function WholeListItem({
   const [isBookmarked, setIsBookmarked] = useState(initialBookmarked);
 
   useEffect(() => {
-  setIsBookmarked(initialBookmarked);
-}, [initialBookmarked]);
+    setIsBookmarked(initialBookmarked);
+  }, [initialBookmarked]);
 
   const [popup, setPopup] = useState({
     open: false,
@@ -100,10 +102,12 @@ function WholeListItem({
         >
           <HostInfo host={host} field={field} />
         </div>
-
-        <AvatarGroup users={users} />
-
+        
         <div className="list-actions" onClick={stopProp}>
+          <AvatarGroup users={users} />
+          {currentMembers !== undefined && maxMembers !== undefined && (
+            <span className="member-count">{currentMembers} / {maxMembers}</span>
+          )}
           {type === "n" && (
             <>
               <button

@@ -55,7 +55,19 @@ export const fetchAllStudies = async ({
   const json = await res.json();
   if (!res.ok || !json.success) throw new Error(json.message);
 
-  let mapped = (json.data ?? []).map(mapPost);
+  let mapped = await Promise.all(
+    (json.data ?? []).map(async (p) => {
+      let users = [p.nickname ?? ""];
+      try {
+        const memberRes = await fetch(`${BASE_URL}/posts/${p.postId}/members`);
+        const memberData = await memberRes.json();
+        if (memberData.data?.length > 0) {
+          users = memberData.data.map((m) => m.nickname);
+        }
+      } catch (e) {}
+      return { ...mapPost(p), users };
+    })
+  );
 
   if (field) mapped = mapped.filter((p) => p.field === field);
   if (region) mapped = mapped.filter((p) => p.region === region);
